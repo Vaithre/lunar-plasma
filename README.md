@@ -10,7 +10,7 @@ Lua scripting interface for the KDE Plasma desktop
 
 ## Overview
 
-Lunar Plasma lets you control and automate your KDE Plasma desktop through a Lua interface. Its goal is to make it easy to write scripts that modify your desktop in real time, either reacting to events as they happen or running on-demand whenever you need them. Inspired by the hacky, tinkerer-friendly nature of projects like AwesomeWM and Hyprland's Lua configuration, Lunar Plasma brings that same scriptable spirit to KDE Plasma.
+Lunar Plasma lets you control and automate your [KDE Plasma](https://kde.org/plasma-desktop/) desktop through a [Lua](https://www.lua.org/about.html) interface. Its goal is to make it easy to write scripts that modify your desktop in real time, either reacting to events as they happen or running on-demand whenever you need them. Inspired by the hacky, tinkerer-friendly nature of projects like [AwesomeWM](https://awesomewm.org/) and [Hyprland](https://hypr.land/) Lua configuration, Lunar Plasma brings that same scriptable spirit to KDE Plasma.
 
 Beyond desktop customization, Lunar Plasma also lets you interact with other system properties, such as adjusting the volume or changing screen brightness, all from the same simple Lua interface. Instead of clicking through menus every time you want to tweak your setup, or digging through Plasma's APIs to hack together a fragile, untested script, you write it once and let Lunar Plasma handle the rest.
 
