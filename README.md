@@ -26,10 +26,10 @@ Instead of clicking through menus every time you want to tweak your setup, or di
 
 ## Features (PLACEHOLDER)
 
-- 🎨 Change themes and color schemes
-- 🖼️ Set and rotate wallpapers
-- ⚡ React to desktop events in real time
-- 📜 Run one-shot scripts from the terminal
+- Change themes and color schemes
+- Set and rotate wallpapers
+- React to desktop events in real time
+- Run one-shot scripts from the terminal
 
 ## Installation
 
