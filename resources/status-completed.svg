@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
+  <title id="title">Completed</title>
+  <rect x="2" y="2" width="28" height="28" rx="7" fill="#2da44e"/>
+  <path d="m9 16 4.5 4.5L23 11" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+</svg>

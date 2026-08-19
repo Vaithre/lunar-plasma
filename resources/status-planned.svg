@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
+  <title id="title">Planned</title>
+  <rect x="2" y="2" width="28" height="28" rx="7" fill="#2188ff"/>
+  <path d="M8.5 16h14" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2.5"/>
+  <path d="m18 10.5 5.5 5.5-5.5 5.5" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+</svg>
