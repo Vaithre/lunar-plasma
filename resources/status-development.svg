@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
   <title id="title">In development</title>
-  <rect x="2" y="2" width="28" height="28" rx="7" fill="#f2cc60"/>
-  <path d="M13 8c-2 0-2 1.5-2 3v3c0 1.2-.5 2-2 2 1.5 0 2 .8 2 2v3c0 1.5 0 3 2 3M19 8c2 0 2 1.5 2 3v3c0 1.2.5 2 2 2-1.5 0-2 .8-2 2v3c0 1.5 0 3-2 3" fill="none" stroke="#5c4500" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+  <rect x="2" y="2" width="28" height="28" rx="7" fill="#2188ff"/>
+  <path d="M13 8c-2 0-2 1.5-2 3v3c0 1.2-.5 2-2 2 1.5 0 2 .8 2 2v3c0 1.5 0 3 2 3M19 8c2 0 2 1.5 2 3v3c0 1.2.5 2 2 2-1.5 0-2 .8-2 2v3c0 1.5 0 3-2 3" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
 </svg>
