@@ -93,19 +93,19 @@ A standard KDE Plasma desktop should already include most of the tools Lunar Pla
 
 If a command is missing, these packages provide the usual dependencies for each distribution family:
 
-### Arch Linux / Manjaro / EndeavourOS
+### Arch Linux / Manjaro / EndeavourOS / etc
 
 ```bash
 sudo pacman -S --needed lua bash libpulse libnotify qt6-tools libkscreen xorg-setxkbmap power-profiles-daemon
 ```
 
-### Fedora / Nobara / Ultramarine
+### Fedora / Nobara / Ultramarine / etc
 
 ```bash
 sudo dnf install lua bash pulseaudio-utils libnotify qt6-qttools libkscreen xorg-x11-xkb-utils power-profiles-daemon
 ```
 
-### Ubuntu / Kubuntu / KDE neon
+### Ubuntu / Linux Mint / Debian / etc
 
 ```bash
 sudo apt install lua5.4 bash pulseaudio-utils libnotify-bin qdbus-qt6 libkscreen-bin x11-xkb-utils power-profiles-daemon
