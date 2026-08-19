@@ -22,7 +22,7 @@ Beyond desktop customization, Lunar Plasma also lets you interact with other sys
 ### Set default output volume to 50%.
 
 ```lua
-local home = assert(os.getenv("HOME"), "HOME is not set")
+local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.sound.set(50)
@@ -31,7 +31,7 @@ plasma.sound.set(50)
 ### Send a desktop notification.
 
 ```lua
-local home = assert(os.getenv("HOME"), "HOME is not set")
+local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.notifications.send({
@@ -47,7 +47,7 @@ plasma.notifications.send({
 ### Set the normal power profile.
 
 ```lua
-local home = assert(os.getenv("HOME"), "HOME is not set")
+local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.power.set_profile("normal")
@@ -56,7 +56,7 @@ plasma.power.set_profile("normal")
 ### Select a configured keyboard layout.
 
 ```lua
-local home = assert(os.getenv("HOME"), "HOME is not set")
+local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.keyboard.set_layout("latam")
@@ -65,7 +65,7 @@ plasma.keyboard.set_layout("latam")
 ### Set an image as wallpaper on every display.
 
 ```lua
-local home = assert(os.getenv("HOME"), "HOME is not set")
+local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.desktop.wallpaper.set("/path/to/wallpaper.png")
