@@ -1,7 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
   <title id="title">In development</title>
   <rect x="2" y="2" width="28" height="28" rx="7" fill="#f2cc60"/>
-  <circle cx="10" cy="16" r="2" fill="#5c4500"/>
-  <circle cx="16" cy="16" r="2" fill="#5c4500"/>
-  <circle cx="22" cy="16" r="2" fill="#5c4500"/>
+  <text x="16" y="21" fill="#5c4500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" text-anchor="middle">{...}</text>
 </svg>
