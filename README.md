@@ -17,20 +17,17 @@ Beyond desktop customization, Lunar Plasma also lets you interact with other sys
 > [!WARNING]
 > **Early development software.** Lunar Plasma is built with care to protect your Plasma preferences and other sensitive files, but it hasn't been battle-tested yet. Back up your configuration before using it, and expect breaking changes between versions.
 
-## Examples
+## Quick examples
+
+### Set default output volume to 50%.
 
 ```lua
 local plasma = dofile("lunar-plasma.lua")
 
-plasma.volume.set(50)
+plasma.sound.set(50)
 ```
 
-Run a similar example from its directory:
-
-```bash
-cd examples
-lua set-volume.lua
-```
+**You can run similar examples from the `examples` directory.**
 
 ## Features (PLACEHOLDER)
 
@@ -41,7 +38,7 @@ lua set-volume.lua
 
 ## Current Goals
 
-You can check our current goals in the [ROADMAP.md](ROADMAP.md) file.
+You can check our current goals in the [ROADMAP](ROADMAP.md).
 
 ## Installation
 
