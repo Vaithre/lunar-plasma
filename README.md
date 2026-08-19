@@ -138,7 +138,7 @@ chmod +x install.sh uninstall.sh
 ./install.sh
 ```
 
-Lunar Plasma will be installed in `~/.local/share/opt/lunar-plasma`. The installer copies the Lua library, version file, backend scripts, examples, and the example wallpaper. Existing files in that directory are replaced only after confirmation.
+Lunar Plasma will be installed in `~/.local/share/opt/lunar-plasma`.
 
 To remove the installation:
 
