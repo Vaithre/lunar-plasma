@@ -1,5 +1,7 @@
 #!/usr/bin/env lua
 
+-- Test the sound API. Run this file from the project root.
+
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_sound%.lua$") or "."
 

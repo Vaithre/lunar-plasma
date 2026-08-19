@@ -6,10 +6,7 @@ local example_dir = source:match("^(.*)/[^/]+$") or "."
 local root = example_dir .. "/.."
 local plasma = dofile(root .. "/lunar-plasma.lua")
 
--- Set the volume used by this example.
-local value = 50
-
--- Execute the command and report backend errors.
-local ok, err = plasma.sound.set(value)
+-- Set the normal power profile and report backend errors.
+local ok, err = plasma.power.set_profile("power-saver")
 
 assert(ok, err)

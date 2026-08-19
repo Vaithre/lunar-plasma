@@ -24,7 +24,20 @@ Load the public entry point with `dofile`:
 local plasma = dofile("lunar-plasma.lua")
 ```
 
-Use the path to `lunar-plasma.lua` that is correct for your script. The library resolves its internal Lua modules and backend scripts automatically. If you used the default installation, load `~/.local/opt/lunar-plasma/lunar-plasma.lua` and everything should work correctly.
+Use the path to `lunar-plasma.lua` that is correct for your script. The library resolves its internal Lua modules and backend scripts automatically. Lua does not expand `~`, so a script using the default installation should load it through `HOME`:
+
+```lua
+local home = assert(os.getenv("HOME"), "HOME is not set")
+local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+```
+
+The installed version is available through `plasma.version`:
+
+```lua
+local plasma = dofile("lunar-plasma.lua")
+
+print(plasma.version)
+```
 
 The currently available modules are:
 
@@ -640,7 +653,6 @@ local first_display = 1
 
 plasma.power.set_profile("saving")
 plasma.power.set_brightness(first_display, 35)
-plasma.sound.decrease(15)
 plasma.notifications.send({
     title = "Low battery",
     text = "Power saving settings have been applied",

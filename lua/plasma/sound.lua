@@ -3,6 +3,11 @@
 
 local sound = {}
 
+-- Quote a value so the shell treats it as a single literal argument.
+local function shell_quote(value)
+    return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
+end
+
 -- Create a sound API connected to a backend script.
 function sound.new(backend)
     local instance = {}
@@ -18,7 +23,7 @@ function sound.new(backend)
     end
 
     local function execute_backend(action, value)
-        local command = string.format("%q %q", backend, action)
+        local command = shell_quote(backend) .. " " .. shell_quote(action)
 
         if value ~= nil then
             command = command .. string.format(" %d", value)
@@ -33,7 +38,7 @@ function sound.new(backend)
     end
 
     local function read_backend(action)
-        local process = io.popen(string.format("%q %q", backend, action))
+        local process = io.popen(shell_quote(backend) .. " " .. shell_quote(action))
         if not process then
             return nil, "could not start the sound backend"
         end

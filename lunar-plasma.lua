@@ -7,10 +7,34 @@ local root = source:match("^(.*)/lunar%-plasma%.lua$") or "."
 -- Add the internal Lua modules to the search path
 package.path = root .. "/lua/?.lua;" .. root .. "/lua/?/init.lua;" .. package.path
 
+-- Read the installed Lunar Plasma version
+local version_file = assert(io.open(root .. "/VERSION", "r"), "cannot read Lunar Plasma version")
+local version = version_file:read("*l")
+version_file:close()
+
+assert(version and version:match("^%d+%.%d+%.%d+$"), "invalid Lunar Plasma version")
+
 -- Load the sound API and give it its backend
 local sound = require("plasma.sound")
 
+-- Load the notifications API and give it its backend
+local notifications = require("plasma.notifications")
+
+-- Load the power API and give it its backend
+local power = require("plasma.powermanagement")
+
+-- Load the keyboard API and give it its backend
+local keyboard = require("plasma.keyboard")
+
+-- Load the desktop API and give it its backend
+local desktop = require("plasma.desktop")
+
 -- Expose the public API
 return {
+    version = version,
     sound = sound.new(root .. "/scripts/sound.sh"),
+    notifications = notifications.new(root .. "/scripts/notifications.sh"),
+    power = power.new(root .. "/scripts/power.sh"),
+    keyboard = keyboard.new(root .. "/scripts/keyboard.sh"),
+    desktop = desktop.new(root .. "/scripts/desktop.sh"),
 }
