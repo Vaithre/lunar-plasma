@@ -14,4 +14,5 @@
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Implement the wallpaper management API | N/A |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Implement the power management API | N/A |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Implement the keyboard API | N/A |
+| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Automation | Implement an automation framework for events and schedules | N/A |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Documentation | Document the project | N/A |
