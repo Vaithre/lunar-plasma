@@ -45,17 +45,17 @@ lua set-volume.lua
 
 | Status | Area | Goal |
 |:---:|---|---|
-| <img src="./resources/status-completed.svg" width="20" height="20" alt="Completed"> | API | Define a Lua API entry point |
-| <img src="./resources/status-completed.svg" width="20" height="20" alt="Completed"> | Volume | Set the default Plasma volume from Lua |
-| <img src="./resources/status-completed.svg" width="20" height="20" alt="Completed"> | Backend | Use Bash as the first backend layer |
-| <img src="./resources/status-completed.svg" width="20" height="20" alt="Completed"> | Examples | Provide a runnable volume example |
-| <img src="./resources/status-development.svg" width="20" height="20" alt="In development"> | Volume | Expand the `volume` API |
-| <img src="./resources/status-development.svg" width="20" height="20" alt="In development"> | Backends | Improve backend selection and D-Bus support |
-| <img src="./resources/status-development.svg" width="20" height="20" alt="In development"> | Documentation | Document the public API and installation process |
-| <img src="./resources/status-planned.svg" width="20" height="20" alt="Planned"> | Plasma | Add wallpaper and display controls |
-| <img src="./resources/status-planned.svg" width="20" height="20" alt="Planned"> | Runner | Provide a standalone one-shot runner |
-| <img src="./resources/status-planned.svg" width="20" height="20" alt="Planned"> | Scheduling | Add optional scheduling helpers |
-| <img src="./resources/status-planned.svg" width="20" height="20" alt="Planned"> | Packaging | Package the library for use from other projects |
+| <img src="./resources/status-completed.svg" width="22" height="22" alt="Completed"> | API | Define a Lua API entry point |
+| <img src="./resources/status-completed.svg" width="22" height="22" alt="Completed"> | Volume | Set the default Plasma volume from Lua |
+| <img src="./resources/status-completed.svg" width="22" height="22" alt="Completed"> | Backend | Use Bash as the first backend layer |
+| <img src="./resources/status-completed.svg" width="22" height="22" alt="Completed"> | Examples | Provide a runnable volume example |
+| <img src="./resources/status-development.svg" width="22" height="22" alt="In development"> | Volume | Expand the `volume` API |
+| <img src="./resources/status-development.svg" width="22" height="22" alt="In development"> | Backends | Improve backend selection and D-Bus support |
+| <img src="./resources/status-development.svg" width="22" height="22" alt="In development"> | Documentation | Document the public API and installation process |
+| <img src="./resources/status-planned.svg" width="22" height="22" alt="Planned"> | Plasma | Add wallpaper and display controls |
+| <img src="./resources/status-planned.svg" width="22" height="22" alt="Planned"> | Runner | Provide a standalone one-shot runner |
+| <img src="./resources/status-planned.svg" width="22" height="22" alt="Planned"> | Scheduling | Add optional scheduling helpers |
+| <img src="./resources/status-planned.svg" width="22" height="22" alt="Planned"> | Packaging | Package the library for use from other projects |
 
 ### Status legend
 
