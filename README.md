@@ -20,8 +20,16 @@ Beyond desktop customization, Lunar Plasma also lets you interact with other sys
 ## Examples
 
 ```lua
--- Switch icon theme
-(EXAMPLES HERE)
+local plasma = dofile("lunar-plasma.lua")
+
+plasma.volume.set(50)
+```
+
+Run a similar example from its directory:
+
+```bash
+cd examples
+lua set-volume.lua
 ```
 
 ## Features (PLACEHOLDER)
@@ -30,6 +38,30 @@ Beyond desktop customization, Lunar Plasma also lets you interact with other sys
 - Set and rotate wallpapers
 - React to desktop events in real time
 - Run one-shot scripts from the terminal
+
+## Current Goals (PLACEHOLDER)
+
+> This roadmap is temporary and will change as the project takes shape.
+
+| Status | Area | Goal |
+|:---:|---|---|
+| <img src="./resources/status-completed.svg" width="20" height="20" alt="Completed"> | API | Define a Lua API entry point |
+| <img src="./resources/status-completed.svg" width="20" height="20" alt="Completed"> | Volume | Set the default Plasma volume from Lua |
+| <img src="./resources/status-completed.svg" width="20" height="20" alt="Completed"> | Backend | Use Bash as the first backend layer |
+| <img src="./resources/status-completed.svg" width="20" height="20" alt="Completed"> | Examples | Provide a runnable volume example |
+| <img src="./resources/status-development.svg" width="20" height="20" alt="In development"> | Volume | Expand the `volume` API |
+| <img src="./resources/status-development.svg" width="20" height="20" alt="In development"> | Backends | Improve backend selection and D-Bus support |
+| <img src="./resources/status-development.svg" width="20" height="20" alt="In development"> | Documentation | Document the public API and installation process |
+| <img src="./resources/status-planned.svg" width="20" height="20" alt="Planned"> | Plasma | Add wallpaper and display controls |
+| <img src="./resources/status-planned.svg" width="20" height="20" alt="Planned"> | Runner | Provide a standalone one-shot runner |
+| <img src="./resources/status-planned.svg" width="20" height="20" alt="Planned"> | Scheduling | Add optional scheduling helpers |
+| <img src="./resources/status-planned.svg" width="20" height="20" alt="Planned"> | Packaging | Package the library for use from other projects |
+
+### Status legend
+
+- <img src="./resources/status-completed.svg" width="16" height="16" alt="Completed"> Completed
+- <img src="./resources/status-development.svg" width="16" height="16" alt="In development"> In development
+- <img src="./resources/status-planned.svg" width="16" height="16" alt="Planned"> Planned
 
 ## Installation
 
