@@ -3,9 +3,9 @@
 set -euo pipefail
 
 project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-install_root="$HOME/.local/share/opt"
+install_root="$HOME/.local/opt"
 install_dir="$install_root/lunar-plasma"
-expected_dir="$HOME/.local/share/opt/lunar-plasma"
+expected_dir="$HOME/.local/opt/lunar-plasma"
 staging_dir=""
 backup_dir=""
 

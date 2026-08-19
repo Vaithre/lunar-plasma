@@ -22,21 +22,21 @@ Load the public entry point with `dofile`:
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 ```
 
 Use the path to `lunar-plasma.lua` that is correct for your script. The library resolves its internal Lua modules and backend scripts automatically. Lua does not expand `~`, so a script using the default installation should load it through `HOME`:
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 ```
 
 The installed version is available through `plasma.version`:
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 print(plasma.version)
 ```
@@ -87,7 +87,7 @@ Sets the volume of the default audio output to an absolute percentage. It change
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.set(50) then
     print("Volume set to 50%")
@@ -104,7 +104,7 @@ Reads the current volume of the default audio output. The returned percentage is
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local volume = plasma.sound.get()
 
 print(volume)
@@ -120,7 +120,7 @@ Mutes the default audio output without changing its stored volume level. Unmutin
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.mute() then
     print("Sound muted")
@@ -137,7 +137,7 @@ Unmutes the default audio output. The existing volume level is preserved.
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.unmute() then
     print("Sound unmuted")
@@ -154,7 +154,7 @@ Reads the mute state of the default audio output without changing it. The result
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local muted = plasma.sound.is_muted()
 
 print(muted)
@@ -170,7 +170,7 @@ Switches the default audio output to the opposite mute state. The stored volume 
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.toggle_mute() then
     print("Mute state changed")
@@ -191,7 +191,7 @@ Reads the current volume and increases it by the requested number of percentage 
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.increase(10) then
     print("Volume increased")
@@ -212,7 +212,7 @@ Reads the current volume and decreases it by the requested number of percentage 
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.decrease(10) then
     print("Volume decreased")
@@ -244,7 +244,7 @@ The notification type selects the default icon and urgency. A custom `icon` over
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.notifications.send({
     title = "Download complete",
@@ -276,7 +276,7 @@ The aliases `"power-saver"` and `"balanced"` are also accepted.
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.set_profile("saving") then
     print("Power saving enabled")
@@ -293,7 +293,7 @@ Requests a system suspend through the available power management service. Execut
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.suspend() then
     print("System resumed")
@@ -310,7 +310,7 @@ Requests a complete system shutdown through the available power management servi
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.shutdown() then
     print("Shutdown requested")
@@ -327,7 +327,7 @@ Requests a system restart through the available power management service. The re
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.reboot() then
     print("Reboot requested")
@@ -354,7 +354,7 @@ Examples of valid display selectors include `1`, `"monitor 1"`, `"screen 2"`, an
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.set_brightness("HDMI-A-1", 75) then
     print("Brightness set to 75%")
@@ -379,7 +379,7 @@ Reads the current brightness of one selected display as a normalized percentage.
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 local brightness = plasma.power.get_brightness(first_display)
 
@@ -420,7 +420,7 @@ Reads every keyboard layout configured in the current Plasma session. The return
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local layouts = plasma.keyboard.list_layouts()
 
 for _, layout in ipairs(layouts) do
@@ -438,7 +438,7 @@ Reads the keyboard layout currently selected in Plasma. The returned table inclu
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local layout = plasma.keyboard.get_layout()
 
 print(layout.name)
@@ -461,7 +461,7 @@ When `layout` is a table, its `id` and `variant` fields are used. If `id` is mis
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.keyboard.set_layout("latam") then
     print("Keyboard layout changed")
@@ -478,7 +478,7 @@ Moves to the next layout in the configured order. After the last layout, Plasma 
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.keyboard.next_layout() then
     print("Switched to the next layout")
@@ -495,7 +495,7 @@ Moves to the previous layout in the configured order. From the first layout, Pla
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.keyboard.previous_layout() then
     print("Switched to the previous layout")
@@ -533,7 +533,7 @@ Functions that return wallpaper information use the following table:
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 local wallpaper = plasma.desktop.wallpaper.get(first_display)
 
@@ -573,7 +573,7 @@ The returned array contains one wallpaper table per display, ordered by display 
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local wallpapers = plasma.desktop.wallpaper.list()
 
 for _, wallpaper in ipairs(wallpapers) do
@@ -598,7 +598,7 @@ Reads the wallpaper currently assigned to one display. If no display is provided
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 local wallpaper = plasma.desktop.wallpaper.get(first_display)
 
@@ -636,7 +636,7 @@ plasma.desktop.wallpaper.set("/path/to/wallpaper.png", 2)
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 
 if plasma.desktop.wallpaper.set("/home/user/Pictures/wallpaper.png", first_display) then
@@ -654,7 +654,7 @@ Prepare the desktop for a work session with one script.
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 
 plasma.sound.set(35)
@@ -675,7 +675,7 @@ This script can be called by an external battery monitor when the charge becomes
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 
 plasma.power.set_profile("saving")
@@ -693,7 +693,7 @@ Use a lighter setup during the day and a quieter one at night.
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local hour = tonumber(os.date("%H"))
 
 if hour >= 7 and hour < 19 then
@@ -713,7 +713,7 @@ Move to the next configured layout and display its name.
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.keyboard.next_layout()
 local layout = plasma.keyboard.get_layout()

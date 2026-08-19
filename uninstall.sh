@@ -2,8 +2,8 @@
 # Uninstall Lunar Plasma for the current user.
 set -euo pipefail
 
-install_dir="$HOME/.local/share/opt/lunar-plasma"
-expected_dir="$HOME/.local/share/opt/lunar-plasma"
+install_dir="$HOME/.local/opt/lunar-plasma"
+expected_dir="$HOME/.local/opt/lunar-plasma"
 
 confirm() {
     local answer

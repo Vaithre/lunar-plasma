@@ -19,13 +19,13 @@ Beyond desktop customization, Lunar Plasma also lets you interact with other sys
 
 ## Quick examples
 
-Once Lunar Plasma is installed, you can use it from any script or executable that loads `~/.local/share/opt/lunar-plasma/lunar-plasma.lua`. A more ergonomic way to load the library is planned for a future version.
+Once Lunar Plasma is installed, you can use it from any script or executable that loads `~/.local/opt/lunar-plasma/lunar-plasma.lua`. A more ergonomic way to load the library is planned for a future version.
 
 #### Set default output volume to 50%
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.sound.set(50)
 ```
@@ -34,7 +34,7 @@ plasma.sound.set(50)
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.notifications.send({
     title = "Lunar Plasma",
@@ -50,7 +50,7 @@ plasma.notifications.send({
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.power.set_profile("performance")
 ```
@@ -59,7 +59,7 @@ plasma.power.set_profile("performance")
 
 ```lua
 local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.desktop.wallpaper.set("/path/to/wallpaper.png")
 ```
@@ -138,7 +138,7 @@ chmod +x install.sh uninstall.sh
 ./install.sh
 ```
 
-Lunar Plasma will be installed in `~/.local/share/opt/lunar-plasma`.
+Lunar Plasma will be installed in `~/.local/opt/lunar-plasma`.
 
 To remove the installation:
 

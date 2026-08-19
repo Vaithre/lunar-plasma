@@ -2,11 +2,10 @@
 
 -- Temporarily set an image as wallpaper on every display.
 
-local source = debug.getinfo(1, "S").source:sub(2)
-local example_dir = source:match("^(.*)/[^/]+$") or "."
-local root = example_dir .. "/.."
-local plasma = dofile(root .. "/lunar-plasma.lua")
-local wallpaper = root .. "/resources/Nexus.png"
+local home = os.getenv("HOME")
+local install_dir = home .. "/.local/opt/lunar-plasma"
+local plasma = dofile(install_dir .. "/lunar-plasma.lua")
+local wallpaper = install_dir .. "/resources/Nexus.png"
 local originals = assert(plasma.desktop.wallpaper.list())
 
 local operation_ok, operation_err = pcall(function()
