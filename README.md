@@ -75,7 +75,6 @@ plasma.desktop.wallpaper.set("/path/to/wallpaper.png")
 - List, inspect, and switch configured keyboard layouts.
 - Read and change wallpapers across all displays or on a specific display.
 - Use a single Lua entry point backed by D-Bus and system tools.
-- Run module-specific tests and practical example scripts.
 
 ## Current Goals
 
