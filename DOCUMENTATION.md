@@ -5,6 +5,8 @@ Lunar Plasma provides a Lua interface for controlling KDE Plasma. The public API
 > [!NOTE]
 > Lunar Plasma does not have a standardized way to add user modules yet. Feel free to experiment with them, but they may break in future versions.
 
+This documentation is preliminary. Although its content is accurate, its presentation could be improved by a lot!
+
 ## Contents
 
 - [Getting started](#getting-started)
@@ -17,6 +19,9 @@ Lunar Plasma provides a Lua interface for controlling KDE Plasma. The public API
 - [General examples](#general-examples)
 
 ## Getting started
+
+> [!CAUTION]
+> Only run scripts from trusted sources. Lunar Plasma does not provide security restrictions for scripts from untrusted sources.
 
 Load the public entry point with `dofile`:
 
