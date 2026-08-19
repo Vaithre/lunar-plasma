@@ -149,14 +149,6 @@ To remove the installation:
 ./uninstall.sh
 ```
 
-To validate the release version and create a clean archive:
-
-```bash
-./release.sh
-```
-
-The script checks `VERSION` against the latest `CHANGELOG.md` entry and creates `lunar-plasma-<version>.tar.gz`.
-
 ## Known limitations
 
 - The public API may change before the first stable release.
