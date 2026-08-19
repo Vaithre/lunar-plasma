@@ -1,0 +1,2 @@
+-- Notifications API
+-- Send notifications using the features exposed by Plasma's notification system.

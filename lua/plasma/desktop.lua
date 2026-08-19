@@ -1,0 +1,2 @@
+-- Desktop API
+-- Interact with the Plasma desktop in different ways.

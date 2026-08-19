@@ -1,0 +1,2 @@
+-- Desktop API
+-- Change power settings, including the power profile and related options.
