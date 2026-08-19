@@ -15,7 +15,7 @@ Lunar Plasma lets you control and automate your [KDE Plasma](https://kde.org/pla
 Beyond desktop customization, Lunar Plasma also lets you interact with other system properties, such as adjusting the volume or changing screen brightness, all from the same simple Lua interface. Instead of clicking through menus every time you want to tweak your setup, or digging through Plasma's APIs to hack together a fragile, untested script, you write it once and let Lunar Plasma handle the rest.
 
 > [!WARNING]
-> **Early development software.** Lunar Plasma is built with care to protect your Plasma preferences and other sensitive files, but it hasn't been battle-tested yet. Back up your configuration before using it, and expect breaking changes between versions.
+> **Early development software.** Lunar Plasma hasn't been battle-tested yet. Expect breaking changes between versions.
 
 ## Quick examples
 
@@ -25,6 +25,45 @@ Beyond desktop customization, Lunar Plasma also lets you interact with other sys
 local plasma = dofile("lunar-plasma.lua")
 
 plasma.sound.set(50)
+```
+
+### Send a desktop notification.
+
+```lua
+local plasma = dofile("lunar-plasma.lua")
+
+plasma.notifications.send({
+    title = "Lunar Plasma",
+    text = "Notifications are working",
+    icon = "dialog-information",
+    sound = "message",
+    timeout = 5000,
+    type = "info",
+})
+```
+
+### Set the normal power profile.
+
+```lua
+local plasma = dofile("lunar-plasma.lua")
+
+plasma.power.set_profile("normal")
+```
+
+### Select a configured keyboard layout.
+
+```lua
+local plasma = dofile("lunar-plasma.lua")
+
+plasma.keyboard.set_layout("latam")
+```
+
+### Set an image as wallpaper on every display.
+
+```lua
+local plasma = dofile("lunar-plasma.lua")
+
+plasma.desktop.wallpaper.set("/path/to/wallpaper.png")
 ```
 
 **You can run similar examples from the `examples` directory.**
@@ -64,7 +103,7 @@ You can check our current goals in the [ROADMAP](ROADMAP.md).
 
 ## API Reference
 
-> CREATE DOCS
+See the complete [Lunar Plasma documentation](DOCUMENTATION.md).
 
 ## Contributing
 
