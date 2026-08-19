@@ -2,9 +2,9 @@
 
 ## Status legend
 
-- <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> Completed
-- <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> In development
-- <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> Planned
+- <img src="./resources/status-completed.svg" width="22" height="16" alt="Completed"> Completed
+- <img src="./resources/status-development.svg" width="16" height="16" alt="In development"> In development
+- <img src="./resources/status-planned.svg" width="16" height="16" alt="Planned"> Planned
 
 
 | Status | Area | Goal | Completion date |
