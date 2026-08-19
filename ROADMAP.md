@@ -14,7 +14,7 @@ Until then, I’ll do my best to keep the APIs stable, but they may still change
 
 | Status | Area | Goal | Completion date |
 |:---:|---|---|:---:|
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the sound API | 26/08/19 |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the sound API | 2026/08/19 |
 | <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | API | Implement the notifications API | N/A |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Implement the wallpaper management API | N/A |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Implement the power management API | N/A |
