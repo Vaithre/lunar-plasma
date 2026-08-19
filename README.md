@@ -19,7 +19,9 @@ Beyond desktop customization, Lunar Plasma also lets you interact with other sys
 
 ## Quick examples
 
-### Set default output volume to 50%.
+Once Lunar Plasma is installed, you can use its libraries from any script or executable that loads `~/.local/share/opt/lunar-plasma/lunar-plasma.lua`. A more ergonomic way to load the library is planned for a future version.
+
+#### Set default output volume to 50%.
 
 ```lua
 local home = os.getenv("HOME")
@@ -28,7 +30,7 @@ local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
 plasma.sound.set(50)
 ```
 
-### Send a desktop notification.
+#### Send a desktop notification.
 
 ```lua
 local home = os.getenv("HOME")
@@ -44,25 +46,16 @@ plasma.notifications.send({
 })
 ```
 
-### Set the normal power profile.
+#### Set the performance power profile.
 
 ```lua
 local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
 
-plasma.power.set_profile("normal")
+plasma.power.set_profile("performance")
 ```
 
-### Select a configured keyboard layout.
-
-```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
-
-plasma.keyboard.set_layout("latam")
-```
-
-### Set an image as wallpaper on every display.
+#### Set an image as wallpaper on every display.
 
 ```lua
 local home = os.getenv("HOME")
@@ -71,7 +64,7 @@ local plasma = dofile(home .. "/.local/share/opt/lunar-plasma/lunar-plasma.lua")
 plasma.desktop.wallpaper.set("/path/to/wallpaper.png")
 ```
 
-**You can run similar examples from the `examples` directory.**
+**You can run similar examples from the **`examples`** directory.**
 
 ## Features
 
