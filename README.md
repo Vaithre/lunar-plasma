@@ -17,6 +17,10 @@ Beyond desktop customization, Lunar Plasma also lets you interact with other sys
 > [!WARNING]
 > **Early development software.** Lunar Plasma hasn't been battle-tested yet. Expect breaking changes between versions.
 
+## API Reference
+
+See the complete [Lunar Plasma documentation](DOCUMENTATION.md).
+
 ## Quick examples
 
 Once Lunar Plasma is installed, you can use it from any script or executable that loads `~/.local/opt/lunar-plasma/lunar-plasma.lua`. A more ergonomic way to load the library is planned for a future version.
@@ -144,10 +148,6 @@ To remove the installation:
 ```bash
 ./uninstall.sh
 ```
-
-## API Reference
-
-See the complete [Lunar Plasma documentation](DOCUMENTATION.md).
 
 ## Known limitations
 
