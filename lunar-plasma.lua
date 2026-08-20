@@ -32,6 +32,9 @@ local desktop = require("plasma.desktop")
 -- Load the Wi-Fi API and give it its backend
 local wifi = require("plasma.wifi")
 
+-- Load the Bluetooth API and give it its backend
+local bluetooth = require("plasma.bluetooth")
+
 -- Expose the public API
 return {
     version = version,
@@ -41,4 +44,5 @@ return {
     keyboard = keyboard.new(root .. "/scripts/keyboard.sh"),
     desktop = desktop.new(root .. "/scripts/desktop.sh"),
     wifi = wifi.new(root .. "/scripts/wifi.sh"),
+    bluetooth = bluetooth.new(root .. "/scripts/bluetooth.sh"),
 }

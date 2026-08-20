@@ -13,6 +13,7 @@ local suites = {
     { name = "power", module = require("test_power") },
     { name = "keyboard", module = require("test_keyboard") },
     { name = "wifi", module = require("test_wifi") },
+    { name = "bluetooth", module = require("test_bluetooth") },
 }
 
 -- Run tests that modify the real desktop only when explicitly requested.
