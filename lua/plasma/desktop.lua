@@ -164,9 +164,16 @@ function desktop.new(backend)
             command = command .. " " .. shell_quote(argument)
         end
 
-        local ok, _, code = os.execute(command)
+        local process = io.popen(command .. " 2>&1")
+        if not process then
+            return nil, "could not start the desktop backend"
+        end
+
+        local output = process:read("*a"):gsub("\r?\n$", "")
+        local ok, _, code = process:close()
         if not ok then
-            return nil, "desktop backend failed with exit code " .. tostring(code)
+            local detail = output ~= "" and ": " .. output or ""
+            return nil, "desktop backend failed with exit code " .. tostring(code) .. detail
         end
 
         return true
@@ -179,7 +186,7 @@ function desktop.new(backend)
             command = command .. " " .. shell_quote(argument)
         end
 
-        local process = io.popen(command)
+        local process = io.popen(command .. " 2>&1")
         if not process then
             return nil, "could not start the desktop backend"
         end
@@ -188,7 +195,9 @@ function desktop.new(backend)
         local ok, _, code = process:close()
 
         if not ok then
-            return nil, "desktop backend failed with exit code " .. tostring(code)
+            local detail = output:match("^%s*(.-)%s*$")
+            detail = detail ~= "" and ": " .. detail or ""
+            return nil, "desktop backend failed with exit code " .. tostring(code) .. detail
         end
 
         return output

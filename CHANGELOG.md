@@ -10,6 +10,7 @@
 
 - Test failures now end with a component and subtest summary including the reported errors.
 - Real-system Bluetooth tests now skip systems without an adapter and time out stalled BlueZ queries.
+- Wallpaper changes now fall back between available D-Bus clients and preserve backend errors in test output.
 
 ## [0.2.0] - 2026-08-20
 

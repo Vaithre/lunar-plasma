@@ -254,30 +254,40 @@ set_wallpaper_for_screen() {
     local plugin="$2"
     local screen="$3"
     local escaped_uri
+    local busctl_error=""
+    local gdbus_error=""
 
     if command -v busctl >/dev/null 2>&1; then
-        busctl --user call \
+        if busctl_error="$(busctl --user call \
             org.kde.plasmashell \
             /PlasmaShell \
             org.kde.PlasmaShell \
             setWallpaper \
-            'sa{sv}u' "$plugin" 1 Image s "$uri" "$screen" >/dev/null
-        return
+            'sa{sv}u' "$plugin" 1 Image s "$uri" "$screen" 2>&1)"; then
+            return
+        fi
     fi
 
     if command -v gdbus >/dev/null 2>&1; then
         escaped_uri="${uri//\\/\\\\}"
         escaped_uri="${escaped_uri//\'/\\\'}"
-        gdbus call --session \
+        if gdbus_error="$(gdbus call --session \
             --dest org.kde.plasmashell \
             --object-path /PlasmaShell \
             --method org.kde.PlasmaShell.setWallpaper \
-            "$plugin" "{'Image': <'$escaped_uri'>}" "$screen" >/dev/null
-        return
+            "$plugin" "{'Image': <'$escaped_uri'>}" "$screen" 2>&1)"; then
+            return
+        fi
     fi
 
-    printf 'busctl or gdbus is required to change Plasma wallpapers\n' >&2
-    return 127
+    printf 'Plasma rejected the wallpaper change through the available D-Bus clients\n' >&2
+    if [[ -n "$busctl_error" ]]; then
+        printf 'busctl: %s\n' "$busctl_error" >&2
+    fi
+    if [[ -n "$gdbus_error" ]]; then
+        printf 'gdbus: %s\n' "$gdbus_error" >&2
+    fi
+    return 1
 }
 
 set_wallpaper() {

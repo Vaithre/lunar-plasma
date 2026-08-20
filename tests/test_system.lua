@@ -344,6 +344,8 @@ function system.get_suites(root)
         },
     }
 
+    local system_wallpapers
+
     local desktop_tests = {
         {
             name = "displays",
@@ -370,13 +372,20 @@ function system.get_suites(root)
             end,
         },
         {
-            name = "wallpapers",
+            name = "read wallpapers",
             run = function()
-                local wallpapers = assert(plasma.desktop.list_wallpapers())
-                assert(#wallpapers > 0)
-                assert(plasma.desktop.get_wallpaper(wallpapers[1].display))
+                system_wallpapers = assert(plasma.desktop.list_wallpapers())
+                assert(#system_wallpapers > 0)
+                assert(plasma.desktop.get_wallpaper(system_wallpapers[1].display))
+            end,
+        },
+        {
+            name = "write and restore wallpapers",
+            run = function()
+                system_wallpapers = system_wallpapers or
+                    assert(plasma.desktop.list_wallpapers())
 
-                for _, wallpaper in ipairs(wallpapers) do
+                for _, wallpaper in ipairs(system_wallpapers) do
                     assert(plasma.desktop.set_wallpaper(wallpaper.uri, {
                         display = wallpaper.display,
                         plugin = wallpaper.plugin,
