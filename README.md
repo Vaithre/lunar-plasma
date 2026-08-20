@@ -228,17 +228,22 @@ This project uses a variant of [gitlab flow](https://about.gitlab.com/topics/ver
 
 There are no rules regarding commit naming. Contributions that add new features related to the roadmap are especially appreciated. 
 
-Please run the regular test suite before submitting a change:
+The regular test suite uses deterministic fixture backends to verify the functions without depending on the software or hardware available on the current system:
 
 ```bash
 lua tests/test_all.lua
 ```
 
-To include tests that modify the current desktop and restore it afterward:
+To find out which features actually work on the current system, run every test against the real system backends:
 
 ```bash
-LUNAR_PLASMA_INTEGRATION=1 lua tests/test_all.lua
+LUNAR_TEST_ON_SYSTEM=1 lua tests/test_all.lua
 ```
+
+> [!CAUTION]
+> System tests may temporarily change the volume, mute state, keyboard layout, brightness, and wallpaper. Reversible changes are restored after each test. Operations that could suspend, shut down, reboot, interrupt the network, or disconnect Bluetooth devices are reported as skipped.
+
+Hardware-dependent tests are reported as skipped when the required device is not available. If a component fails, the final output lists that component and every failed subtest with its error.
 
 ## License
 
