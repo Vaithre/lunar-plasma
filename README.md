@@ -12,7 +12,7 @@ Lua scripting interface for the KDE Plasma desktop
 
 Lunar Plasma lets you control your [KDE Plasma](https://kde.org/plasma-desktop/) desktop through a [Lua](https://www.lua.org/about.html) interface. Its goal is to make it easy to write scripts that inspect and modify your desktop on demand. Inspired by the scriptable, tinkerer-friendly spirit of projects such as [AwesomeWM](https://awesomewm.org/) and [Hyprland](https://hypr.land/), Lunar Plasma brings that same approach to KDE Plasma.
 
-Beyond desktop customization, Lunar Plasma also lets you interact with other system properties, such as adjusting the volume or changing screen brightness, all from the same simple Lua interface. Instead of clicking through menus every time you want to tweak your setup, or digging through Plasma's APIs to hack together a fragile, untested script, you write it once and let Lunar Plasma handle the rest.
+Beyond desktop customization, Lunar Plasma also lets you interact with other system properties, such as adjusting the volume or changing screen brightness, all from the same simple Lua interface. It also gives you functions to read system state, like battery level, connected monitors, Wi-Fi status, etc, so you can detect events and react to them in your scripts. Instead of digging through Plasma's APIs to hack together a fragile, untested script, you write it once and let Lunar Plasma handle the rest.
 
 > [!WARNING]
 > **Early development software.** Lunar Plasma hasn't been battle-tested yet. Expect breaking changes between versions.
@@ -59,7 +59,7 @@ local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 plasma.power.set_profile("performance")
 ```
 
-#### Increase brightness while charging above 50%
+#### Set brightness to 70% while charging above 50%
 
 ```lua
 local home = os.getenv("HOME")
@@ -114,7 +114,7 @@ The main current goals are:
 A standard KDE Plasma desktop should already include most of the tools Lunar Plasma uses. Lua and Bash run the library, while tools such as `pactl`, `notify-send`, `qdbus`, `kscreen-doctor`, `setxkbmap`, `nmcli`, `bluetoothctl`, and `busctl` provide specific features or fallbacks. NetworkManager supplies Wi-Fi state, BlueZ supplies Bluetooth state, and UPower supplies battery information. Lunar Plasma detects the available `qdbus` command automatically.
 
 > [!important]
-> It's normal for the package manager to talk about "replacing packages." In this case you can test the program with the "tests" [`lua examples/test_all.lua`] and everything will probably work fine without the need to install anything! You can also install and use only what you need. **If you don't have bluetooth on your computer, you don't need to install bluez for this library to work for your use case**.
+> It's normal for the package manager to talk about "replacing packages." In this case you can test the program with the "tests" [`lua examples/test_all.lua`] and everything will probably work fine without the need to install anything! You can also install and use only what you need. For example, **if you don't have bluetooth on your computer, you don't need to install bluez for this library to work for your use case**.
 
 If a command is missing, these packages provide the usual dependencies for each distribution family:
 
@@ -159,7 +159,7 @@ services.power-profiles-daemon.enable = true;
 
 ## Installation
 
-There are two ways to obtain Lunar Plasma: clone the repository for development, or download a release archive for a minimal installation.
+There are two ways to obtain Lunar Plasma: clone the repository for development, or download a release archive.
 
 ### From Git
 
