@@ -16,6 +16,8 @@ Beyond desktop customization, Lunar Plasma also lets you interact with other sys
 > [!IMPORTANT]
 > **Early development software.** Lunar Plasma hasn't been battle-tested yet. Expect breaking changes between versions.
 
+![Wallpaper changer example](resources/wallpaper-changer-example.gif)
+
 ## API Reference
 
 See the complete [Lunar Plasma documentation](DOCUMENTATION.md).
