@@ -119,7 +119,7 @@ function system.get_suites(root)
                     title = "Lunar Plasma system test",
                     text = "The notification backend is working",
                     icon = "dialog-information",
-                    timeout = 3000,
+                    timeout = 1000,
                     type = "info",
                 }))
             end,

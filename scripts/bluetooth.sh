@@ -5,7 +5,7 @@ set -euo pipefail
 export LC_ALL=C
 
 action="${1:-}"
-bluetooth_timeout="${LUNAR_PLASMA_BLUETOOTH_TIMEOUT:-5}"
+bluetooth_timeout="${LUNAR_PLASMA_BLUETOOTH_TIMEOUT:-2}"
 
 require_bluetoothctl() {
     if ! command -v bluetoothctl >/dev/null 2>&1; then
