@@ -24,7 +24,7 @@ See the complete [Lunar Plasma documentation](DOCUMENTATION.md).
 
 ## Quick examples
 
-Once Lunar Plasma is installed, you can use it from any script or executable that loads `~/.local/opt/lunar-plasma/lunar-plasma.lua`. A more ergonomic way to load the library is planned for a future version.
+Once Lunar Plasma is installed, you can use it from any script or executable that loads `~/.local/opt/lunar-plasma/lunar-plasma.lua`
 
 #### Set default output volume to 50%
 
