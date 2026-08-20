@@ -16,28 +16,28 @@ local function run()
     local original_wallpapers
     local tests = {
         {
-            name = "list",
+            name = "list_wallpapers",
             run = function()
-                original_wallpapers = assert(plasma_desktop.wallpaper.list())
+                original_wallpapers = assert(plasma_desktop.list_wallpapers())
                 assert(#original_wallpapers > 0)
             end,
         },
         {
-            name = "get",
+            name = "get_wallpaper",
             run = function()
-                local wallpaper = assert(plasma_desktop.wallpaper.get(1))
+                local wallpaper = assert(plasma_desktop.get_wallpaper(1))
                 assert(wallpaper.display == 1 and wallpaper.uri ~= "")
             end,
         },
         {
-            name = "set",
+            name = "set_wallpaper",
             run = function()
                 assert(original_wallpapers)
 
                 local operation_ok, operation_err = pcall(function()
-                    assert(plasma_desktop.wallpaper.set(test_path))
+                    assert(plasma_desktop.set_wallpaper(test_path))
 
-                    local changed = assert(plasma_desktop.wallpaper.list())
+                    local changed = assert(plasma_desktop.list_wallpapers())
                     for _, wallpaper in ipairs(changed) do
                         assert(wallpaper.path:match("/resources/Nexus%.png$"))
                     end
@@ -45,7 +45,7 @@ local function run()
 
                 local restoration_ok = true
                 for _, wallpaper in ipairs(original_wallpapers) do
-                    local restored = plasma_desktop.wallpaper.set(wallpaper.uri, {
+                    local restored = plasma_desktop.set_wallpaper(wallpaper.uri, {
                         display = wallpaper.display,
                         plugin = wallpaper.plugin,
                     })

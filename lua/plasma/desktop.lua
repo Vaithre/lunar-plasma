@@ -155,9 +155,7 @@ end
 
 -- Create a desktop API connected to a backend script.
 function desktop.new(backend)
-    local instance = {
-        wallpaper = {},
-    }
+    local instance = {}
 
     local function execute_backend(action, arguments)
         local command = shell_quote(backend) .. " " .. action
@@ -197,7 +195,7 @@ function desktop.new(backend)
     end
 
     -- Return the wallpaper assigned to every display.
-    function instance.wallpaper.list()
+    function instance.list_wallpapers()
         local output, err = read_backend("list-wallpapers")
         if not output then
             return nil, err
@@ -222,7 +220,7 @@ function desktop.new(backend)
     end
 
     -- Return the wallpaper assigned to one display.
-    function instance.wallpaper.get(display)
+    function instance.get_wallpaper(display)
         local validated_display, err = validate_wallpaper_display(display or 1)
         if not validated_display then
             return nil, err
@@ -238,7 +236,7 @@ function desktop.new(backend)
     end
 
     -- Set an image as wallpaper on one display or every display.
-    function instance.wallpaper.set(path, options)
+    function instance.set_wallpaper(path, options)
         if type(path) ~= "string" or path == "" then
             return nil, "wallpaper path must be a non-empty string"
         end

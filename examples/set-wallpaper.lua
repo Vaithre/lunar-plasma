@@ -14,17 +14,17 @@ local plasma = dofile(example_dir .. "/../lunar-plasma.lua")
 -- Example starts here !
 
 local wallpaper = example_dir .. "/../resources/Nexus.png"
-local originals = assert(plasma.desktop.wallpaper.list())
+local originals = assert(plasma.desktop.list_wallpapers())
 
 local operation_ok, operation_err = pcall(function()
-    assert(plasma.desktop.wallpaper.set(wallpaper))
+    assert(plasma.desktop.set_wallpaper(wallpaper))
     assert(os.execute("sleep 3"))
 end)
 
 local restoration_ok = true
 
 for _, original in ipairs(originals) do
-    local restored = plasma.desktop.wallpaper.set(original.uri, {
+    local restored = plasma.desktop.set_wallpaper(original.uri, {
         display = original.display,
         plugin = original.plugin,
     })

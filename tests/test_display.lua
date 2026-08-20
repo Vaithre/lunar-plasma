@@ -14,6 +14,32 @@ local function run()
     local plasma_desktop = desktop.new(backend)
     local tests = {
         {
+            name = "list_wallpapers",
+            run = function()
+                local wallpapers = assert(plasma_desktop.list_wallpapers())
+                assert(#wallpapers == 2)
+                assert(wallpapers[1].display == 1)
+                assert(wallpapers[1].plugin == "org.kde.image")
+                assert(wallpapers[1].path == "/home/user/Pictures/one.png")
+            end,
+        },
+        {
+            name = "get_wallpaper",
+            run = function()
+                local wallpaper = assert(plasma_desktop.get_wallpaper(2))
+                assert(wallpaper.display == 2)
+                assert(wallpaper.path == "/home/user/Pictures/two.png")
+            end,
+        },
+        {
+            name = "set_wallpaper",
+            run = function()
+                assert(plasma_desktop.set_wallpaper("/home/user/Pictures/one.png"))
+                assert(plasma_desktop.set_wallpaper("/home/user/Pictures/two.png", 2))
+                assert(plasma_desktop.wallpaper == nil)
+            end,
+        },
+        {
             name = "list_displays",
             run = function()
                 local displays = assert(plasma_desktop.list_displays())
