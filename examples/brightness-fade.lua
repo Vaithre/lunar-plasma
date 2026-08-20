@@ -1,8 +1,17 @@
 #!/usr/bin/env lua
 
--- Load the Lunar Plasma API.
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+-- Fade the display brightness from 50% to 100% then restore the original value.
+
+-- This verbose lookup lets the example run locally from either project directory.
+-- Once installed, loading Lunar Plasma only requires:
+-- local home = os.getenv("HOME")
+-- local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+local source = debug.getinfo(1, "S").source:sub(2)
+local example_dir = source:match("^(.*)/[^/]+$") or "."
+local plasma = dofile(example_dir .. "/../lunar-plasma.lua")
+
+-- Example starts here !
 
 local display = 1
 local delay = 0.025
