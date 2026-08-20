@@ -64,17 +64,13 @@ plasma.power.set_profile("performance")
 ```lua
 local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
-local charging, charging_err = plasma.power.is_battery_charging()
 
-assert(charging ~= nil, charging_err)
-
-if charging then
-    local percentage, percentage_err = plasma.power.get_battery_percentage()
-    assert(percentage, percentage_err)
+if plasma.power.is_battery_charging() then
+    local percentage = plasma.power.get_battery_percentage()
 
     if percentage > 50 then
-        assert(plasma.power.set_brightness(1, 70))
-        assert(plasma.power.set_profile("performance"))
+        plasma.power.set_brightness(1, 70)
+        plasma.power.set_profile("performance")
     end
 end
 ```
