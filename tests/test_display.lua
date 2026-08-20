@@ -32,6 +32,16 @@ local function run()
             end,
         },
         {
+            name = "get_wallpaper",
+            run = function()
+                local wallpaper = assert(plasma_desktop.get_wallpaper(3))
+                assert(wallpaper.display == 3)
+                assert(wallpaper.plugin == "org.kde.image")
+                assert(wallpaper.uri == nil)
+                assert(wallpaper.path == nil)
+            end,
+        },
+        {
             name = "set_wallpaper",
             run = function()
                 assert(plasma_desktop.set_wallpaper("/home/user/Pictures/one.png"))

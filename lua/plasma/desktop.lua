@@ -10,15 +10,19 @@ end
 local function parse_wallpaper(line)
     local display, plugin, uri = line:match("^(%d+)\t([^\t]*)\t(.*)$")
 
-    if not display or plugin == "" or uri == "" then
+    if not display or plugin == "" then
         return nil, "desktop backend returned an invalid wallpaper"
+    end
+
+    if uri == "" then
+        uri = nil
     end
 
     return {
         display = tonumber(display),
         plugin = plugin,
         uri = uri,
-        path = uri:gsub("^file://", ""),
+        path = uri and uri:gsub("^file://", "") or nil,
     }
 end
 
@@ -241,7 +245,7 @@ function desktop.new(backend)
             return nil, err
         end
 
-        return parse_wallpaper(output:match("^%s*(.-)%s*$"))
+        return parse_wallpaper(output:gsub("[\r\n]+$", ""))
     end
 
     -- Set an image as wallpaper on one display or every display.

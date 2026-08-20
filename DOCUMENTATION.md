@@ -892,8 +892,8 @@ Functions that return wallpaper information use the following table:
 |---|---|---|
 | `display` | integer | One-based display number. |
 | `plugin` | string | Plasma wallpaper plugin currently in use. |
-| `uri` | string | Complete wallpaper URI reported by Plasma. |
-| `path` | string | Wallpaper URI with the `file://` prefix removed. |
+| `uri` | string or nil | Complete wallpaper URI reported by Plasma, or `nil` when Plasma uses its default without an explicit image. |
+| `path` | string or nil | Wallpaper URI with the `file://` prefix removed, or `nil` when no explicit image is configured. |
 
 #### Quick example
 
@@ -910,7 +910,7 @@ print(wallpaper.display, wallpaper.plugin, wallpaper.path)
 
 Reads the current wallpaper configuration for every display managed by Plasma.
 
-The returned array contains one wallpaper table per display, ordered by display number. Each entry includes the one-based display number, wallpaper plugin, complete URI, and local path when the wallpaper uses a `file://` URI.
+The returned array contains one wallpaper table per display, ordered by display number. Each entry includes the one-based display number, wallpaper plugin, complete URI, and local path when the wallpaper uses a `file://` URI. The URI and path are `nil` when Plasma uses its default wallpaper without storing an explicit image.
 
 ```lua
 {

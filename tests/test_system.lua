@@ -386,6 +386,15 @@ function system.get_suites(root)
                     assert(plasma.desktop.list_wallpapers())
 
                 for _, wallpaper in ipairs(system_wallpapers) do
+                    if not wallpaper.uri then
+                        return skip(
+                            "the original wallpaper could not be restored reliably; " ..
+                            "wallpaper changes may still work"
+                        )
+                    end
+                end
+
+                for _, wallpaper in ipairs(system_wallpapers) do
                     assert(plasma.desktop.set_wallpaper(wallpaper.uri, {
                         display = wallpaper.display,
                         plugin = wallpaper.plugin,

@@ -10,6 +10,7 @@ case "${1:-}" in
         case "${2:-}" in
             1) printf '1\torg.kde.image\tfile:///home/user/Pictures/one.png\n' ;;
             2) printf '2\torg.kde.image\tfile:///home/user/Pictures/two.png\n' ;;
+            3) printf '3\torg.kde.image\t\n' ;;
             *) exit 1 ;;
         esac
         ;;

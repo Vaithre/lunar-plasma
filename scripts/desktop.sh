@@ -177,7 +177,7 @@ wallpaper_state() {
     plugin="$(sed -n -E 's/.*"wallpaperPlugin" = \[Variant\(QString\): "([^"]*)"\].*/\1/p' <<<"$output")"
     uri="$(sed -n -E 's/.*"Image" = \[Variant\(QString\): "([^"]*)"\].*/\1/p' <<<"$output")"
 
-    if [[ -z "$plugin" || -z "$uri" ]]; then
+    if [[ -z "$plugin" ]]; then
         printf 'could not read wallpaper state for display %d\n' "$((screen + 1))" >&2
         return 1
     fi
