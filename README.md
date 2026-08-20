@@ -76,13 +76,13 @@ if plasma.power.is_battery_charging() then
 end
 ```
 
-#### Set an image as wallpaper on every display
+#### Set an image as wallpaper on a specific display
 
 ```lua
 local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-plasma.desktop.set_wallpaper("/path/to/wallpaper.png")
+plasma.desktop.set_wallpaper("/path/to/wallpaper.png", { display = 1 })
 ```
 
 You can run similar examples from the project root or from inside the `examples` directory without installing Lunar Plasma first.
