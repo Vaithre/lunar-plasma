@@ -215,6 +215,14 @@ chmod +x uninstall.sh
 ./uninstall.sh
 ```
 
+## Tested distributions
+
+| Distribution | Status |
+|---|---|
+| Fedora 44 | Successfully tested |
+| Arch Linux | Successfully tested |
+| Kubuntu | Successfully tested |
+
 ## Known limitations
 
 - The public API may change before the first stable release.
