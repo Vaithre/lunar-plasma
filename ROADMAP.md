@@ -12,24 +12,35 @@ Until then, I’ll do my best to keep the APIs stable, but they may still change
 
 ## Roadmap
 
+### In development / Planned
+
+| Status | Area | Goal |
+|:---:|---|---|
+| <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | API | Implement user modules |
+| <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | API | Expand all APIs |
+| <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | Interpreter | Implement an interpreter for running one-shot commands |
+| <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | Documentation | Improve the documentation |
+| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Streamline API access |
+| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Desktop effects control API |
+| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Window control API |
+| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Active programs/processes/services detection API |
+| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Documentation | Document integration with other languages |
+| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Documentation | Convert DOCUMENTATION.md into a GitHub wiki |
+| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Automation | Implement an automation framework for events and schedules |
+
+### Completed
+
 | Status | Area | Goal | Completion date |
 |:---:|---|---|:---:|
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the sound API | 2026-08-19 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Testing | Implement a test suite | 2026-08-19 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the notifications API | 2026-08-19 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the KDE desktop API | 2026-08-19 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the power management API | 2026-08-19 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the keyboard API | 2026-08-19 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the project | 2026-08-19 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the Wi-Fi API | 2026-08-20 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the Bluetooth API | 2026-08-20 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement display inspection | 2026-08-20 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement battery and power-source inspection | 2026-08-20 |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Testing | Implement a test suite | 2026-08-19 |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the project | 2026-08-19 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the expanded APIs | 2026-08-20 |
-| <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | Automation | Implement an automation framework for events and schedules | N/A |
-| <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | API | Implement user modules | N/A |
-| <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | Interpreter | Implement an interpreter for running one-shot commands | N/A |
-| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Expand all APIs | N/A |
-| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Streamline API access | N/A |
-| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Documentation | Document integration with other languages | N/A |
-| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Documentation | Improve the documentation | N/A |
