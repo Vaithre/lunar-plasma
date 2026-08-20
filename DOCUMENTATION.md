@@ -25,13 +25,7 @@ This documentation is preliminary. Although its content is accurate, its present
 > [!CAUTION]
 > Only run scripts from trusted sources. Lunar Plasma does not provide security restrictions for scripts from untrusted sources.
 
-Load the public entry point with `dofile`:
-
-```lua
-local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
-```
-
-Use the path to `lunar-plasma.lua` that is correct for your script. The library resolves its internal Lua modules and backend scripts automatically. Lua does not expand `~`, so a script using the default installation should load it through `HOME`:
+Load the public entry point with `dofile`, using the path to `lunar-plasma.lua` that is correct for your script. The library resolves its internal Lua modules and backend scripts automatically. Lua does not expand `~`, so a script using the default installation should load it through `HOME`:
 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
