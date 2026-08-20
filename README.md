@@ -77,7 +77,10 @@ end
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-plasma.desktop.set_wallpaper("/path/to/wallpaper.png", plasma.desktop.get_display("DVI-1").index)
+local wallpaper = "/path/to/wallpaper.png"
+local display = plasma.desktop.get_display("DVI-1").index
+
+plasma.desktop.set_wallpaper(wallpaper, display)
 ```
 
 You can run similar examples from the project root or from inside the `examples` directory without installing Lunar Plasma first.
