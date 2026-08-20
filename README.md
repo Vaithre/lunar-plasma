@@ -78,7 +78,7 @@ end
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 local wallpaper = "/path/to/wallpaper.png"
-local display = plasma.desktop.get_display("DVI-1").index
+local display = "DVI-D-1"
 
 plasma.desktop.set_wallpaper(wallpaper, display)
 ```

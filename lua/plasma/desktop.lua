@@ -149,9 +149,17 @@ local function validate_wallpaper_display(display)
         return nil
     end
 
-    display = tonumber(display)
-    if not display or display % 1 ~= 0 or display < 1 then
-        return nil, "display must be a positive integer"
+    local number = tonumber(display)
+    if number then
+        if number % 1 ~= 0 or number < 1 then
+            return nil, "display must be a positive integer or connector name"
+        end
+
+        return number
+    end
+
+    if type(display) ~= "string" or display == "" then
+        return nil, "display must be a positive integer or connector name"
     end
 
     return display
@@ -254,11 +262,12 @@ function desktop.new(backend)
             return nil, "wallpaper path must be a non-empty string"
         end
 
-        if options ~= nil and type(options) ~= "table" and type(options) ~= "number" then
-            return nil, "wallpaper options must be a table or display number"
+        if options ~= nil and type(options) ~= "table" and
+            type(options) ~= "number" and type(options) ~= "string" then
+            return nil, "wallpaper options must be a table, display number, or connector name"
         end
 
-        if type(options) == "number" then
+        if type(options) == "number" or type(options) == "string" then
             options = { display = options }
         else
             options = options or {}
@@ -267,6 +276,21 @@ function desktop.new(backend)
         local display, err = validate_wallpaper_display(options.display)
         if options.display ~= nil and not display then
             return nil, err
+        end
+
+        if type(display) == "string" then
+            local output
+            output, err = read_backend("screen-for-connector", { display })
+            if not output then
+                return nil, err
+            end
+
+            local plasma_screen = tonumber(output:match("^%s*(%-?%d+)%s*$"))
+            if not plasma_screen or plasma_screen % 1 ~= 0 or plasma_screen < 0 then
+                return nil, "desktop backend returned an invalid Plasma screen"
+            end
+
+            display = plasma_screen + 1
         end
 
         local plugin = options.plugin or "org.kde.image"

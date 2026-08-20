@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.2] - Unreleased
+
+### Fixed
+
+- Wallpaper changes targeting a connector now use Plasma's own screen mapping instead of KScreen enumeration order, preventing the wallpaper from changing on the wrong display in multi-monitor setups.
+
 ## [0.2.1] - 2026-08-20
 
 ### Added

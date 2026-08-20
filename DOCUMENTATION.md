@@ -925,24 +925,24 @@ print(wallpaper.path)
 
 ### `plasma.desktop.set_wallpaper(path, options)`
 
-Sets an image as wallpaper on every display by default. A display number or options table can limit the change to one display.
+Sets an image as wallpaper on every display by default. A connector name, display number, or options table can limit the change to one display.
 
 | Parameter | Type | Required | Description |
 |---|---|:---:|---|
 | `path` | string | Yes | Local image path or `file://` URI. |
-| `options` | table or integer | No | Wallpaper options or a display number shorthand. |
+| `options` | table, string, or integer | No | Wallpaper options, a connector name, or a display number shorthand. |
 
 Available options:
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `display` | integer | All displays | One-based display number. |
+| `display` | string or integer | All displays | Connector name or one-based Plasma screen number. |
 | `plugin` | string | `"org.kde.image"` | Plasma wallpaper plugin. This is mainly useful when restoring a previously read wallpaper. |
 
-Passing a display number directly is equivalent to passing `{ display = number }`:
+Passing a connector name directly targets that display without relying on display enumeration order:
 
 ```lua
-plasma.desktop.set_wallpaper("/path/to/wallpaper.png", 2)
+plasma.desktop.set_wallpaper("/path/to/wallpaper.png", "DVI-D-1")
 ```
 
 **Returns:** `true` on success.
@@ -951,9 +951,9 @@ plasma.desktop.set_wallpaper("/path/to/wallpaper.png", 2)
 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
-local first_display = 1
+local display = "DVI-D-1"
 
-if plasma.desktop.set_wallpaper("/home/user/Pictures/wallpaper.png", first_display) then
+if plasma.desktop.set_wallpaper("/home/user/Pictures/wallpaper.png", display) then
     print("Wallpaper changed")
 end
 ```

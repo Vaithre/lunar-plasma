@@ -46,6 +46,10 @@ local function run()
             run = function()
                 assert(plasma_desktop.set_wallpaper("/home/user/Pictures/one.png"))
                 assert(plasma_desktop.set_wallpaper("/home/user/Pictures/two.png", 2))
+                assert(plasma_desktop.set_wallpaper(
+                    "/home/user/Pictures/connector.png",
+                    "HDMI-A-1"
+                ))
                 assert(plasma_desktop.wallpaper == nil)
             end,
         },

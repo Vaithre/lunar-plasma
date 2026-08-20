@@ -17,6 +17,54 @@ find_qdbus() {
     return 1
 }
 
+javascript_string() {
+    local value="$1"
+
+    value="${value//\\/\\\\}"
+    value="${value//\"/\\\"}"
+    value="${value//$'\n'/\\n}"
+    value="${value//$'\r'/\\r}"
+    printf '"%s"' "$value"
+}
+
+screen_for_connector() {
+    local connector="$1"
+    local qdbus
+    local quoted_connector
+    local script
+    local screen
+
+    if [[ -z "$connector" ]]; then
+        printf 'display connector must not be empty\n' >&2
+        return 1
+    fi
+
+    if ! qdbus="$(find_qdbus)"; then
+        printf 'qdbus is required to map display connectors to Plasma screens\n' >&2
+        return 127
+    fi
+
+    quoted_connector="$(javascript_string "$connector")"
+    script="print(screenForConnector($quoted_connector));"
+    screen="$("$qdbus" \
+        org.kde.plasmashell \
+        /PlasmaShell \
+        org.kde.PlasmaShell.evaluateScript \
+        "$script")"
+
+    if [[ ! "$screen" =~ ^-?[0-9]+$ ]]; then
+        printf 'Plasma returned an invalid screen for connector %s\n' "$connector" >&2
+        return 1
+    fi
+
+    if (( screen < 0 )); then
+        printf 'display not found: %s\n' "$connector" >&2
+        return 1
+    fi
+
+    printf '%d\n' "$screen"
+}
+
 require_kscreen_doctor() {
     if ! command -v kscreen-doctor >/dev/null 2>&1; then
         printf 'kscreen-doctor is required to inspect Plasma displays\n' >&2
@@ -336,6 +384,9 @@ set_wallpaper() {
 }
 
 case "$action" in
+    screen-for-connector)
+        screen_for_connector "${2:-}"
+        ;;
     list-displays)
         list_displays
         ;;
