@@ -19,6 +19,7 @@ local function make_suite(tests)
             local passed = 0
             local skipped_count = 0
             local failed = 0
+            local failures = {}
 
             for index, test in ipairs(tests) do
                 local ok, result, detail = pcall(test.run)
@@ -37,6 +38,12 @@ local function make_suite(tests)
                     print(string.format("[%d/%d] %s SUCCESS", index, #tests, test.name))
                 else
                     failed = failed + 1
+                    failures[#failures + 1] = {
+                        index = index,
+                        total = #tests,
+                        name = test.name,
+                        error = format_error(result),
+                    }
                     print(string.format(
                         "[%d/%d] %s FAILED: %s",
                         index,
@@ -53,7 +60,7 @@ local function make_suite(tests)
                 skipped_count,
                 failed
             ))
-            return failed == 0
+            return failed == 0, failures
         end,
     }
 end

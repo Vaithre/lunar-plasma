@@ -106,19 +106,26 @@ local function run()
     }
 
     local passed = 0
+    local failures = {}
 
     for index, test in ipairs(tests) do
-        local ok = pcall(test.run)
+        local ok, err = pcall(test.run)
         if ok then
             passed = passed + 1
             print(string.format("[%d/%d] %s SUCCESS", index, #tests, test.name))
         else
+            failures[#failures + 1] = {
+                index = index,
+                total = #tests,
+                name = test.name,
+                error = tostring(err),
+            }
             print(string.format("[%d/%d] %s FAILED", index, #tests, test.name))
         end
     end
 
     print(string.format("Summary: %d/%d successful", passed, #tests))
-    return passed == #tests
+    return #failures == 0, failures
 end
 
 if ... == nil then
