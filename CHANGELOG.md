@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.2.0] - 2026-08-20
+
+### Added
+
+- Wi-Fi state inspection, active network reporting, and radio controls through NetworkManager.
+- Bluetooth adapter inspection and controls, plus known and connected device reporting through BlueZ.
+- Battery, charging, power-source, warning-level, and remaining-time inspection through UPower.
+- Reading of the active power profile.
+- Display listing, lookup, primary display detection, and available mode inspection through KScreen.
+- Unit test suites and deterministic fixtures for Wi-Fi, Bluetooth, battery, and display functionality.
+- Executable examples for connection state, battery and power status, and connected displays.
+
+### Changed
+
+- Examples now load Lunar Plasma from the project directory so they can run from the project root or from inside `examples` without installation.
+- Project documentation, dependencies, feature summaries, and roadmap now cover the expanded APIs.
+
 ## [0.1.0] - 2026-08-19
 
 ### Added
