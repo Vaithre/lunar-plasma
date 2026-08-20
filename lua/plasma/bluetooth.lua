@@ -101,7 +101,7 @@ function bluetooth.new(backend)
     end
 
     local function read_backend(action, arguments)
-        local process = io.popen(build_command(action, arguments))
+        local process = io.popen(build_command(action, arguments) .. " 2>&1")
 
         if not process then
             return nil, "could not start the bluetooth backend"
@@ -111,7 +111,8 @@ function bluetooth.new(backend)
         local ok, _, code = process:close()
 
         if not ok then
-            return nil, "bluetooth backend failed with exit code " .. tostring(code)
+            local detail = output ~= "" and ": " .. output or ""
+            return nil, "bluetooth backend failed with exit code " .. tostring(code) .. detail
         end
 
         return output
