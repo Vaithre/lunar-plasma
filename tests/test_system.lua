@@ -260,18 +260,47 @@ function system.get_suites(root)
         },
     }
 
+    local bluetooth_checked = false
+    local bluetooth_status
+    local bluetooth_status_error
+
+    local function get_bluetooth_adapter()
+        if not bluetooth_checked then
+            bluetooth_status, bluetooth_status_error = plasma.bluetooth.get_status()
+            bluetooth_checked = true
+        end
+
+        if bluetooth_status then
+            return bluetooth_status
+        end
+
+        if bluetooth_status_error and
+            bluetooth_status_error:find("no Bluetooth adapter is available", 1, true) then
+            return nil, "no Bluetooth adapter is available"
+        end
+
+        error(bluetooth_status_error or "could not inspect the Bluetooth adapter", 0)
+    end
+
     local bluetooth_tests = {
         {
             name = "read adapter state",
             run = function()
-                local status = assert(plasma.bluetooth.get_status())
+                local status, reason = get_bluetooth_adapter()
+                if not status then
+                    return skip(reason)
+                end
+
                 assert(plasma.bluetooth.is_enabled() == status.enabled)
             end,
         },
         {
             name = "current radio state",
             run = function()
-                local original = assert(plasma.bluetooth.get_status())
+                local original, reason = get_bluetooth_adapter()
+                if not original then
+                    return skip(reason)
+                end
 
                 if original.enabled then
                     assert(plasma.bluetooth.enable())
@@ -285,12 +314,22 @@ function system.get_suites(root)
         {
             name = "disruptive radio controls",
             run = function()
+                local status, reason = get_bluetooth_adapter()
+                if not status then
+                    return skip(reason)
+                end
+
                 return skip("disable and toggle may disconnect Bluetooth devices")
             end,
         },
         {
             name = "devices",
             run = function()
+                local status, reason = get_bluetooth_adapter()
+                if not status then
+                    return skip(reason)
+                end
+
                 local devices = assert(plasma.bluetooth.list_devices())
                 local connected = assert(plasma.bluetooth.list_connected_devices())
                 assert(type(connected) == "table")

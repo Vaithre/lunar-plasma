@@ -5,11 +5,27 @@ set -euo pipefail
 export LC_ALL=C
 
 action="${1:-}"
+bluetooth_timeout="${LUNAR_PLASMA_BLUETOOTH_TIMEOUT:-5}"
 
 require_bluetoothctl() {
     if ! command -v bluetoothctl >/dev/null 2>&1; then
         printf 'bluetoothctl is required to control the Bluetooth backend\n' >&2
         return 127
+    fi
+}
+
+run_bluetoothctl() {
+    bluetoothctl --timeout "$bluetooth_timeout" "$@"
+}
+
+require_adapter() {
+    local controllers
+
+    controllers="$(run_bluetoothctl list)"
+
+    if ! awk '$1 == "Controller" { found = 1 } END { exit !found }' <<<"$controllers"; then
+        printf 'no Bluetooth adapter is available\n' >&2
+        return 1
     fi
 }
 
@@ -53,7 +69,7 @@ get_status() {
     local discoverable
     local discovering
 
-    info="$(bluetoothctl show)"
+    info="$(run_bluetoothctl show)"
     address="$(awk '$1 == "Controller" { print $2; exit }' <<<"$info")"
 
     if [[ -z "$address" ]]; then
@@ -77,7 +93,7 @@ get_status() {
 }
 
 known_device_addresses() {
-    bluetoothctl devices |
+    run_bluetoothctl devices |
         awk '$1 == "Device" && $2 ~ /^([[:xdigit:]]{2}:){5}[[:xdigit:]]{2}$/ { print $2 }'
 }
 
@@ -96,7 +112,7 @@ get_device() {
         return 2
     fi
 
-    info="$(bluetoothctl info "$requested_address")"
+    info="$(run_bluetoothctl info "$requested_address")"
     address="$(awk '$1 == "Device" { print $2; exit }' <<<"$info")"
 
     if [[ -z "$address" ]]; then
@@ -136,14 +152,14 @@ list_connected_devices() {
 set_enabled() {
     local state="$1"
 
-    bluetoothctl power "$state" >/dev/null
+    run_bluetoothctl power "$state" >/dev/null
 }
 
 toggle_bluetooth() {
     local info
     local enabled
 
-    info="$(bluetoothctl show)"
+    info="$(run_bluetoothctl show)"
     enabled="$(boolean_value "$(property_value "$info" Powered)")"
 
     if [[ "$enabled" == "true" ]]; then
@@ -154,6 +170,13 @@ toggle_bluetooth() {
 }
 
 require_bluetoothctl
+
+if [[ ! "$bluetooth_timeout" =~ ^[1-9][0-9]*$ ]]; then
+    printf 'LUNAR_PLASMA_BLUETOOTH_TIMEOUT must be a positive integer\n' >&2
+    exit 2
+fi
+
+require_adapter
 
 case "$action" in
     get-status)
