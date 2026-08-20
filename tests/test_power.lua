@@ -9,9 +9,11 @@ package.path = root .. "/lua/?.lua;" .. root .. "/lua/?/init.lua;" .. package.pa
 
 local power = require("plasma.powermanagement")
 local backend = root .. "/tests/fixtures/power-backend.sh"
+local no_battery_backend = root .. "/tests/fixtures/power-no-battery-backend.sh"
 
 local function run()
     local plasma_power = power.new(backend)
+    local desktop_power = power.new(no_battery_backend)
     local tests = {
         {
             name = "set_profile",
@@ -36,6 +38,58 @@ local function run()
             run = function()
                 local ok, err = plasma_power.set_profile("unknown")
                 assert(not ok and err)
+            end,
+        },
+        {
+            name = "get_profile",
+            run = function()
+                assert(plasma_power.get_profile() == "normal")
+            end,
+        },
+        {
+            name = "get_battery_status",
+            run = function()
+                local status = assert(plasma_power.get_battery_status())
+                assert(status.present == true)
+                assert(status.percentage == 73.4)
+                assert(status.state == "discharging")
+                assert(status.source == "battery")
+                assert(status.time_remaining == 7200)
+                assert(status.warning_level == "low")
+            end,
+        },
+        {
+            name = "battery_values",
+            run = function()
+                assert(plasma_power.is_battery_present() == true)
+                assert(plasma_power.get_battery_percentage() == 73.4)
+                assert(plasma_power.get_battery_state() == "discharging")
+                assert(plasma_power.is_battery_charging() == false)
+                assert(plasma_power.get_battery_time_remaining() == 7200)
+                assert(plasma_power.get_battery_warning_level() == "low")
+            end,
+        },
+        {
+            name = "power_source",
+            run = function()
+                assert(plasma_power.get_power_source() == "battery")
+                assert(plasma_power.is_on_battery() == true)
+                assert(plasma_power.is_ac_connected() == false)
+            end,
+        },
+        {
+            name = "no_battery",
+            run = function()
+                local status = assert(desktop_power.get_battery_status())
+                assert(status.present == false)
+                assert(status.percentage == nil)
+                assert(status.source == "ac")
+                assert(desktop_power.is_battery_present() == false)
+                assert(desktop_power.is_battery_charging() == false)
+                assert(desktop_power.is_ac_connected() == true)
+
+                local percentage, err = desktop_power.get_battery_percentage()
+                assert(not percentage and err == "no system battery is available")
             end,
         },
         {

@@ -17,6 +17,140 @@ find_qdbus() {
     return 1
 }
 
+get_profile() {
+    local profile
+    local qdbus
+
+    if command -v busctl >/dev/null 2>&1; then
+        profile="$(busctl --system get-property \
+            net.hadess.PowerProfiles \
+            /net/hadess/PowerProfiles \
+            net.hadess.PowerProfiles \
+            ActiveProfile 2>/dev/null | awk -F '"' 'NF >= 2 { print $2 }')"
+
+        if [[ -n "$profile" ]]; then
+            printf '%s\n' "$profile"
+            return
+        fi
+    fi
+
+    if command -v powerprofilesctl >/dev/null 2>&1; then
+        if profile="$(powerprofilesctl get 2>/dev/null)" && [[ -n "$profile" ]]; then
+            printf '%s\n' "$profile"
+            return
+        fi
+    fi
+
+    if qdbus="$(find_qdbus)"; then
+        profile="$("$qdbus" \
+            org.kde.Solid.PowerManagement \
+            /org/kde/Solid/PowerManagement/Actions/PowerProfile \
+            org.kde.Solid.PowerManagement.Actions.PowerProfile.currentProfile)"
+
+        if [[ -n "$profile" ]]; then
+            printf '%s\n' "$profile"
+            return
+        fi
+    fi
+
+    printf 'no supported power profile backend is available\n' >&2
+    return 127
+}
+
+upower_state() {
+    case "$1" in
+        0) printf 'unknown\n' ;;
+        1) printf 'charging\n' ;;
+        2) printf 'discharging\n' ;;
+        3) printf 'empty\n' ;;
+        4) printf 'fully-charged\n' ;;
+        5) printf 'pending-charge\n' ;;
+        6) printf 'pending-discharge\n' ;;
+        *) printf 'unknown\n' ;;
+    esac
+}
+
+upower_warning_level() {
+    case "$1" in
+        0) printf 'unknown\n' ;;
+        1) printf 'none\n' ;;
+        2) printf 'discharging\n' ;;
+        3) printf 'low\n' ;;
+        4) printf 'critical\n' ;;
+        5) printf 'action\n' ;;
+        *) printf 'unknown\n' ;;
+    esac
+}
+
+busctl_property() {
+    local path="$1"
+    local interface="$2"
+    local property="$3"
+
+    busctl --system get-property \
+        org.freedesktop.UPower \
+        "$path" \
+        "$interface" \
+        "$property" | awk '{ print $2 }'
+}
+
+battery_status_busctl() {
+    local device_path="/org/freedesktop/UPower/devices/DisplayDevice"
+    local device_interface="org.freedesktop.UPower.Device"
+    local upower_path="/org/freedesktop/UPower"
+    local upower_interface="org.freedesktop.UPower"
+    local present
+    local percentage=""
+    local state_code
+    local state
+    local on_battery
+    local source
+    local time_remaining=""
+    local warning_code
+    local warning_level
+
+    present="$(busctl_property "$device_path" "$device_interface" IsPresent)"
+    on_battery="$(busctl_property "$upower_path" "$upower_interface" OnBattery)"
+    state_code="$(busctl_property "$device_path" "$device_interface" State)"
+    warning_code="$(busctl_property "$device_path" "$device_interface" WarningLevel)"
+    state="$(upower_state "$state_code")"
+    warning_level="$(upower_warning_level "$warning_code")"
+
+    if [[ "$on_battery" == "true" ]]; then
+        source="battery"
+    else
+        source="ac"
+    fi
+
+    if [[ "$present" == "true" ]]; then
+        percentage="$(busctl_property "$device_path" "$device_interface" Percentage)"
+
+        if [[ "$state" == "charging" || "$state" == "pending-charge" ]]; then
+            time_remaining="$(busctl_property "$device_path" "$device_interface" TimeToFull)"
+        elif [[ "$state" == "discharging" || "$state" == "pending-discharge" ]]; then
+            time_remaining="$(busctl_property "$device_path" "$device_interface" TimeToEmpty)"
+        fi
+
+        [[ "$time_remaining" != "0" ]] || time_remaining=""
+    fi
+
+    printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+        "$present" "$percentage" "$state" "$source" "$time_remaining" "$warning_level"
+}
+
+get_battery_status() {
+    local status
+
+    if command -v busctl >/dev/null 2>&1 &&
+        status="$(battery_status_busctl 2>/dev/null)"; then
+        printf '%s\n' "$status"
+        return
+    fi
+
+    printf 'UPower is required to read the system battery state\n' >&2
+    return 127
+}
+
 set_profile() {
     local profile="$1"
     local available_profiles
@@ -260,6 +394,12 @@ get_brightness() {
 case "$action" in
     set-profile)
         set_profile "${2:-}"
+        ;;
+    get-profile)
+        get_profile
+        ;;
+    get-battery-status)
+        get_battery_status
         ;;
     suspend)
         suspend_system
