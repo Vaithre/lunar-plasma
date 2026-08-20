@@ -49,17 +49,24 @@ list_displays() {
             mode_refresh = ""
         }
 
-        function read_modes(text, count, tokens, token_index, parts, flags) {
+        function read_modes(text, count, tokens, token_index, token, flags, values, dimensions) {
             count = split(text, tokens, /[[:space:]]+/)
 
             for (token_index = 1; token_index <= count; token_index += 1) {
-                if (match(tokens[token_index], /^([0-9]+):([0-9]+)x([0-9]+)@([0-9.]+)([*!]*)$/, parts)) {
-                    flags = parts[5]
+                token = tokens[token_index]
+
+                if (token ~ /^[0-9]+:[0-9]+x[0-9]+@[0-9.]+[*!]*$/) {
+                    flags = token
+                    sub(/^[^*!]*/, "", flags)
+                    sub(/[*!]*$/, "", token)
+                    split(token, values, /[:@]/)
+                    split(values[2], dimensions, /x/)
+
                     if (flags ~ /\*/) {
-                        mode_id = parts[1]
-                        mode_width = parts[2]
-                        mode_height = parts[3]
-                        mode_refresh = parts[4]
+                        mode_id = values[1]
+                        mode_width = dimensions[1]
+                        mode_height = dimensions[2]
+                        mode_refresh = values[3]
                     }
                 }
             }
@@ -95,19 +102,25 @@ list_displays() {
                 enabled = "true"
             } else if (line == "connected") {
                 connected = "true"
-            } else if (match(line, /^priority ([0-9]+)$/, parts)) {
-                priority = parts[1]
-            } else if (match(line, /^Modes:[[:space:]]*(.*)$/, parts)) {
-                read_modes(parts[1])
-            } else if (match(line, /^Geometry:[[:space:]]*(-?[0-9]+),(-?[0-9]+) ([0-9]+)x([0-9]+)$/, parts)) {
-                x = parts[1]
-                y = parts[2]
-                width = parts[3]
-                height = parts[4]
-            } else if (match(line, /^Scale:[[:space:]]*([0-9.]+)$/, parts)) {
-                scale = parts[1]
-            } else if (match(line, /^Rotation:[[:space:]]*([0-9]+)$/, parts)) {
-                rotation = parts[1]
+            } else if (line ~ /^priority [0-9]+$/) {
+                sub(/^priority /, "", line)
+                priority = line
+            } else if (line ~ /^Modes:[[:space:]]*/) {
+                sub(/^Modes:[[:space:]]*/, "", line)
+                read_modes(line)
+            } else if (line ~ /^Geometry:[[:space:]]*-?[0-9]+,-?[0-9]+ [0-9]+x[0-9]+$/) {
+                sub(/^Geometry:[[:space:]]*/, "", line)
+                split(line, geometry, /[, x]/)
+                x = geometry[1]
+                y = geometry[2]
+                width = geometry[3]
+                height = geometry[4]
+            } else if (line ~ /^Scale:[[:space:]]*[0-9.]+$/) {
+                sub(/^Scale:[[:space:]]*/, "", line)
+                scale = line
+            } else if (line ~ /^Rotation:[[:space:]]*[0-9]+$/) {
+                sub(/^Rotation:[[:space:]]*/, "", line)
+                rotation = line
             }
         }
 
@@ -132,15 +145,23 @@ list_display_modes() {
             line = $0
             sub(/^[[:space:]]+/, "", line)
 
-            if (match(line, /^Modes:[[:space:]]*(.*)$/, values)) {
-                count = split(values[1], tokens, /[[:space:]]+/)
+            if (line ~ /^Modes:[[:space:]]*/) {
+                sub(/^Modes:[[:space:]]*/, "", line)
+                count = split(line, tokens, /[[:space:]]+/)
 
                 for (token_index = 1; token_index <= count; token_index += 1) {
-                    if (match(tokens[token_index], /^([0-9]+):([0-9]+)x([0-9]+)@([0-9.]+)([*!]*)$/, parts)) {
-                        preferred = parts[5] ~ /!/ ? "true" : "false"
-                        current = parts[5] ~ /\*/ ? "true" : "false"
+                    token = tokens[token_index]
+
+                    if (token ~ /^[0-9]+:[0-9]+x[0-9]+@[0-9.]+[*!]*$/) {
+                        flags = token
+                        sub(/^[^*!]*/, "", flags)
+                        sub(/[*!]*$/, "", token)
+                        split(token, values, /[:@]/)
+                        split(values[2], dimensions, /x/)
+                        preferred = flags ~ /!/ ? "true" : "false"
+                        current = flags ~ /\*/ ? "true" : "false"
                         printf "%s\t%s\t%s\t%s\t%s\t%s\n", \
-                            parts[1], parts[2], parts[3], parts[4], preferred, current
+                            values[1], dimensions[1], dimensions[2], values[3], preferred, current
                     }
                 }
 

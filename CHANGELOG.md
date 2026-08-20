@@ -17,6 +17,8 @@
 
 - Wallpaper inspection now accepts Plasma's default state when no explicit image URI is configured.
 - Examples now show concise warnings instead of stack traces when a feature is unavailable.
+- Display inspection now works with the default `mawk` implementation used by Debian-based distributions.
+- Bluetooth system tests now detect virtual machines without an adapter before querying BlueZ.
 
 ## [0.2.0] - 2026-08-20
 

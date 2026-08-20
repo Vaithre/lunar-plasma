@@ -21,7 +21,16 @@ run_bluetoothctl() {
 require_adapter() {
     local controllers
 
-    controllers="$(run_bluetoothctl list)"
+    if [[ ! -d /sys/class/bluetooth ]] ||
+        ! compgen -G '/sys/class/bluetooth/hci*' >/dev/null; then
+        printf 'no Bluetooth adapter is available\n' >&2
+        return 1
+    fi
+
+    if ! controllers="$(run_bluetoothctl list)"; then
+        printf 'could not query available Bluetooth adapters\n' >&2
+        return 1
+    fi
 
     if ! awk '$1 == "Controller" { found = 1 } END { exit !found }' <<<"$controllers"; then
         printf 'no Bluetooth adapter is available\n' >&2
