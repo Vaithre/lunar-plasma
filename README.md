@@ -29,8 +29,7 @@ Once Lunar Plasma is installed, you can use it from any script or executable tha
 #### Set default output volume to 50%
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.sound.set(50)
 ```
@@ -38,8 +37,7 @@ plasma.sound.set(50)
 #### Send a desktop notification
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.notifications.send({
     title = "Lunar Plasma",
@@ -54,8 +52,7 @@ plasma.notifications.send({
 #### Set the performance power profile
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.power.set_profile("performance")
 ```
@@ -63,8 +60,7 @@ plasma.power.set_profile("performance")
 #### Set brightness to 70% while charging above 50%
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.is_battery_charging() then
     local percentage = plasma.power.get_battery_percentage()
@@ -79,8 +75,7 @@ end
 #### Set an image as wallpaper on a specific display
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 local display = assert(plasma.desktop.get_display("DVI-1"))
 plasma.desktop.set_wallpaper("/path/to/wallpaper.png", {

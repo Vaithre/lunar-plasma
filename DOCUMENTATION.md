@@ -28,15 +28,13 @@ This documentation is preliminary. Although its content is accurate, its present
 Load the public entry point with `dofile`:
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 ```
 
 Use the path to `lunar-plasma.lua` that is correct for your script. The library resolves its internal Lua modules and backend scripts automatically. Lua does not expand `~`, so a script using the default installation should load it through `HOME`:
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 ```
 
 Scripts in the project `examples` directory locate `lunar-plasma.lua` in their parent directory, so they can be executed from the project root or from inside `examples` without installing Lunar Plasma first.
@@ -44,8 +42,7 @@ Scripts in the project `examples` directory locate `lunar-plasma.lua` in their p
 The installed version is available through `plasma.version`:
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 print(plasma.version)
 ```
@@ -97,8 +94,7 @@ Sets the volume of the default audio output to an absolute percentage. It change
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.set(50) then
     print("Volume set to 50%")
@@ -114,8 +110,7 @@ Reads the current volume of the default audio output. The returned percentage is
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local volume = plasma.sound.get()
 
 print(volume)
@@ -130,8 +125,7 @@ Mutes the default audio output without changing its stored volume level. Unmutin
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.mute() then
     print("Sound muted")
@@ -147,8 +141,7 @@ Unmutes the default audio output. The existing volume level is preserved.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.unmute() then
     print("Sound unmuted")
@@ -164,8 +157,7 @@ Reads the mute state of the default audio output without changing it. The result
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local muted = plasma.sound.is_muted()
 
 print(muted)
@@ -180,8 +172,7 @@ Switches the default audio output to the opposite mute state. The stored volume 
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.toggle_mute() then
     print("Mute state changed")
@@ -201,8 +192,7 @@ Reads the current volume and increases it by the requested number of percentage 
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.increase(10) then
     print("Volume increased")
@@ -222,8 +212,7 @@ Reads the current volume and decreases it by the requested number of percentage 
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.sound.decrease(10) then
     print("Volume decreased")
@@ -254,8 +243,7 @@ The notification type selects the default icon and urgency. A custom `icon` over
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.notifications.send({
     title = "Download complete",
@@ -286,8 +274,7 @@ The aliases `"power-saver"` and `"balanced"` are also accepted.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.set_profile("saving") then
     print("Power saving enabled")
@@ -303,8 +290,7 @@ Reads the active system power profile and converts the backend profile name to t
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local profile = plasma.power.get_profile()
 
 print(profile)
@@ -349,8 +335,7 @@ Reads the complete aggregate battery and power-source state. The absence of a sy
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local battery = plasma.power.get_battery_status()
 
 if battery.present then
@@ -369,8 +354,7 @@ Checks whether UPower reports an aggregate system battery.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local present = plasma.power.is_battery_present()
 
 print(present)
@@ -385,8 +369,7 @@ Reads the current aggregate battery charge.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local percentage = plasma.power.get_battery_percentage()
 
 print(percentage)
@@ -401,8 +384,7 @@ Reads the current aggregate battery state.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local state = plasma.power.get_battery_state()
 
 print(state)
@@ -417,8 +399,7 @@ Checks whether the aggregate system battery is currently charging. A system with
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local charging, err = plasma.power.is_battery_charging()
 
 assert(charging ~= nil, err)
@@ -434,8 +415,7 @@ Reads the relevant UPower time estimate. While charging, this is the estimated t
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local seconds = plasma.power.get_battery_time_remaining()
 
 print(seconds)
@@ -450,8 +430,7 @@ Reads the current UPower warning level for the aggregate system battery.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local warning = plasma.power.get_battery_warning_level()
 
 print(warning)
@@ -466,8 +445,7 @@ Reads the active system power source. This function also works on systems withou
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local source = plasma.power.get_power_source()
 
 print(source)
@@ -482,8 +460,7 @@ Checks whether the system is currently drawing power from its battery.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.is_on_battery() then
     print("Running on battery")
@@ -499,8 +476,7 @@ Checks whether the system is connected to AC power.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.is_ac_connected() then
     print("Connected to AC power")
@@ -516,8 +492,7 @@ Requests a system suspend through the available power management service. Execut
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.suspend() then
     print("System resumed")
@@ -533,8 +508,7 @@ Requests a complete system shutdown through the available power management servi
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.shutdown() then
     print("Shutdown requested")
@@ -550,8 +524,7 @@ Requests a system restart through the available power management service. The re
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.reboot() then
     print("Reboot requested")
@@ -574,8 +547,7 @@ Examples of valid display selectors include `1`, `"monitor 1"`, `"screen 2"`, an
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.power.set_brightness("HDMI-A-1", 75) then
     print("Brightness set to 75%")
@@ -595,8 +567,7 @@ Reads the current brightness of one selected display as a normalized percentage.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 local brightness = plasma.power.get_brightness(first_display)
 
@@ -636,8 +607,7 @@ Reads every keyboard layout configured in the current Plasma session. The return
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local layouts = plasma.keyboard.list_layouts()
 
 for _, layout in ipairs(layouts) do
@@ -654,8 +624,7 @@ Reads the keyboard layout currently selected in Plasma. The returned table inclu
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local layout = plasma.keyboard.get_layout()
 
 print(layout.name)
@@ -677,8 +646,7 @@ When `layout` is a table, its `id` and `variant` fields are used. If `id` is mis
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.keyboard.set_layout("latam") then
     print("Keyboard layout changed")
@@ -694,8 +662,7 @@ Moves to the next layout in the configured order. After the last layout, Plasma 
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.keyboard.next_layout() then
     print("Switched to the next layout")
@@ -711,8 +678,7 @@ Moves to the previous layout in the configured order. From the first layout, Pla
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 if plasma.keyboard.previous_layout() then
     print("Switched to the previous layout")
@@ -783,8 +749,7 @@ Reads every display reported by KScreen, including connected displays that are c
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local displays = plasma.desktop.list_displays()
 
 for _, display in ipairs(displays) do
@@ -805,8 +770,7 @@ Reads one display by its exact connector name.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local display = plasma.desktop.get_display("HDMI-A-1")
 
 print(display.name, display.connected, display.enabled)
@@ -821,8 +785,7 @@ Reads the primary enabled display in the current KScreen configuration.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local display = plasma.desktop.get_primary_display()
 
 print(display.name)
@@ -865,8 +828,7 @@ Reads every mode supported by a display returned by this module.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local display = plasma.desktop.get_primary_display()
 local modes = plasma.desktop.list_display_modes(display)
 
@@ -898,8 +860,7 @@ Functions that return wallpaper information use the following table:
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 local wallpaper = plasma.desktop.get_wallpaper(first_display)
 
@@ -934,8 +895,7 @@ The returned array contains one wallpaper table per display, ordered by display 
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local wallpapers = plasma.desktop.list_wallpapers()
 
 for _, wallpaper in ipairs(wallpapers) do
@@ -956,8 +916,7 @@ Reads the wallpaper currently assigned to one display. If no display is provided
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 local wallpaper = plasma.desktop.get_wallpaper(first_display)
 
@@ -991,8 +950,7 @@ plasma.desktop.set_wallpaper("/path/to/wallpaper.png", 2)
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 
 if plasma.desktop.set_wallpaper("/home/user/Pictures/wallpaper.png", first_display) then
@@ -1031,8 +989,7 @@ Reads the complete Wi-Fi radio and connection state.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local wifi = plasma.wifi.get_status()
 
 if wifi.connected then
@@ -1049,8 +1006,7 @@ Checks whether the Wi-Fi radio is enabled.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 print(plasma.wifi.is_enabled())
 ```
@@ -1064,8 +1020,7 @@ Checks whether a Wi-Fi connection is active.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 print(plasma.wifi.is_connected())
 ```
@@ -1079,8 +1034,7 @@ Reads the SSID of the active Wi-Fi network.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local network = plasma.wifi.get_network()
 
 print(network)
@@ -1095,8 +1049,7 @@ Enables the Wi-Fi radio through NetworkManager.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.wifi.enable()
 ```
@@ -1110,8 +1063,7 @@ Disables the Wi-Fi radio through NetworkManager. This disconnects any active Wi-
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.wifi.disable()
 ```
@@ -1125,8 +1077,7 @@ Switches the Wi-Fi radio to the opposite enabled state.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.wifi.toggle()
 ```
@@ -1190,8 +1141,7 @@ Reads the state of the default Bluetooth adapter.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local bluetooth = plasma.bluetooth.get_status()
 
 print(bluetooth.enabled, bluetooth.name)
@@ -1206,8 +1156,7 @@ Checks whether the default Bluetooth adapter is enabled.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 print(plasma.bluetooth.is_enabled())
 ```
@@ -1221,8 +1170,7 @@ Enables the default Bluetooth adapter.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.bluetooth.enable()
 ```
@@ -1236,8 +1184,7 @@ Disables the default Bluetooth adapter. Connected Bluetooth devices will be disc
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.bluetooth.disable()
 ```
@@ -1251,8 +1198,7 @@ Switches the default Bluetooth adapter to the opposite enabled state.
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.bluetooth.toggle()
 ```
@@ -1266,8 +1212,7 @@ Reads every device known by the default Bluetooth adapter. An adapter with no kn
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local devices = plasma.bluetooth.list_devices()
 
 for _, device in ipairs(devices) do
@@ -1284,8 +1229,7 @@ Reads every currently connected device known by the default Bluetooth adapter. N
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local devices = plasma.bluetooth.list_connected_devices()
 
 for _, device in ipairs(devices) do
@@ -1306,8 +1250,7 @@ Reads one known Bluetooth device. The selector may be its Bluetooth address or a
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local device = plasma.bluetooth.get_device("11:22:33:44:55:66")
 
 print(device.name, device.connected)
@@ -1326,8 +1269,7 @@ Checks whether one known Bluetooth device is connected. It accepts the same sele
 #### Quick example
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local device = plasma.bluetooth.get_device("11:22:33:44:55:66")
 
 print(plasma.bluetooth.is_connected(device))
@@ -1342,8 +1284,7 @@ These examples combine multiple modules into small desktop automations.
 Prepare the desktop for a work session with one script.
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 
 plasma.sound.set(35)
@@ -1363,8 +1304,7 @@ plasma.notifications.send({
 Check the current battery state and apply power-saving settings when the charge is low and the system is not charging.
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 local present, present_err = plasma.power.is_battery_present()
 
@@ -1394,8 +1334,7 @@ end
 Use a lighter setup during the day and a quieter one at night.
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local hour = tonumber(os.date("%H"))
 
 if hour >= 7 and hour < 19 then
@@ -1414,8 +1353,7 @@ end
 Move to the next configured layout and display its name.
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 plasma.keyboard.next_layout()
 local layout = plasma.keyboard.get_layout()
@@ -1431,8 +1369,7 @@ plasma.notifications.send({
 Display the active Wi-Fi network, connected Bluetooth devices, and connected screens.
 
 ```lua
-local home = os.getenv("HOME")
-local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local wifi = plasma.wifi.get_status()
 
 if wifi.connected then

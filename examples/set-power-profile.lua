@@ -4,8 +4,7 @@
 
 -- This verbose lookup lets the example run locally from either project directory.
 -- Once installed, loading Lunar Plasma only requires:
--- local home = os.getenv("HOME")
--- local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+-- local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local example_dir = source:match("^(.*)/[^/]+$") or "."
