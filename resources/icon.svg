@@ -10,13 +10,13 @@
         <circle cx="76" cy="52" r="26" fill="black"/>
     </mask>
 
-    <circle cx="64" cy="64" r="40" fill="none" stroke="#5c7085" stroke-width="2" stroke-dasharray="4 6"/>
+    <circle cx="64" cy="64" r="40" fill="none" stroke="#6a829a" stroke-width="2" stroke-dasharray="4 6"/>
 
-    <circle cx="64" cy="64" r="30" fill="#1d99f3" mask="url(#moon-cutout)"/>
+    <circle cx="64" cy="64" r="30" fill="#07a8f3" mask="url(#moon-cutout)"/>
 
     <use href="#star" transform="translate(92, 26) scale(4.0)" fill="#fa8865" stroke="#fa8865"/>
 
     <use href="#star" transform="translate(82, 40) scale(5.4)" fill="#63c605" stroke="#63c605"/>
 
-    <use href="#star" transform="translate(104, 56) scale(7.4)" fill="#1b89f3" stroke="#1b89f3"/>
+    <use href="#star" transform="translate(104, 56) scale(7.4)" fill="#07a8f3" stroke="#07a8f3"/>
 </svg>
