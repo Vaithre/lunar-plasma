@@ -14,6 +14,7 @@
 
 ### Changed
 
+- Flattened wallpaper management into `plasma.desktop.list_wallpapers()`, `get_wallpaper()`, and `set_wallpaper()`.
 - Examples now load Lunar Plasma from the project directory so they can run from the project root or from inside `examples` without installation.
 - Project documentation, dependencies, feature summaries, and roadmap now cover the expanded APIs.
 

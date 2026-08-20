@@ -721,7 +721,7 @@ end
 
 ## Desktop
 
-The desktop module inspects displays associated with the current Plasma session and controls general desktop settings. Wallpaper management remains available under `plasma.desktop.wallpaper`.
+The desktop module inspects displays associated with the current Plasma session and controls general desktop settings, including wallpapers.
 
 ### Display values
 
@@ -901,12 +901,12 @@ Functions that return wallpaper information use the following table:
 local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
-local wallpaper = plasma.desktop.wallpaper.get(first_display)
+local wallpaper = plasma.desktop.get_wallpaper(first_display)
 
 print(wallpaper.display, wallpaper.plugin, wallpaper.path)
 ```
 
-### `plasma.desktop.wallpaper.list()`
+### `plasma.desktop.list_wallpapers()`
 
 Reads the current wallpaper configuration for every display managed by Plasma.
 
@@ -936,14 +936,14 @@ The returned array contains one wallpaper table per display, ordered by display 
 ```lua
 local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
-local wallpapers = plasma.desktop.wallpaper.list()
+local wallpapers = plasma.desktop.list_wallpapers()
 
 for _, wallpaper in ipairs(wallpapers) do
     print(wallpaper.display, wallpaper.path)
 end
 ```
 
-### `plasma.desktop.wallpaper.get(display)`
+### `plasma.desktop.get_wallpaper(display)`
 
 Reads the wallpaper currently assigned to one display. If no display is provided, the first display is used.
 
@@ -959,12 +959,12 @@ Reads the wallpaper currently assigned to one display. If no display is provided
 local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
-local wallpaper = plasma.desktop.wallpaper.get(first_display)
+local wallpaper = plasma.desktop.get_wallpaper(first_display)
 
 print(wallpaper.path)
 ```
 
-### `plasma.desktop.wallpaper.set(path, options)`
+### `plasma.desktop.set_wallpaper(path, options)`
 
 Sets an image as wallpaper on every display by default. A display number or options table can limit the change to one display.
 
@@ -983,7 +983,7 @@ Available options:
 Passing a display number directly is equivalent to passing `{ display = number }`:
 
 ```lua
-plasma.desktop.wallpaper.set("/path/to/wallpaper.png", 2)
+plasma.desktop.set_wallpaper("/path/to/wallpaper.png", 2)
 ```
 
 **Returns:** `true` on success.
@@ -995,7 +995,7 @@ local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 
-if plasma.desktop.wallpaper.set("/home/user/Pictures/wallpaper.png", first_display) then
+if plasma.desktop.set_wallpaper("/home/user/Pictures/wallpaper.png", first_display) then
     print("Wallpaper changed")
 end
 ```
@@ -1350,7 +1350,7 @@ plasma.sound.set(35)
 plasma.power.set_profile("normal")
 plasma.power.set_brightness(first_display, 70)
 plasma.keyboard.set_layout("us")
-plasma.desktop.wallpaper.set(home .. "/Pictures/workspace.png")
+plasma.desktop.set_wallpaper(home .. "/Pictures/workspace.png")
 plasma.notifications.send({
     title = "Work setup",
     text = "Your desktop is ready",
@@ -1399,11 +1399,11 @@ local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local hour = tonumber(os.date("%H"))
 
 if hour >= 7 and hour < 19 then
-    plasma.desktop.wallpaper.set(home .. "/Pictures/day.png")
+    plasma.desktop.set_wallpaper(home .. "/Pictures/day.png")
     plasma.power.set_profile("normal")
     plasma.sound.set(40)
 else
-    plasma.desktop.wallpaper.set(home .. "/Pictures/night.png")
+    plasma.desktop.set_wallpaper(home .. "/Pictures/night.png")
     plasma.power.set_profile("saving")
     plasma.sound.set(20)
 end
