@@ -159,18 +159,59 @@ services.power-profiles-daemon.enable = true;
 
 ## Installation
 
-Run the installer from the project directory:
+There are two ways to obtain Lunar Plasma: clone the repository for development, or download a release archive for a minimal installation.
+
+### From Git
+
+Clone the repository and run the installer from the project directory:
 
 ```bash
-chmod +x install.sh uninstall.sh
+git clone https://github.com/Vaithre/lunar-plasma.git
+cd lunar-plasma
+
+chmod +x install.sh
 ./install.sh
 ```
+
+This option includes the complete project, including the documentation, tests, examples, and development history.
+
+Keep in mind that cloning **main** provides a preliminary version. For a more stable version, clone the **release** branch instead:
+
+```bash
+git clone --branch release https://github.com/Vaithre/lunar-plasma.git
+```
+
+The **release** branch contains the contents of the current tested release.
+
+### From a release
+
+Download a version from the [GitHub releases](https://github.com/Vaithre/lunar-plasma/releases) page, then extract it and run the installer.
+
+```bash
+tar -xzf "lunar-plasma-[VERSION].tar.gz"
+cd "lunar-plasma-[VERSION]"
+
+chmod +x install.sh
+./install.sh
+```
+
+Release archives contain the runtime files, examples, and `DOCUMENTATION.md` required for distribution.
+
+### Installation modes
+
+When `install.sh` starts, choose one of the following modes:
+
+- **Quick installation** installs the runtime only.
+- **Custom installation** asks separately whether to install `DOCUMENTATION.md`, tests, and examples.
+
+### Installation directory
 
 Lunar Plasma will be installed in `~/.local/opt/lunar-plasma`.
 
 To remove the installation:
 
 ```bash
+chmod +x uninstall.sh
 ./uninstall.sh
 ```
 
