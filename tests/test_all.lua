@@ -7,19 +7,24 @@ local root = source:match("^(.*)/tests/test_all%.lua$") or "."
 
 package.path = root .. "/tests/?.lua;" .. package.path
 
-local suites = {
-    { name = "sound", module = require("test_sound") },
-    { name = "notifications", module = require("test_notifications") },
-    { name = "power", module = require("test_power") },
-    { name = "keyboard", module = require("test_keyboard") },
-    { name = "wifi", module = require("test_wifi") },
-    { name = "bluetooth", module = require("test_bluetooth") },
-    { name = "display", module = require("test_display") },
-}
+local system_mode = os.getenv("LUNAR_TEST_ON_SYSTEM") == "1"
+local suites
 
--- Run tests that modify the real desktop only when explicitly requested.
-if os.getenv("LUNAR_PLASMA_INTEGRATION") == "1" then
-    suites[#suites + 1] = { name = "desktop", module = require("test_desktop") }
+if system_mode then
+    suites = require("test_system").get_suites(root)
+    print("Running tests against the current system.")
+else
+    suites = {
+        { name = "sound", module = require("test_sound") },
+        { name = "notifications", module = require("test_notifications") },
+        { name = "power", module = require("test_power") },
+        { name = "keyboard", module = require("test_keyboard") },
+        { name = "wifi", module = require("test_wifi") },
+        { name = "bluetooth", module = require("test_bluetooth") },
+        { name = "display", module = require("test_display") },
+    }
+
+    print("Running function tests with deterministic fixture backends.")
 end
 
 local passed = 0
