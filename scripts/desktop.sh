@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Read and change wallpapers through the PlasmaShell D-Bus interface.
+# Read Plasma displays and change wallpapers through desktop services.
 set -euo pipefail
 
 action="${1:-}"
@@ -15,6 +15,146 @@ find_qdbus() {
     done
 
     return 1
+}
+
+require_kscreen_doctor() {
+    if ! command -v kscreen-doctor >/dev/null 2>&1; then
+        printf 'kscreen-doctor is required to inspect Plasma displays\n' >&2
+        return 127
+    fi
+}
+
+kscreen_outputs() {
+    NO_COLOR=1 kscreen-doctor --outputs |
+        sed -E $'s/\x1B\[[0-9;]*[mK]//g'
+}
+
+list_displays() {
+    require_kscreen_doctor
+
+    kscreen_outputs | awk '
+        function reset_output() {
+            enabled = "false"
+            connected = "false"
+            priority = 0
+            x = 0
+            y = 0
+            width = 0
+            height = 0
+            scale = 1
+            rotation = 1
+            mode_id = ""
+            mode_width = ""
+            mode_height = ""
+            mode_refresh = ""
+        }
+
+        function read_modes(text, count, tokens, token_index, parts, flags) {
+            count = split(text, tokens, /[[:space:]]+/)
+
+            for (token_index = 1; token_index <= count; token_index += 1) {
+                if (match(tokens[token_index], /^([0-9]+):([0-9]+)x([0-9]+)@([0-9.]+)([*!]*)$/, parts)) {
+                    flags = parts[5]
+                    if (flags ~ /\*/) {
+                        mode_id = parts[1]
+                        mode_width = parts[2]
+                        mode_height = parts[3]
+                        mode_refresh = parts[4]
+                    }
+                }
+            }
+        }
+
+        function emit_output(primary) {
+            if (!active) {
+                return
+            }
+
+            primary = enabled == "true" && priority == 1 ? "true" : "false"
+            printf "%d\t%s\t%s\t%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d\t%d\t%s\t%d\t%s\t%s\t%s\t%s\n", \
+                output_index, id, name, uuid, enabled, connected, primary, priority, \
+                x, y, width, height, scale, rotation, mode_id, mode_width, mode_height, mode_refresh
+        }
+
+        /^Output:[[:space:]]+/ {
+            emit_output()
+            reset_output()
+            active = 1
+            output_index += 1
+            id = $2
+            name = $3
+            uuid = $4
+            next
+        }
+
+        {
+            line = $0
+            sub(/^[[:space:]]+/, "", line)
+
+            if (line == "enabled") {
+                enabled = "true"
+            } else if (line == "connected") {
+                connected = "true"
+            } else if (match(line, /^priority ([0-9]+)$/, parts)) {
+                priority = parts[1]
+            } else if (match(line, /^Modes:[[:space:]]*(.*)$/, parts)) {
+                read_modes(parts[1])
+            } else if (match(line, /^Geometry:[[:space:]]*(-?[0-9]+),(-?[0-9]+) ([0-9]+)x([0-9]+)$/, parts)) {
+                x = parts[1]
+                y = parts[2]
+                width = parts[3]
+                height = parts[4]
+            } else if (match(line, /^Scale:[[:space:]]*([0-9.]+)$/, parts)) {
+                scale = parts[1]
+            } else if (match(line, /^Rotation:[[:space:]]*([0-9]+)$/, parts)) {
+                rotation = parts[1]
+            }
+        }
+
+        END {
+            emit_output()
+        }
+    '
+}
+
+list_display_modes() {
+    local target="$1"
+
+    require_kscreen_doctor
+
+    kscreen_outputs | awk -v target="$target" '
+        /^Output:[[:space:]]+/ {
+            selected = $3 == target
+            next
+        }
+
+        selected {
+            line = $0
+            sub(/^[[:space:]]+/, "", line)
+
+            if (match(line, /^Modes:[[:space:]]*(.*)$/, values)) {
+                count = split(values[1], tokens, /[[:space:]]+/)
+
+                for (token_index = 1; token_index <= count; token_index += 1) {
+                    if (match(tokens[token_index], /^([0-9]+):([0-9]+)x([0-9]+)@([0-9.]+)([*!]*)$/, parts)) {
+                        preferred = parts[5] ~ /!/ ? "true" : "false"
+                        current = parts[5] ~ /\*/ ? "true" : "false"
+                        printf "%s\t%s\t%s\t%s\t%s\t%s\n", \
+                            parts[1], parts[2], parts[3], parts[4], preferred, current
+                    }
+                }
+
+                found = 1
+                exit
+            }
+        }
+
+        END {
+            if (!found) {
+                exit 1
+            }
+        }
+    '
 }
 
 wallpaper_state() {
@@ -165,6 +305,12 @@ set_wallpaper() {
 }
 
 case "$action" in
+    list-displays)
+        list_displays
+        ;;
+    list-display-modes)
+        list_display_modes "${2:-}"
+        ;;
     list-wallpapers)
         list_wallpapers
         ;;
