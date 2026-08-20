@@ -114,7 +114,7 @@ The main current goals are:
 A standard KDE Plasma desktop should already include most of the tools Lunar Plasma uses. Lua and Bash run the library, while tools such as `pactl`, `notify-send`, `qdbus`, `kscreen-doctor`, `setxkbmap`, `nmcli`, `bluetoothctl`, and `busctl` provide specific features or fallbacks. NetworkManager supplies Wi-Fi state, BlueZ supplies Bluetooth state, and UPower supplies battery information. Lunar Plasma detects the available `qdbus` command automatically.
 
 > [!important]
-> It's normal for the package manager to talk about "replacing packages." In this case you can test the program with the "tests" [`lua examples/test_all.lua`] and everything will probably work fine without the need to install anything! You can also install and use only what you need. For example, **if you don't have bluetooth on your computer, you don't need to install bluez for this library to work for your use case**.
+> It's normal for the package manager to talk about "replacing packages." In this case you can test the program with the regular test suite [`lua tests/test_all.lua`] and everything will probably work fine without the need to install anything! To test the available features against your actual system, use [`LUNAR_TEST_ON_SYSTEM=1 lua tests/test_all.lua`]. **System tests temporarily modify settings such as volume, keyboard layout, brightness, and wallpaper, so use this mode with caution.** You can also install and use only what you need. For example, **if you don't have bluetooth on your computer, you don't need to install bluez for this library to work for your use case**.
 
 If a command is missing, these packages provide the usual dependencies for each distribution family:
 
