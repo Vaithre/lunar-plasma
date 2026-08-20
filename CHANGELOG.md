@@ -10,11 +10,13 @@
 
 - Test failures now end with a component and subtest summary including the reported errors.
 - Real-system Bluetooth tests now skip systems without an adapter and time out stalled BlueZ queries.
+- Real-system test timeouts are shorter for unavailable services and temporary notifications.
 - Wallpaper changes now fall back between available D-Bus clients and preserve backend errors in test output.
 
 ### Fixed
 
 - Wallpaper inspection now accepts Plasma's default state when no explicit image URI is configured.
+- Examples now show concise warnings instead of stack traces when a feature is unavailable.
 
 ## [0.2.0] - 2026-08-20
 
