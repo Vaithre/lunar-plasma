@@ -20,7 +20,7 @@ Until then, I’ll do my best to keep the APIs stable, but they may still change
 | <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | API | Expand all APIs |
 | <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | Interpreter | Implement an interpreter for running one-shot commands |
 | <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | Documentation | Improve the documentation |
-| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Plasma theme, icon, cursor, etc. control API |
+| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Plasma theme, icons, cursor, etc. control API |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Desktop effects control API |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Window control API |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Active programs/processes/services detection API |
