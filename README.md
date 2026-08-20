@@ -69,7 +69,7 @@ if plasma.power.is_battery_charging() then
     local percentage = plasma.power.get_battery_percentage()
 
     if percentage > 50 then
-        plasma.power.set_brightness(1, 70)
+        plasma.power.set_brightness("HDMI-A-1", 70)
         plasma.power.set_profile("performance")
     end
 end
