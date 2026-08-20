@@ -14,7 +14,7 @@ Lunar Plasma lets you control your [KDE Plasma](https://kde.org/plasma-desktop/)
 
 Beyond desktop customization, Lunar Plasma also lets you interact with other system properties, such as adjusting the volume or changing screen brightness, all from the same simple Lua interface. It also gives you functions to read system state, like battery level, connected monitors, Wi-Fi status, etc, so you can detect events and react to them in your scripts. Instead of digging through Plasma's APIs to hack together a fragile, untested script, you write it once and let Lunar Plasma handle the rest.
 
-> [!WARNING]
+> [!IMPORTANT]
 > **Early development software.** Lunar Plasma hasn't been battle-tested yet. Expect breaking changes between versions.
 
 ## API Reference
