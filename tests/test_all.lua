@@ -12,6 +12,7 @@ local suites = {
     { name = "notifications", module = require("test_notifications") },
     { name = "power", module = require("test_power") },
     { name = "keyboard", module = require("test_keyboard") },
+    { name = "wifi", module = require("test_wifi") },
 }
 
 -- Run tests that modify the real desktop only when explicitly requested.
