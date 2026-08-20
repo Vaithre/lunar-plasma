@@ -30,17 +30,17 @@ Until then, I’ll do my best to keep the APIs stable, but they may still change
 
 ### Completed
 
-| Status | Area | Goal | Completion date |
-|:---:|---|---|:---:|
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the sound API | 2026-08-19 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the notifications API | 2026-08-19 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the KDE desktop API | 2026-08-19 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the power management API | 2026-08-19 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the keyboard API | 2026-08-19 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the Wi-Fi API | 2026-08-20 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the Bluetooth API | 2026-08-20 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement display inspection | 2026-08-20 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement battery and power-source inspection | 2026-08-20 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Testing | Implement a test suite | 2026-08-19 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the project | 2026-08-19 |
-| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the expanded APIs | 2026-08-20 |
+| Status | Area | Goal |
+|:---:|---|---|
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the sound API |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the notifications API |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the KDE desktop API |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the power management API |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the keyboard API |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the Wi-Fi API |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the Bluetooth API |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement display inspection |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement battery and power-source inspection |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Testing | Implement a test suite |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the project |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the expanded APIs |
