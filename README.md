@@ -1,7 +1,6 @@
 <img src="resources/icon.svg" width="64" align="left" alt="Lunar Plasma">
 
 # Lunar Plasma
-Lua scripting interface for the KDE Plasma desktop
 
 <br clear="left"/>
 
@@ -86,7 +85,7 @@ plasma.desktop.set_wallpaper("/path/to/wallpaper.png")
 
 You can run similar examples from the project root or from inside the `examples` directory without installing Lunar Plasma first.
 
-## Features
+## Some Features
 
 - Control the volume and mute state of the default audio output.
 - Send desktop notifications with custom text, icons, sounds, urgency, and timeout.
@@ -105,8 +104,9 @@ You can check our current goals in the [ROADMAP](ROADMAP.md).
 
 The main current goals are:
 
+- Implement an interpreter for running one-shot commands.
 - Document integration with other languages such as C, C++, Python, and Rust.
-- Add event detection for application launches, battery levels, network connectivity, and similar system changes.
+- Implement user modules.
 - Expand the available API.
 
 ## Dependencies
