@@ -17,23 +17,33 @@ local display = 1
 local delay = 0.025
 
 local function sleep(seconds)
-    assert(os.execute(string.format("sleep %.2f", seconds)))
+    return os.execute(string.format("sleep %.2f", seconds))
 end
 
-local original, err = plasma.power.get_brightness(display)
-assert(original, err)
+local original = plasma.power.get_brightness(display)
+if not original then
+    io.stderr:write("Warning: could not read the display brightness\n")
+    return
+end
 
-local animation_ok, animation_err = pcall(function()
-    assert(plasma.power.set_brightness(display, 50))
+local animation_ok = plasma.power.set_brightness(display, 50)
 
+if animation_ok then
     for brightness = 51, 100 do
-        sleep(delay)
-        assert(plasma.power.set_brightness(display, brightness))
+        if not sleep(delay) or not plasma.power.set_brightness(display, brightness) then
+            animation_ok = false
+            break
+        end
     end
 
-    sleep(0.5)
-end)
+    if animation_ok then
+        animation_ok = sleep(0.5)
+    end
+end
 
-local restored, restore_err = plasma.power.set_brightness(display, original)
-assert(restored, restore_err)
-assert(animation_ok, animation_err)
+local restored = plasma.power.set_brightness(display, original)
+if not restored then
+    io.stderr:write("Warning: could not restore the display brightness\n")
+elseif not animation_ok then
+    io.stderr:write("Warning: could not complete the brightness animation\n")
+end

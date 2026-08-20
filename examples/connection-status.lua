@@ -13,27 +13,29 @@ local plasma = dofile(example_dir .. "/../lunar-plasma.lua")
 
 -- Example starts here !
 
-local wifi, wifi_err = plasma.wifi.get_status()
-assert(wifi, wifi_err)
-
-if not wifi.enabled then
-    print("Wi-Fi: disabled")
-elseif wifi.connected then
-    print("Wi-Fi: connected to " .. wifi.network)
+local wifi = plasma.wifi.get_status()
+if not wifi then
+    io.stderr:write("Warning: could not read the Wi-Fi status\n")
 else
-    print("Wi-Fi: enabled, not connected")
+    if not wifi.enabled then
+        print("Wi-Fi: disabled")
+    elseif wifi.connected then
+        print("Wi-Fi: connected to " .. wifi.network)
+    else
+        print("Wi-Fi: enabled, not connected")
+    end
 end
 
-local bluetooth, bluetooth_err = plasma.bluetooth.get_status()
-assert(bluetooth, bluetooth_err)
-
-if not bluetooth.enabled then
+local bluetooth = plasma.bluetooth.get_status()
+if not bluetooth then
+    io.stderr:write("Warning: could not read the Bluetooth status\n")
+elseif not bluetooth.enabled then
     print("Bluetooth: disabled")
 else
-    local devices, devices_err = plasma.bluetooth.list_connected_devices()
-    assert(devices, devices_err)
-
-    if #devices == 0 then
+    local devices = plasma.bluetooth.list_connected_devices()
+    if not devices then
+        io.stderr:write("Warning: could not read connected Bluetooth devices\n")
+    elseif #devices == 0 then
         print("Bluetooth: enabled, no connected devices")
     else
         print(string.format("Bluetooth: %d connected device%s", #devices, #devices == 1 and "" or "s"))

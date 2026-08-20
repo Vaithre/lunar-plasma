@@ -13,6 +13,8 @@ local plasma = dofile(example_dir .. "/../lunar-plasma.lua")
 
 -- Example starts here !
 
-local ok, err = plasma.power.set_profile("normal")
+local ok = plasma.power.set_profile("normal")
 
-assert(ok, err)
+if not ok then
+    io.stderr:write("Warning: could not set the power profile\n")
+end

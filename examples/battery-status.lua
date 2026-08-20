@@ -13,20 +13,33 @@ local plasma = dofile(example_dir .. "/../lunar-plasma.lua")
 
 -- Example starts here !
 
-local profile, profile_err = plasma.power.get_profile()
-local present, present_err = plasma.power.is_battery_present()
+local profile = plasma.power.get_profile()
+local present = plasma.power.is_battery_present()
 
-assert(profile, profile_err)
-assert(present ~= nil, present_err)
+if not profile then
+    io.stderr:write("Warning: could not read the power profile\n")
+    return
+end
+
+if present == nil then
+    io.stderr:write("Warning: could not read the battery status\n")
+    return
+end
 
 if present then
-    local percentage, percentage_err = plasma.power.get_battery_percentage()
-    assert(percentage, percentage_err)
+    local percentage = plasma.power.get_battery_percentage()
+    if not percentage then
+        io.stderr:write("Warning: could not read the battery level\n")
+        return
+    end
 
     print(string.format("Battery level: %.1f%%", percentage))
 else
-    local plugged_in, power_err = plasma.power.is_ac_connected()
-    assert(plugged_in ~= nil, power_err)
+    local plugged_in = plasma.power.is_ac_connected()
+    if plugged_in == nil then
+        io.stderr:write("Warning: could not read the power source\n")
+        return
+    end
 
     if plugged_in then
         print("Power: plugged in")

@@ -13,7 +13,7 @@ local plasma = dofile(example_dir .. "/../lunar-plasma.lua")
 
 -- Example starts here !
 
-local ok, err = plasma.notifications.send({
+local ok = plasma.notifications.send({
     title = "Lunar Plasma",
     text = "Notifications are working",
     icon = "dialog-information",
@@ -22,4 +22,6 @@ local ok, err = plasma.notifications.send({
     type = "info",
 })
 
-assert(ok, err)
+if not ok then
+    io.stderr:write("Warning: could not send the notification\n")
+end
