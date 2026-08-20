@@ -21,6 +21,11 @@ Until then, I’ll do my best to keep the APIs stable, but they may still change
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the power management API | 2026-08-19 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the keyboard API | 2026-08-19 |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the project | 2026-08-19 |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the Wi-Fi API | 2026-08-20 |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement the Bluetooth API | 2026-08-20 |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement display inspection | 2026-08-20 |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | API | Implement battery and power-source inspection | 2026-08-20 |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the expanded APIs | 2026-08-20 |
 | <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | Automation | Implement an automation framework for events and schedules | N/A |
 | <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | API | Implement user modules | N/A |
 | <img src="./resources/status-development.svg" width="24" height="24" alt="In development"> | Interpreter | Implement an interpreter for running one-shot commands | N/A |

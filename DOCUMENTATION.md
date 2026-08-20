@@ -16,6 +16,8 @@ This documentation is preliminary. Although its content is accurate, its present
 - [Power](#power)
 - [Keyboard](#keyboard)
 - [Desktop](#desktop)
+- [Wi-Fi](#wi-fi)
+- [Bluetooth](#bluetooth)
 - [General examples](#general-examples)
 
 ## Getting started
@@ -37,6 +39,8 @@ local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 ```
 
+Scripts in the project `examples` directory locate `lunar-plasma.lua` in their parent directory, so they can be executed from the project root or from inside `examples` without installing Lunar Plasma first.
+
 The installed version is available through `plasma.version`:
 
 ```lua
@@ -52,9 +56,11 @@ The currently available modules are:
 |---|---|
 | `plasma.sound` | Control the default audio output. |
 | `plasma.notifications` | Send desktop notifications. |
-| `plasma.power` | Control power profiles, system power actions, and display brightness. |
+| `plasma.power` | Inspect battery and power-source state, control power profiles and system power actions, and adjust display brightness. |
 | `plasma.keyboard` | Read and change keyboard layouts. |
-| `plasma.desktop` | Control general desktop settings. |
+| `plasma.desktop` | Inspect displays and control general desktop settings. |
+| `plasma.wifi` | Inspect and control Wi-Fi state. |
+| `plasma.bluetooth` | Inspect the Bluetooth adapter and devices, and control the adapter state. |
 
 ## Return values
 
@@ -260,7 +266,7 @@ plasma.notifications.send({
 
 ## Power
 
-The power module controls system power profiles, session power actions, and display brightness.
+The power module inspects battery and power-source state, controls system power profiles and session power actions, and adjusts display brightness.
 
 > [!IMPORTANT]
 > `shutdown()`, `reboot()`, and `suspend()` act on the current system. The desktop or operating system may request authorization before completing the action.
@@ -287,6 +293,137 @@ if plasma.power.set_profile("saving") then
     print("Power saving enabled")
 end
 ```
+
+### `plasma.power.get_profile()`
+
+Reads the active system power profile and converts the backend profile name to the corresponding Lunar Plasma name.
+
+**Returns:** `"saving"`, `"normal"`, or `"performance"`.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local profile = plasma.power.get_profile()
+
+print(profile)
+```
+
+### Battery status values
+
+Battery status functions use the aggregate system battery reported by UPower. Peripheral batteries, such as those in Bluetooth headphones or input devices, are not included.
+
+`get_battery_status()` returns a table with the following structure when a system battery is present:
+
+```lua
+{
+    present = true,
+    percentage = 73.4,
+    state = "discharging",
+    source = "battery",
+    time_remaining = 7200,
+    warning_level = "none",
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `present` | boolean | Whether UPower reports a system battery. |
+| `percentage` | number or nil | Current charge from `0` to `100`, or `nil` when no battery is present. |
+| `state` | string | Battery state such as `"charging"`, `"discharging"`, or `"fully-charged"`. |
+| `source` | string | Active source: `"battery"`, `"ac"`, or `"unknown"`. |
+| `time_remaining` | integer or nil | Relevant charge or discharge estimate in seconds, when available. |
+| `warning_level` | string | UPower warning level, such as `"none"`, `"low"`, or `"critical"`. |
+
+Possible battery states are `"unknown"`, `"charging"`, `"discharging"`, `"empty"`, `"fully-charged"`, `"pending-charge"`, and `"pending-discharge"`.
+
+Possible warning levels are `"unknown"`, `"none"`, `"discharging"`, `"low"`, `"critical"`, and `"action"`.
+
+### `plasma.power.get_battery_status()`
+
+Reads the complete aggregate battery and power-source state. The absence of a system battery is represented by `present = false` and is not considered an error.
+
+**Returns:** A battery status table.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local battery = plasma.power.get_battery_status()
+
+if battery.present then
+    print(battery.percentage, battery.state)
+else
+    print("No system battery")
+end
+```
+
+### `plasma.power.is_battery_present()`
+
+Checks whether UPower reports an aggregate system battery.
+
+**Returns:** `true` when a battery is present or `false` otherwise.
+
+### `plasma.power.get_battery_percentage()`
+
+Reads the current aggregate battery charge.
+
+**Returns:** A number from `0` to `100`, or `nil, error_message` when no system battery is available.
+
+### `plasma.power.get_battery_state()`
+
+Reads the current aggregate battery state.
+
+**Returns:** A battery state string, or `nil, error_message` when no system battery is available.
+
+### `plasma.power.is_battery_charging()`
+
+Checks whether the aggregate system battery is currently charging. A system without a battery returns `false`.
+
+**Returns:** `true` when charging or `false` otherwise.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local charging, err = plasma.power.is_battery_charging()
+
+assert(charging ~= nil, err)
+print(charging)
+```
+
+### `plasma.power.get_battery_time_remaining()`
+
+Reads the relevant UPower time estimate. While charging, this is the estimated time until full; while discharging, it is the estimated time until empty.
+
+**Returns:** An integer number of seconds, or `nil, error_message` when no battery or estimate is available.
+
+### `plasma.power.get_battery_warning_level()`
+
+Reads the current UPower warning level for the aggregate system battery.
+
+**Returns:** A warning-level string, or `nil, error_message` when no system battery is available.
+
+### `plasma.power.get_power_source()`
+
+Reads the active system power source. This function also works on systems without a battery.
+
+**Returns:** `"battery"`, `"ac"`, or `"unknown"`.
+
+### `plasma.power.is_on_battery()`
+
+Checks whether the system is currently drawing power from its battery.
+
+**Returns:** `true` when using battery power or `false` otherwise.
+
+### `plasma.power.is_ac_connected()`
+
+Checks whether the system is connected to AC power.
+
+**Returns:** `true` when connected to AC power or `false` otherwise.
 
 ### `plasma.power.suspend()`
 
@@ -509,7 +646,139 @@ end
 
 ## Desktop
 
-The desktop module controls settings associated with the Plasma desktop. Wallpaper management is available under `plasma.desktop.wallpaper`.
+The desktop module inspects displays associated with the current Plasma session and controls general desktop settings. Wallpaper management remains available under `plasma.desktop.wallpaper`.
+
+### Display values
+
+Functions that return display information use the following table:
+
+```lua
+{
+    index = 1,
+    id = 1,
+    name = "HDMI-A-1",
+    uuid = "7d578311-88c3-4a7b-9d97-63edb6c52725",
+    enabled = true,
+    connected = true,
+    primary = true,
+    priority = 1,
+    position = {
+        x = 0,
+        y = 0,
+    },
+    size = {
+        width = 1920,
+        height = 1080,
+    },
+    scale = 1,
+    rotation = "normal",
+    mode = {
+        id = "2",
+        width = 1920,
+        height = 1080,
+        refresh_rate = 144,
+    },
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `index` | integer | One-based position in the list returned by KScreen. |
+| `id` | integer | KScreen output identifier. |
+| `name` | string | Connector name, such as `"HDMI-A-1"` or `"eDP-1"`. |
+| `uuid` | string | KScreen output UUID. |
+| `enabled` | boolean | Whether the output is part of the active desktop configuration. |
+| `connected` | boolean | Whether the display is physically connected. |
+| `primary` | boolean | Whether the display is the primary enabled output. |
+| `priority` | integer | KScreen output priority. |
+| `position` | table | Desktop coordinates in the `x` and `y` fields. |
+| `size` | table | Configured width and height in pixels. |
+| `scale` | number | Current display scale. |
+| `rotation` | string | Normalized rotation name. |
+| `mode` | table or nil | Active mode, or `nil` when the display has no active mode. |
+
+A connected display may be disabled. `connected` describes the physical connection, while `enabled` describes whether Plasma currently uses the output.
+
+### `plasma.desktop.list_displays()`
+
+Reads every display reported by KScreen, including connected displays that are currently disabled.
+
+**Returns:** An array of display tables ordered by their KScreen output position.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local displays = plasma.desktop.list_displays()
+
+for _, display in ipairs(displays) do
+    print(display.name, display.connected, display.enabled)
+end
+```
+
+### `plasma.desktop.get_display(name)`
+
+Reads one display by its exact connector name.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `name` | string | Connector name such as `"HDMI-A-1"`. |
+
+**Returns:** A display table.
+
+### `plasma.desktop.get_primary_display()`
+
+Reads the primary enabled display in the current KScreen configuration.
+
+**Returns:** A display table, or `nil, error_message` when no primary display is available.
+
+### Display mode values
+
+`list_display_modes()` returns mode tables with the following fields:
+
+```lua
+{
+    id = "2",
+    width = 1920,
+    height = 1080,
+    refresh_rate = 144,
+    preferred = false,
+    current = true,
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | KScreen mode identifier. |
+| `width` | integer | Horizontal resolution in pixels. |
+| `height` | integer | Vertical resolution in pixels. |
+| `refresh_rate` | number | Refresh rate in hertz. |
+| `preferred` | boolean | Whether the display reports this as a preferred mode. |
+| `current` | boolean | Whether this mode is currently active. |
+
+### `plasma.desktop.list_display_modes(display)`
+
+Reads every mode supported by a display returned by this module.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `display` | table | Display table returned by `list_displays()`, `get_display()`, or `get_primary_display()`. |
+
+**Returns:** An array of display mode tables.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local display = plasma.desktop.get_primary_display()
+local modes = plasma.desktop.list_display_modes(display)
+
+for _, mode in ipairs(modes) do
+    print(mode.width, mode.height, mode.refresh_rate, mode.current)
+end
+```
 
 ### Wallpaper values
 
@@ -649,6 +918,206 @@ if plasma.desktop.wallpaper.set("/home/user/Pictures/wallpaper.png", first_displ
 end
 ```
 
+## Wi-Fi
+
+The Wi-Fi module inspects and controls the NetworkManager Wi-Fi radio and active connection.
+
+### Wi-Fi status values
+
+`get_status()` returns the following table:
+
+```lua
+{
+    enabled = true,
+    connected = true,
+    network = "Lunar Network",
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `enabled` | boolean | Whether the Wi-Fi radio is enabled. |
+| `connected` | boolean | Whether a Wi-Fi connection is active. |
+| `network` | string or nil | Active network SSID, or `nil` when disconnected. |
+
+### `plasma.wifi.get_status()`
+
+Reads the complete Wi-Fi radio and connection state.
+
+**Returns:** A Wi-Fi status table.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local wifi = plasma.wifi.get_status()
+
+if wifi.connected then
+    print("Connected to " .. wifi.network)
+end
+```
+
+### `plasma.wifi.is_enabled()`
+
+Checks whether the Wi-Fi radio is enabled.
+
+**Returns:** `true` when enabled or `false` otherwise.
+
+### `plasma.wifi.is_connected()`
+
+Checks whether a Wi-Fi connection is active.
+
+**Returns:** `true` when connected or `false` otherwise.
+
+### `plasma.wifi.get_network()`
+
+Reads the SSID of the active Wi-Fi network.
+
+**Returns:** The active SSID, or `nil, error_message` when Wi-Fi is not connected.
+
+### `plasma.wifi.enable()`
+
+Enables the Wi-Fi radio through NetworkManager.
+
+**Returns:** `true` on success.
+
+### `plasma.wifi.disable()`
+
+Disables the Wi-Fi radio through NetworkManager. This disconnects any active Wi-Fi connection.
+
+**Returns:** `true` on success.
+
+### `plasma.wifi.toggle()`
+
+Switches the Wi-Fi radio to the opposite enabled state.
+
+**Returns:** `true` on success.
+
+## Bluetooth
+
+The Bluetooth module inspects the default BlueZ adapter and its known devices. This version controls the adapter radio but does not pair, trust, connect, disconnect, or remove devices.
+
+### Bluetooth status values
+
+`get_status()` returns the following adapter table:
+
+```lua
+{
+    enabled = true,
+    discoverable = false,
+    discovering = false,
+    address = "AA:BB:CC:DD:EE:FF",
+    name = "Lunar Adapter",
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `enabled` | boolean | Whether the default Bluetooth adapter is powered. |
+| `discoverable` | boolean | Whether other devices can currently discover the adapter. |
+| `discovering` | boolean | Whether the adapter is currently scanning for devices. |
+| `address` | string | Bluetooth address of the default adapter. |
+| `name` | string | Human-readable adapter name. |
+
+### Bluetooth device values
+
+Functions that return devices use the following table:
+
+```lua
+{
+    address = "11:22:33:44:55:66",
+    name = "Lunar Headphones",
+    paired = true,
+    trusted = true,
+    connected = true,
+    blocked = false,
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `address` | string | Bluetooth device address. |
+| `name` | string | Human-readable device name. |
+| `paired` | boolean | Whether the device is paired. |
+| `trusted` | boolean | Whether BlueZ considers the device trusted. |
+| `connected` | boolean | Whether the device is currently connected. |
+| `blocked` | boolean | Whether the device is blocked. |
+
+### `plasma.bluetooth.get_status()`
+
+Reads the state of the default Bluetooth adapter.
+
+**Returns:** A Bluetooth adapter status table.
+
+### `plasma.bluetooth.is_enabled()`
+
+Checks whether the default Bluetooth adapter is enabled.
+
+**Returns:** `true` when enabled or `false` otherwise.
+
+### `plasma.bluetooth.enable()`
+
+Enables the default Bluetooth adapter.
+
+**Returns:** `true` on success.
+
+### `plasma.bluetooth.disable()`
+
+Disables the default Bluetooth adapter. Connected Bluetooth devices will be disconnected.
+
+**Returns:** `true` on success.
+
+### `plasma.bluetooth.toggle()`
+
+Switches the default Bluetooth adapter to the opposite enabled state.
+
+**Returns:** `true` on success.
+
+### `plasma.bluetooth.list_devices()`
+
+Reads every device known by the default Bluetooth adapter. An adapter with no known devices returns an empty array.
+
+**Returns:** An array of Bluetooth device tables.
+
+### `plasma.bluetooth.list_connected_devices()`
+
+Reads every currently connected device known by the default Bluetooth adapter. No active connections produce an empty array.
+
+**Returns:** An array of Bluetooth device tables.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local devices = plasma.bluetooth.list_connected_devices()
+
+for _, device in ipairs(devices) do
+    print(device.name, device.address)
+end
+```
+
+### `plasma.bluetooth.get_device(device)`
+
+Reads one known Bluetooth device. The selector may be its Bluetooth address or a device table previously returned by this module.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `device` | string or table | Bluetooth address or Bluetooth device table. |
+
+**Returns:** A Bluetooth device table.
+
+### `plasma.bluetooth.is_connected(device)`
+
+Checks whether one known Bluetooth device is connected. It accepts the same selectors as `get_device()`.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `device` | string or table | Bluetooth address or Bluetooth device table. |
+
+**Returns:** `true` when connected or `false` otherwise.
+
 ## General examples
 
 These examples combine multiple modules into small desktop automations.
@@ -676,20 +1145,33 @@ plasma.notifications.send({
 
 ### Respond to a low battery event
 
-This script can be called by an external battery monitor when the charge becomes low.
+Check the current battery state and apply power-saving settings when the charge is low and the system is not charging.
 
 ```lua
 local home = os.getenv("HOME")
 local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
+local present, present_err = plasma.power.is_battery_present()
 
-plasma.power.set_profile("saving")
-plasma.power.set_brightness(first_display, 35)
-plasma.notifications.send({
-    title = "Low battery",
-    text = "Power saving settings have been applied",
-    type = "warning",
-})
+assert(present ~= nil, present_err)
+
+if present then
+    local charging, charging_err = plasma.power.is_battery_charging()
+    local percentage, percentage_err = plasma.power.get_battery_percentage()
+
+    assert(charging ~= nil, charging_err)
+    assert(percentage, percentage_err)
+
+    if not charging and percentage <= 20 then
+        plasma.power.set_profile("saving")
+        plasma.power.set_brightness(first_display, 35)
+        plasma.notifications.send({
+            title = "Low battery",
+            text = "Power saving settings have been applied",
+            type = "warning",
+        })
+    end
+end
 ```
 
 ### Adjust the desktop by time of day
@@ -727,4 +1209,30 @@ plasma.notifications.send({
     title = "Keyboard layout",
     text = layout.name,
 })
+```
+
+### Show connected hardware
+
+Display the active Wi-Fi network, connected Bluetooth devices, and connected screens.
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local wifi = plasma.wifi.get_status()
+
+if wifi.connected then
+    print("Wi-Fi:", wifi.network)
+else
+    print("Wi-Fi: not connected")
+end
+
+for _, device in ipairs(plasma.bluetooth.list_connected_devices()) do
+    print("Bluetooth:", device.name)
+end
+
+for _, display in ipairs(plasma.desktop.list_displays()) do
+    if display.connected then
+        print("Display:", display.name)
+    end
+end
 ```

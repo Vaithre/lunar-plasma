@@ -59,6 +59,26 @@ local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 plasma.power.set_profile("performance")
 ```
 
+#### Increase brightness while charging above 50%
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local charging, charging_err = plasma.power.is_battery_charging()
+
+assert(charging ~= nil, charging_err)
+
+if charging then
+    local percentage, percentage_err = plasma.power.get_battery_percentage()
+    assert(percentage, percentage_err)
+
+    if percentage > 50 then
+        assert(plasma.power.set_brightness(1, 70))
+        assert(plasma.power.set_profile("performance"))
+    end
+end
+```
+
 #### Set an image as wallpaper on every display
 
 ```lua
@@ -68,16 +88,19 @@ local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
 plasma.desktop.wallpaper.set("/path/to/wallpaper.png")
 ```
 
-**You can run similar examples from the **`examples`** directory.**
+You can run similar examples from the project root or from inside the `examples` directory without installing Lunar Plasma first.
 
 ## Features
 
 - Control the volume and mute state of the default audio output.
 - Send desktop notifications with custom text, icons, sounds, urgency, and timeout.
-- Select power profiles and request suspend, shutdown, or reboot actions.
+- Read battery and power-source state, select power profiles, and request suspend, shutdown, or reboot actions.
 - Read and adjust display brightness.
+- Inspect connected displays, their current configuration, and available modes.
 - List, inspect, and switch configured keyboard layouts.
 - Read and change wallpapers across all displays or on a specific display.
+- Inspect and control Wi-Fi state and read the active network.
+- Inspect and control Bluetooth state and list known or connected devices.
 - Use a single Lua entry point backed by D-Bus and system tools.
 
 ## Current Goals
@@ -92,26 +115,26 @@ The main current goals are:
 
 ## Dependencies
 
-A standard KDE Plasma desktop should already include most of the tools Lunar Plasma uses. Lua and Bash run the library, while tools such as `pactl`, `notify-send`, `qdbus`, `kscreen-doctor`, and `setxkbmap` provide specific features or fallbacks. Lunar Plasma detects the available `qdbus` command automatically.
+A standard KDE Plasma desktop should already include most of the tools Lunar Plasma uses. Lua and Bash run the library, while tools such as `pactl`, `notify-send`, `qdbus`, `kscreen-doctor`, `setxkbmap`, `nmcli`, `bluetoothctl`, and `busctl` provide specific features or fallbacks. NetworkManager supplies Wi-Fi state, BlueZ supplies Bluetooth state, and UPower supplies battery information. Lunar Plasma detects the available `qdbus` command automatically.
 
 If a command is missing, these packages provide the usual dependencies for each distribution family:
 
 ### Arch Linux / Manjaro / EndeavourOS / etc
 
 ```bash
-sudo pacman -S --needed lua bash libpulse libnotify qt6-tools libkscreen xorg-setxkbmap power-profiles-daemon
+sudo pacman -S --needed lua bash libpulse libnotify qt6-tools libkscreen xorg-setxkbmap power-profiles-daemon networkmanager bluez-utils upower
 ```
 
 ### Fedora / Nobara / Ultramarine / etc
 
 ```bash
-sudo dnf install lua bash pulseaudio-utils libnotify qt6-qttools libkscreen xorg-x11-xkb-utils power-profiles-daemon
+sudo dnf install lua bash pulseaudio-utils libnotify qt6-qttools libkscreen xorg-x11-xkb-utils power-profiles-daemon NetworkManager bluez upower
 ```
 
 ### Ubuntu / Linux Mint / Debian / etc
 
 ```bash
-sudo apt install lua5.4 bash pulseaudio-utils libnotify-bin qdbus-qt6 libkscreen-bin x11-xkb-utils power-profiles-daemon
+sudo apt install lua5.4 bash pulseaudio-utils libnotify-bin qdbus-qt6 libkscreen-bin x11-xkb-utils power-profiles-daemon network-manager bluez upower
 ```
 
 ### NixOS
@@ -126,6 +149,9 @@ environment.systemPackages = with pkgs; [
   kdePackages.qttools
   kdePackages.libkscreen
   xorg.setxkbmap
+  networkmanager
+  bluez
+  upower
 ];
 
 services.power-profiles-daemon.enable = true;
@@ -153,7 +179,8 @@ To remove the installation:
 
 - The public API may change before the first stable release.
 - Wallpaper and brightness support depend on the D-Bus interfaces and plugins available in the current Plasma session.
-- Display selection and keyboard fallbacks depend on optional system tools.
+- Display inspection and keyboard fallbacks depend on optional system tools.
+- Wi-Fi, Bluetooth, and battery information depend on NetworkManager, BlueZ, and UPower respectively.
 - Event automation, user modules, and the one-shot interpreter are not available yet.
 
 ## Contributing
