@@ -366,17 +366,47 @@ Checks whether UPower reports an aggregate system battery.
 
 **Returns:** `true` when a battery is present or `false` otherwise.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local present = plasma.power.is_battery_present()
+
+print(present)
+```
+
 ### `plasma.power.get_battery_percentage()`
 
 Reads the current aggregate battery charge.
 
 **Returns:** A number from `0` to `100`, or `nil, error_message` when no system battery is available.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local percentage = plasma.power.get_battery_percentage()
+
+print(percentage)
+```
+
 ### `plasma.power.get_battery_state()`
 
 Reads the current aggregate battery state.
 
 **Returns:** A battery state string, or `nil, error_message` when no system battery is available.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local state = plasma.power.get_battery_state()
+
+print(state)
+```
 
 ### `plasma.power.is_battery_charging()`
 
@@ -401,11 +431,31 @@ Reads the relevant UPower time estimate. While charging, this is the estimated t
 
 **Returns:** An integer number of seconds, or `nil, error_message` when no battery or estimate is available.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local seconds = plasma.power.get_battery_time_remaining()
+
+print(seconds)
+```
+
 ### `plasma.power.get_battery_warning_level()`
 
 Reads the current UPower warning level for the aggregate system battery.
 
 **Returns:** A warning-level string, or `nil, error_message` when no system battery is available.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local warning = plasma.power.get_battery_warning_level()
+
+print(warning)
+```
 
 ### `plasma.power.get_power_source()`
 
@@ -413,17 +463,49 @@ Reads the active system power source. This function also works on systems withou
 
 **Returns:** `"battery"`, `"ac"`, or `"unknown"`.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local source = plasma.power.get_power_source()
+
+print(source)
+```
+
 ### `plasma.power.is_on_battery()`
 
 Checks whether the system is currently drawing power from its battery.
 
 **Returns:** `true` when using battery power or `false` otherwise.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+if plasma.power.is_on_battery() then
+    print("Running on battery")
+end
+```
+
 ### `plasma.power.is_ac_connected()`
 
 Checks whether the system is connected to AC power.
 
 **Returns:** `true` when connected to AC power or `false` otherwise.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+if plasma.power.is_ac_connected() then
+    print("Connected to AC power")
+end
+```
 
 ### `plasma.power.suspend()`
 
@@ -478,9 +560,6 @@ end
 
 ### `plasma.power.set_brightness(display, value)`
 
-> [!WARNING]
-> **EXPERIMENTAL**
-
 Sets the brightness of one selected display to an absolute percentage. Display numbers are one-based, so `1` refers to the first display reported by Plasma.
 
 | Parameter | Type | Description |
@@ -504,10 +583,6 @@ end
 ```
 
 ### `plasma.power.get_brightness(display)`
-
-> [!WARNING]
-> **EXPERIMENTAL**
-
 
 Reads the current brightness of one selected display as a normalized percentage. Display numbers are one-based, so `1` refers to the first display reported by Plasma.
 
@@ -727,11 +802,31 @@ Reads one display by its exact connector name.
 
 **Returns:** A display table.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local display = plasma.desktop.get_display("HDMI-A-1")
+
+print(display.name, display.connected, display.enabled)
+```
+
 ### `plasma.desktop.get_primary_display()`
 
 Reads the primary enabled display in the current KScreen configuration.
 
 **Returns:** A display table, or `nil, error_message` when no primary display is available.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local display = plasma.desktop.get_primary_display()
+
+print(display.name)
+```
 
 ### Display mode values
 
@@ -782,9 +877,6 @@ end
 
 ### Wallpaper values
 
-> [!WARNING]
-> **EXPERIMENTAL**
-
 Functions that return wallpaper information use the following table:
 
 ```lua
@@ -815,10 +907,6 @@ print(wallpaper.display, wallpaper.plugin, wallpaper.path)
 ```
 
 ### `plasma.desktop.wallpaper.list()`
-
-> [!WARNING]
-> **EXPERIMENTAL**
-
 
 Reads the current wallpaper configuration for every display managed by Plasma.
 
@@ -857,9 +945,6 @@ end
 
 ### `plasma.desktop.wallpaper.get(display)`
 
-> [!WARNING]
-> **EXPERIMENTAL**
-
 Reads the wallpaper currently assigned to one display. If no display is provided, the first display is used.
 
 | Parameter | Type | Required | Default | Description |
@@ -880,9 +965,6 @@ print(wallpaper.path)
 ```
 
 ### `plasma.desktop.wallpaper.set(path, options)`
-
-> [!WARNING]
-> **EXPERIMENTAL**
 
 Sets an image as wallpaper on every display by default. A display number or options table can limit the change to one display.
 
@@ -964,11 +1046,29 @@ Checks whether the Wi-Fi radio is enabled.
 
 **Returns:** `true` when enabled or `false` otherwise.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+print(plasma.wifi.is_enabled())
+```
+
 ### `plasma.wifi.is_connected()`
 
 Checks whether a Wi-Fi connection is active.
 
 **Returns:** `true` when connected or `false` otherwise.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+print(plasma.wifi.is_connected())
+```
 
 ### `plasma.wifi.get_network()`
 
@@ -976,11 +1076,30 @@ Reads the SSID of the active Wi-Fi network.
 
 **Returns:** The active SSID, or `nil, error_message` when Wi-Fi is not connected.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local network = plasma.wifi.get_network()
+
+print(network)
+```
+
 ### `plasma.wifi.enable()`
 
 Enables the Wi-Fi radio through NetworkManager.
 
 **Returns:** `true` on success.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+plasma.wifi.enable()
+```
 
 ### `plasma.wifi.disable()`
 
@@ -988,11 +1107,29 @@ Disables the Wi-Fi radio through NetworkManager. This disconnects any active Wi-
 
 **Returns:** `true` on success.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+plasma.wifi.disable()
+```
+
 ### `plasma.wifi.toggle()`
 
 Switches the Wi-Fi radio to the opposite enabled state.
 
 **Returns:** `true` on success.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+plasma.wifi.toggle()
+```
 
 ## Bluetooth
 
@@ -1050,11 +1187,30 @@ Reads the state of the default Bluetooth adapter.
 
 **Returns:** A Bluetooth adapter status table.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local bluetooth = plasma.bluetooth.get_status()
+
+print(bluetooth.enabled, bluetooth.name)
+```
+
 ### `plasma.bluetooth.is_enabled()`
 
 Checks whether the default Bluetooth adapter is enabled.
 
 **Returns:** `true` when enabled or `false` otherwise.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+print(plasma.bluetooth.is_enabled())
+```
 
 ### `plasma.bluetooth.enable()`
 
@@ -1062,11 +1218,29 @@ Enables the default Bluetooth adapter.
 
 **Returns:** `true` on success.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+plasma.bluetooth.enable()
+```
+
 ### `plasma.bluetooth.disable()`
 
 Disables the default Bluetooth adapter. Connected Bluetooth devices will be disconnected.
 
 **Returns:** `true` on success.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+plasma.bluetooth.disable()
+```
 
 ### `plasma.bluetooth.toggle()`
 
@@ -1074,11 +1248,32 @@ Switches the default Bluetooth adapter to the opposite enabled state.
 
 **Returns:** `true` on success.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+
+plasma.bluetooth.toggle()
+```
+
 ### `plasma.bluetooth.list_devices()`
 
 Reads every device known by the default Bluetooth adapter. An adapter with no known devices returns an empty array.
 
 **Returns:** An array of Bluetooth device tables.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local devices = plasma.bluetooth.list_devices()
+
+for _, device in ipairs(devices) do
+    print(device.name, device.address)
+end
+```
 
 ### `plasma.bluetooth.list_connected_devices()`
 
@@ -1108,6 +1303,16 @@ Reads one known Bluetooth device. The selector may be its Bluetooth address or a
 
 **Returns:** A Bluetooth device table.
 
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local device = plasma.bluetooth.get_device("11:22:33:44:55:66")
+
+print(device.name, device.connected)
+```
+
 ### `plasma.bluetooth.is_connected(device)`
 
 Checks whether one known Bluetooth device is connected. It accepts the same selectors as `get_device()`.
@@ -1117,6 +1322,16 @@ Checks whether one known Bluetooth device is connected. It accepts the same sele
 | `device` | string or table | Bluetooth address or Bluetooth device table. |
 
 **Returns:** `true` when connected or `false` otherwise.
+
+#### Quick example
+
+```lua
+local home = os.getenv("HOME")
+local plasma = dofile(home .. "/.local/opt/lunar-plasma/lunar-plasma.lua")
+local device = plasma.bluetooth.get_device("11:22:33:44:55:66")
+
+print(plasma.bluetooth.is_connected(device))
+```
 
 ## General examples
 
