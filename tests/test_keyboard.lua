@@ -23,7 +23,7 @@ local function run()
             end,
         },
         {
-            name = "get_layout",
+            name = "get_active_layout",
             run = function()
                 local layout = assert(plasma_keyboard.get_active_layout())
                 assert(layout.index == 1 and layout.id == "latam")
@@ -55,13 +55,13 @@ local function run()
             end,
         },
         {
-            name = "next_layout",
+            name = "select_next_layout",
             run = function()
                 assert(plasma_keyboard.select_next_layout())
             end,
         },
         {
-            name = "previous_layout",
+            name = "select_previous_layout",
             run = function()
                 assert(plasma_keyboard.select_previous_layout())
             end,

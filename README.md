@@ -73,8 +73,6 @@ end
 ```
 
 #### Set an image as wallpaper on a specific display
-**[The background change on a specific screen in this format is not available until the next release]**
-
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 

@@ -49,7 +49,7 @@ local function run()
             end,
         },
         {
-            name = "list_devices",
+            name = "list_known_devices",
             run = function()
                 local devices = assert(plasma_bluetooth.list_known_devices())
                 assert(#devices == 2)

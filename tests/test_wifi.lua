@@ -37,7 +37,7 @@ local function run()
             end,
         },
         {
-            name = "get_network",
+            name = "get_active_network",
             run = function()
                 assert(plasma_wifi.get_active_network() == "Lunar Network")
             end,

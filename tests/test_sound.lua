@@ -18,13 +18,13 @@ local function run()
     local plasma_sound = sound.new(backend)
     local tests = {
         {
-            name = "set",
+            name = "set_volume",
             run = function()
                 expect_success(plasma_sound.set_volume(50))
             end,
         },
         {
-            name = "get",
+            name = "get_volume",
             run = function()
                 assert(plasma_sound.get_volume() == 40)
             end,
@@ -54,26 +54,26 @@ local function run()
             end,
         },
         {
-            name = "increase",
+            name = "increase_volume",
             run = function()
                 expect_success(plasma_sound.increase_volume(5))
             end,
         },
         {
-            name = "decrease",
+            name = "decrease_volume",
             run = function()
                 expect_success(plasma_sound.decrease_volume(5))
             end,
         },
         {
-            name = "set",
+            name = "set_volume",
             run = function()
                 local ok, err = plasma_sound.set_volume(101)
                 assert(not ok and err)
             end,
         },
         {
-            name = "increase",
+            name = "increase_volume",
             run = function()
                 local ok, err = plasma_sound.increase_volume(-1)
                 assert(not ok and err)
