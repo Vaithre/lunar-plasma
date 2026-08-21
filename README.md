@@ -49,15 +49,15 @@ plasma.notifications.send({
 })
 ```
 
-#### Set the performance power profile
+#### Set the Saving power profile
 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-plasma.power.set_profile("performance")
+plasma.power.set_profile("saving")
 ```
 
-#### Set brightness to 70% while charging above 50%
+#### Set brightness to 70% while charging above 50% and set the performance power profile
 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
