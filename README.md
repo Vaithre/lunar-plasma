@@ -39,7 +39,7 @@ plasma.sound.set(50)
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-plasma.notifications.send({
+plasma.notification.send({
     title = "Lunar Plasma",
     text = "Notifications are working",
     icon = "dialog-information",

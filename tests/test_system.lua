@@ -115,7 +115,7 @@ function system.get_suites(root)
         {
             name = "send notification",
             run = function()
-                assert(plasma.notifications.send({
+                assert(plasma.notification.send({
                     title = "Lunar Plasma system test",
                     text = "The notification backend is working",
                     icon = "dialog-information",

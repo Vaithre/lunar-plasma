@@ -1,7 +1,7 @@
--- Notifications API
+-- Notification API
 -- Send desktop notifications through the system notification server.
 
-local notifications = {}
+local notification = {}
 
 local notification_types = {
     info = true,
@@ -34,7 +34,7 @@ local function validate_optional_text(value, name)
     return value
 end
 
-function notifications.new(backend)
+function notification.new(backend)
     local instance = {}
 
     -- Send a desktop notification.
@@ -98,4 +98,4 @@ function notifications.new(backend)
     return instance
 end
 
-return notifications
+return notification

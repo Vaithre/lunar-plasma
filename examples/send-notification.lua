@@ -12,7 +12,7 @@ local plasma = dofile(example_dir .. "/../lunar-plasma.lua")
 
 -- Example starts here !
 
-local ok = plasma.notifications.send({
+local ok = plasma.notification.send({
     title = "Lunar Plasma",
     text = "Notifications are working",
     icon = "dialog-information",

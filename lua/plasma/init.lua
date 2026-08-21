@@ -1,6 +1,6 @@
 return {
     sound = require("plasma.sound"),
-    notifications = require("plasma.notifications"),
+    notification = require("plasma.notification"),
     power = require("plasma.powermanagement"),
     keyboard = require("plasma.keyboard"),
     desktop = require("plasma.desktop"),

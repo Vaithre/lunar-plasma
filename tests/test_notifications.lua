@@ -7,16 +7,16 @@ local root = source:match("^(.*)/tests/test_notifications%.lua$") or "."
 
 package.path = root .. "/lua/?.lua;" .. root .. "/lua/?/init.lua;" .. package.path
 
-local notifications = require("plasma.notifications")
+local notification = require("plasma.notification")
 local backend = root .. "/tests/fixtures/notifications-backend.sh"
 
 local function run()
-    local plasma_notifications = notifications.new(backend)
+    local plasma_notification = notification.new(backend)
     local tests = {
         {
             name = "send",
             run = function()
-                assert(plasma_notifications.send({
+                assert(plasma_notification.send({
                     title = "Lunar Plasma",
                     text = "Minimal notification",
                 }))
@@ -25,7 +25,7 @@ local function run()
         {
             name = "send",
             run = function()
-                assert(plasma_notifications.send({
+                assert(plasma_notification.send({
                     title = "Lunar Plasma's notification",
                     text = "All optional fields",
                     icon = "dialog-information",
@@ -38,21 +38,21 @@ local function run()
         {
             name = "send",
             run = function()
-                local ok, err = plasma_notifications.send({ text = "Missing title" })
+                local ok, err = plasma_notification.send({ text = "Missing title" })
                 assert(not ok and err)
             end,
         },
         {
             name = "send",
             run = function()
-                local ok, err = plasma_notifications.send({ title = "Missing text" })
+                local ok, err = plasma_notification.send({ title = "Missing text" })
                 assert(not ok and err)
             end,
         },
         {
             name = "send",
             run = function()
-                local ok, err = plasma_notifications.send({
+                local ok, err = plasma_notification.send({
                     title = "Invalid timeout",
                     text = "Test",
                     timeout = -2,
@@ -63,7 +63,7 @@ local function run()
         {
             name = "send",
             run = function()
-                local ok, err = plasma_notifications.send({
+                local ok, err = plasma_notification.send({
                     title = "Invalid type",
                     text = "Test",
                     type = "unknown",

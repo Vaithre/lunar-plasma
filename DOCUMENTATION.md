@@ -46,7 +46,7 @@ The currently available modules are:
 | Module | Purpose |
 |---|---|
 | `plasma.sound` | Control the default audio output. |
-| `plasma.notifications` | Send desktop notifications. |
+| `plasma.notification` | Send desktop notifications. |
 | `plasma.power` | Inspect battery and power-source state, control power profiles and system power actions, and adjust display brightness. |
 | `plasma.keyboard` | Read and change keyboard layouts. |
 | `plasma.desktop` | Inspect displays and control general desktop settings. |
@@ -217,7 +217,7 @@ end
 
 The notifications module sends messages through the desktop notification service.
 
-### `plasma.notifications.send(options)`
+### `plasma.notification.send(options)`
 
 Sends one notification through the current desktop notification server. Only `title` and `text` are required, and the remaining options control its presentation.
 
@@ -239,7 +239,7 @@ The notification type selects the default icon and urgency. A custom `icon` over
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-plasma.notifications.send({
+plasma.notification.send({
     title = "Download complete",
     text = "Your files are ready",
     type = "info",
@@ -1286,7 +1286,7 @@ plasma.power.set_profile("normal")
 plasma.power.set_brightness(first_display, 70)
 plasma.keyboard.set_layout("us")
 plasma.desktop.set_wallpaper(home .. "/Pictures/workspace.png")
-plasma.notifications.send({
+plasma.notification.send({
     title = "Work setup",
     text = "Your desktop is ready",
     type = "success",
@@ -1314,7 +1314,7 @@ if present then
     if not charging and percentage <= 20 then
         plasma.power.set_profile("saving")
         plasma.power.set_brightness(first_display, 35)
-        plasma.notifications.send({
+        plasma.notification.send({
             title = "Low battery",
             text = "Power saving settings have been applied",
             type = "warning",
@@ -1352,7 +1352,7 @@ local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.
 plasma.keyboard.next_layout()
 local layout = plasma.keyboard.get_layout()
 
-plasma.notifications.send({
+        plasma.notification.send({
     title = "Keyboard layout",
     text = layout.name,
 })

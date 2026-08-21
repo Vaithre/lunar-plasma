@@ -18,7 +18,7 @@ assert(version and version:match("^%d+%.%d+%.%d+$"), "invalid Lunar Plasma versi
 local sound = require("plasma.sound")
 
 -- Load the notifications API and give it its backend
-local notifications = require("plasma.notifications")
+local notification = require("plasma.notification")
 
 -- Load the power API and give it its backend
 local power = require("plasma.powermanagement")
@@ -39,7 +39,7 @@ local bluetooth = require("plasma.bluetooth")
 return {
     version = version,
     sound = sound.new(root .. "/scripts/sound.sh"),
-    notifications = notifications.new(root .. "/scripts/notifications.sh"),
+    notification = notification.new(root .. "/scripts/notifications.sh"),
     power = power.new(root .. "/scripts/power.sh"),
     keyboard = keyboard.new(root .. "/scripts/keyboard.sh"),
     desktop = desktop.new(root .. "/scripts/desktop.sh"),
