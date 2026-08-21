@@ -263,10 +263,8 @@ resolve_display() {
     local index
     local position
     local marker
-    local output_id
     local output_name
     local output_uuid
-    local remainder
     local -a displays
 
     mapfile -t displays < <("$qdbus" \
@@ -306,7 +304,7 @@ resolve_display() {
     if command -v kscreen-doctor >/dev/null 2>&1; then
         position=0
 
-        while read -r marker output_id output_name output_uuid remainder; do
+        while read -r marker _ output_name _ _; do
             [[ "$marker" == "Output:" ]] || continue
             ((position += 1))
 

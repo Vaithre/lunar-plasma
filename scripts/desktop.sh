@@ -365,8 +365,6 @@ set_wallpaper() {
     local plugin="$3"
     local uri
     local display
-    local current_plugin
-    local current_uri
     local wallpapers
 
     uri="$(normalize_uri "$path")"
@@ -378,7 +376,7 @@ set_wallpaper() {
 
     wallpapers="$(list_wallpapers)"
 
-    while IFS=$'\t' read -r display current_plugin current_uri; do
+    while IFS=$'\t' read -r display _ _; do
         set_wallpaper_for_screen "$uri" "$plugin" "$((display - 1))"
     done <<<"$wallpapers"
 }
