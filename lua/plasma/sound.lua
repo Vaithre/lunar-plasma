@@ -54,7 +54,7 @@ function sound.new(backend)
     end
 
     -- Set the default output volume from 0 to 100.
-    function instance.set(value)
+    function instance.set_volume(value)
         local validated, err = validate_percentage(value, "volume")
         if not validated then
             return nil, err
@@ -64,7 +64,7 @@ function sound.new(backend)
     end
 
     -- Get the default output volume.
-    function instance.get()
+    function instance.get_volume()
         local output, err = read_backend("get")
         if not output then
             return nil, err
@@ -112,35 +112,35 @@ function sound.new(backend)
     end
 
     -- Increase the default output volume without exceeding 100.
-    function instance.increase(amount)
+    function instance.increase_volume(amount)
         local validated, err = validate_percentage(amount, "amount")
         if not validated then
             return nil, err
         end
 
         local current
-        current, err = instance.get()
+        current, err = instance.get_volume()
         if not current then
             return nil, err
         end
 
-        return instance.set(math.min(100, current + validated))
+        return instance.set_volume(math.min(100, current + validated))
     end
 
     -- Decrease the default output volume without going below zero.
-    function instance.decrease(amount)
+    function instance.decrease_volume(amount)
         local validated, err = validate_percentage(amount, "amount")
         if not validated then
             return nil, err
         end
 
         local current
-        current, err = instance.get()
+        current, err = instance.get_volume()
         if not current then
             return nil, err
         end
 
-        return instance.set(math.max(0, current - validated))
+        return instance.set_volume(math.max(0, current - validated))
     end
 
     return instance

@@ -174,7 +174,7 @@ function bluetooth.new(backend)
     end
 
     -- Return every Bluetooth device known by the default adapter.
-    function instance.list_devices()
+    function instance.list_known_devices()
         return read_devices("list-devices")
     end
 

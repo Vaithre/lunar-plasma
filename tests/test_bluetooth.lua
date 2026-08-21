@@ -51,7 +51,7 @@ local function run()
         {
             name = "list_devices",
             run = function()
-                local devices = assert(plasma_bluetooth.list_devices())
+                local devices = assert(plasma_bluetooth.list_known_devices())
                 assert(#devices == 2)
                 assert(devices[1].address == "11:22:33:44:55:66")
                 assert(devices[1].name == "Lunar Headphones")

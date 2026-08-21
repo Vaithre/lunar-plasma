@@ -14,7 +14,7 @@ local plasma = dofile(example_dir .. "/../lunar-plasma.lua")
 
 local value = 25
 
-local ok = plasma.sound.set(value)
+local ok = plasma.sound.set_volume(value)
 
 if not ok then
     io.stderr:write("Warning: could not set the sound volume\n")

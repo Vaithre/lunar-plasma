@@ -75,7 +75,7 @@ Display and keyboard layout indexes start at `1` in the Lua API.
 
 The sound module controls the default audio output. Volume values are integer percentages from `0` to `100`.
 
-### `plasma.sound.set(value)`
+### `plasma.sound.set_volume(value)`
 
 Sets the volume of the default audio output to an absolute percentage. It changes the current level directly instead of increasing or decreasing it.
 
@@ -90,12 +90,12 @@ Sets the volume of the default audio output to an absolute percentage. It change
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-if plasma.sound.set(50) then
+if plasma.sound.set_volume(50) then
     print("Volume set to 50%")
 end
 ```
 
-### `plasma.sound.get()`
+### `plasma.sound.get_volume()`
 
 Reads the current volume of the default audio output. The returned percentage is independent of the mute state.
 
@@ -105,7 +105,7 @@ Reads the current volume of the default audio output. The returned percentage is
 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
-local volume = plasma.sound.get()
+local volume = plasma.sound.get_volume()
 
 print(volume)
 ```
@@ -173,7 +173,7 @@ if plasma.sound.toggle_mute() then
 end
 ```
 
-### `plasma.sound.increase(amount)`
+### `plasma.sound.increase_volume(amount)`
 
 Reads the current volume and increases it by the requested number of percentage points. The final value is capped at `100`.
 
@@ -188,12 +188,12 @@ Reads the current volume and increases it by the requested number of percentage 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-if plasma.sound.increase(10) then
+if plasma.sound.increase_volume(10) then
     print("Volume increased")
 end
 ```
 
-### `plasma.sound.decrease(amount)`
+### `plasma.sound.decrease_volume(amount)`
 
 Reads the current volume and decreases it by the requested number of percentage points. The final value is limited to `0`.
 
@@ -208,7 +208,7 @@ Reads the current volume and decreases it by the requested number of percentage 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-if plasma.sound.decrease(10) then
+if plasma.sound.decrease_volume(10) then
     print("Volume decreased")
 end
 ```
@@ -609,7 +609,7 @@ for _, layout in ipairs(layouts) do
 end
 ```
 
-### `plasma.keyboard.get_layout()`
+### `plasma.keyboard.get_active_layout()`
 
 Reads the keyboard layout currently selected in Plasma. The returned table includes its position, identifier, variant, and human-readable name.
 
@@ -619,7 +619,7 @@ Reads the keyboard layout currently selected in Plasma. The returned table inclu
 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
-local layout = plasma.keyboard.get_layout()
+local layout = plasma.keyboard.get_active_layout()
 
 print(layout.name)
 ```
@@ -647,7 +647,7 @@ if plasma.keyboard.set_layout("latam") then
 end
 ```
 
-### `plasma.keyboard.next_layout()`
+### `plasma.keyboard.select_next_layout()`
 
 Moves to the next layout in the configured order. After the last layout, Plasma returns to the first one.
 
@@ -658,12 +658,12 @@ Moves to the next layout in the configured order. After the last layout, Plasma 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-if plasma.keyboard.next_layout() then
+if plasma.keyboard.select_next_layout() then
     print("Switched to the next layout")
 end
 ```
 
-### `plasma.keyboard.previous_layout()`
+### `plasma.keyboard.select_previous_layout()`
 
 Moves to the previous layout in the configured order. From the first layout, Plasma continues with the last one.
 
@@ -674,7 +674,7 @@ Moves to the previous layout in the configured order. From the first layout, Pla
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-if plasma.keyboard.previous_layout() then
+if plasma.keyboard.select_previous_layout() then
     print("Switched to the previous layout")
 end
 ```
@@ -1019,7 +1019,7 @@ local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.
 print(plasma.wifi.is_connected())
 ```
 
-### `plasma.wifi.get_network()`
+### `plasma.wifi.get_active_network()`
 
 Reads the SSID of the active Wi-Fi network.
 
@@ -1029,7 +1029,7 @@ Reads the SSID of the active Wi-Fi network.
 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
-local network = plasma.wifi.get_network()
+local network = plasma.wifi.get_active_network()
 
 print(network)
 ```
@@ -1197,7 +1197,7 @@ local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.
 plasma.bluetooth.toggle()
 ```
 
-### `plasma.bluetooth.list_devices()`
+### `plasma.bluetooth.list_known_devices()`
 
 Reads every device known by the default Bluetooth adapter. An adapter with no known devices returns an empty array.
 
@@ -1207,7 +1207,7 @@ Reads every device known by the default Bluetooth adapter. An adapter with no kn
 
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
-local devices = plasma.bluetooth.list_devices()
+local devices = plasma.bluetooth.list_known_devices()
 
 for _, device in ipairs(devices) do
     print(device.name, device.address)
@@ -1281,7 +1281,7 @@ Prepare the desktop for a work session with one script.
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 local first_display = 1
 
-plasma.sound.set(35)
+plasma.sound.set_volume(35)
 plasma.power.set_profile("normal")
 plasma.power.set_brightness(first_display, 70)
 plasma.keyboard.set_layout("us")
@@ -1334,11 +1334,11 @@ local hour = tonumber(os.date("%H"))
 if hour >= 7 and hour < 19 then
     plasma.desktop.set_wallpaper(home .. "/Pictures/day.png")
     plasma.power.set_profile("normal")
-    plasma.sound.set(40)
+    plasma.sound.set_volume(40)
 else
     plasma.desktop.set_wallpaper(home .. "/Pictures/night.png")
     plasma.power.set_profile("saving")
-    plasma.sound.set(20)
+    plasma.sound.set_volume(20)
 end
 ```
 
@@ -1349,8 +1349,8 @@ Move to the next configured layout and display its name.
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-plasma.keyboard.next_layout()
-local layout = plasma.keyboard.get_layout()
+plasma.keyboard.select_next_layout()
+local layout = plasma.keyboard.get_active_layout()
 
         plasma.notification.send({
     title = "Keyboard layout",

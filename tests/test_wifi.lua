@@ -39,7 +39,7 @@ local function run()
         {
             name = "get_network",
             run = function()
-                assert(plasma_wifi.get_network() == "Lunar Network")
+                assert(plasma_wifi.get_active_network() == "Lunar Network")
             end,
         },
         {
@@ -54,7 +54,7 @@ local function run()
         {
             name = "get_disconnected_network",
             run = function()
-                local network, err = disconnected_wifi.get_network()
+                local network, err = disconnected_wifi.get_active_network()
                 assert(not network and err == "wifi is not connected")
             end,
         },

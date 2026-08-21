@@ -104,7 +104,7 @@ function keyboard.new(backend)
     end
 
     -- Return the active keyboard layout.
-    function instance.get_layout()
+    function instance.get_active_layout()
         local output, err = read_backend("get-layout")
         if not output then
             return nil, err
@@ -124,12 +124,12 @@ function keyboard.new(backend)
     end
 
     -- Switch to the next configured keyboard layout.
-    function instance.next_layout()
+    function instance.select_next_layout()
         return execute_backend("next-layout")
     end
 
     -- Switch to the previous configured keyboard layout.
-    function instance.previous_layout()
+    function instance.select_previous_layout()
         return execute_backend("previous-layout")
     end
 

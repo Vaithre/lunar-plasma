@@ -72,7 +72,7 @@ function system.get_suites(root)
         {
             name = "read state",
             run = function()
-                local volume = assert(plasma.sound.get())
+                local volume = assert(plasma.sound.get_volume())
                 local muted, muted_err = plasma.sound.is_muted()
                 assert(muted ~= nil, muted_err)
                 assert(type(volume) == "number" and volume >= 0 and volume <= 100)
@@ -82,21 +82,21 @@ function system.get_suites(root)
         {
             name = "controls and restore",
             run = function()
-                local original_volume = assert(plasma.sound.get())
+                local original_volume = assert(plasma.sound.get_volume())
                 local original_muted, muted_err = plasma.sound.is_muted()
                 assert(original_muted ~= nil, muted_err)
 
                 local operation_ok, operation_err = pcall(function()
-                    assert(plasma.sound.set(original_volume))
-                    assert(plasma.sound.increase(0))
-                    assert(plasma.sound.decrease(0))
+                    assert(plasma.sound.set_volume(original_volume))
+                    assert(plasma.sound.increase_volume(0))
+                    assert(plasma.sound.decrease_volume(0))
                     assert(plasma.sound.toggle_mute())
                     assert(plasma.sound.toggle_mute())
                     assert(plasma.sound.mute())
                     assert(plasma.sound.unmute())
                 end)
 
-                local volume_ok, volume_err = plasma.sound.set(original_volume)
+                local volume_ok, volume_err = plasma.sound.set_volume(original_volume)
                 assert(volume_ok, volume_err)
 
                 local mute_ok, mute_err
@@ -199,7 +199,7 @@ function system.get_suites(root)
             name = "read layouts",
             run = function()
                 local layouts = assert(plasma.keyboard.list_layouts())
-                local active = assert(plasma.keyboard.get_layout())
+                local active = assert(plasma.keyboard.get_active_layout())
                 assert(#layouts > 0)
                 assert(type(active.id) == "string" and active.id ~= "")
             end,
@@ -207,12 +207,12 @@ function system.get_suites(root)
         {
             name = "controls and restore",
             run = function()
-                local original = assert(plasma.keyboard.get_layout())
+                local original = assert(plasma.keyboard.get_active_layout())
 
                 local operation_ok, operation_err = pcall(function()
                     assert(plasma.keyboard.set_layout(original))
-                    assert(plasma.keyboard.next_layout())
-                    assert(plasma.keyboard.previous_layout())
+                    assert(plasma.keyboard.select_next_layout())
+                    assert(plasma.keyboard.select_previous_layout())
                 end)
 
                 local restored, restore_err = plasma.keyboard.set_layout(original)
@@ -230,7 +230,7 @@ function system.get_suites(root)
                 assert(plasma.wifi.is_enabled() == status.enabled)
                 assert(plasma.wifi.is_connected() == status.connected)
 
-                local network, network_err = plasma.wifi.get_network()
+                local network, network_err = plasma.wifi.get_active_network()
                 if status.connected then
                     assert(network == status.network)
                 else
@@ -330,7 +330,7 @@ function system.get_suites(root)
                     return skip(reason)
                 end
 
-                local devices = assert(plasma.bluetooth.list_devices())
+                local devices = assert(plasma.bluetooth.list_known_devices())
                 local connected = assert(plasma.bluetooth.list_connected_devices())
                 assert(type(connected) == "table")
 

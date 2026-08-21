@@ -20,13 +20,13 @@ local function run()
         {
             name = "set",
             run = function()
-                expect_success(plasma_sound.set(50))
+                expect_success(plasma_sound.set_volume(50))
             end,
         },
         {
             name = "get",
             run = function()
-                assert(plasma_sound.get() == 40)
+                assert(plasma_sound.get_volume() == 40)
             end,
         },
         {
@@ -56,26 +56,26 @@ local function run()
         {
             name = "increase",
             run = function()
-                expect_success(plasma_sound.increase(5))
+                expect_success(plasma_sound.increase_volume(5))
             end,
         },
         {
             name = "decrease",
             run = function()
-                expect_success(plasma_sound.decrease(5))
+                expect_success(plasma_sound.decrease_volume(5))
             end,
         },
         {
             name = "set",
             run = function()
-                local ok, err = plasma_sound.set(101)
+                local ok, err = plasma_sound.set_volume(101)
                 assert(not ok and err)
             end,
         },
         {
             name = "increase",
             run = function()
-                local ok, err = plasma_sound.increase(-1)
+                local ok, err = plasma_sound.increase_volume(-1)
                 assert(not ok and err)
             end,
         },

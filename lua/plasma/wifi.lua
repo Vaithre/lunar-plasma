@@ -103,7 +103,7 @@ function wifi.new(backend)
     end
 
     -- Return the name of the active Wi-Fi network.
-    function instance.get_network()
+    function instance.get_active_network()
         local status, err = instance.get_status()
         if not status then
             return nil, err
