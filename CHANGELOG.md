@@ -15,6 +15,7 @@
 ### Fixed
 
 - Wallpaper inspection and changes targeting a connector now use Plasma's own screen mapping instead of KScreen enumeration order, preventing operations from addressing the wrong display in multi-monitor setups.
+- Display brightness lookup now preserves the output UUID used to resolve monitors when connector-name matching is unavailable.
 
 ## [0.2.1] - 2026-08-20
 

@@ -304,7 +304,7 @@ resolve_display() {
     if command -v kscreen-doctor >/dev/null 2>&1; then
         position=0
 
-        while read -r marker _ output_name _ _; do
+        while read -r marker _ output_name output_uuid _; do
             [[ "$marker" == "Output:" ]] || continue
             ((position += 1))
 
