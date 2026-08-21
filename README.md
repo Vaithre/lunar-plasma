@@ -31,7 +31,7 @@ Once Lunar Plasma is installed, you can use it from any script or executable tha
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-plasma.sound.set(50)
+plasma.sound.set_volume(50)
 ```
 
 #### Send a desktop notification
@@ -115,7 +115,7 @@ The main current goals are:
 A standard KDE Plasma desktop should already include most of the tools Lunar Plasma uses. Lua and Bash run the library, while tools such as `pactl`, `notify-send`, `qdbus`, `kscreen-doctor`, `setxkbmap`, `nmcli`, `bluetoothctl`, and `busctl` provide specific features or fallbacks. NetworkManager supplies Wi-Fi state, BlueZ supplies Bluetooth state, and UPower supplies battery information. Lunar Plasma detects the available `qdbus` command automatically.
 
 > [!important]
-> It's normal for the package manager to talk about "replacing packages." In this case you can test the program with the regular test suite [`lua tests/test_all.lua`] and everything will probably work fine without the need to install anything! To test the available features against your actual system, use [`LUNAR_TEST_ON_SYSTEM=1 lua tests/test_all.lua`]. **System tests temporarily modify settings such as volume, keyboard layout, brightness, and wallpaper, so use this mode with caution.** You can also install and use only what you need. For example, **if you don't have bluetooth on your computer, you don't need to install bluez for this library to work for your use case**.
+> It's normal for the package manager to talk about "replacing packages." In this case you can test the program with the regular test suite [`lua tests/test_all.lua`] and everything will probably work fine without the need to install anything! To test the available features against your actual system, use [`lua tests/test_all.lua --test-on-system`]. **System tests temporarily modify settings such as volume, keyboard layout, brightness, and wallpaper, so use this mode with caution.** You can also install and use only what you need. For example, **if you don't have bluetooth on your computer, you don't need to install bluez for this library to work for your use case**.
 
 If a command is missing, these packages provide the usual dependencies for each distribution family:
 
@@ -246,7 +246,7 @@ lua tests/test_all.lua
 To find out which features actually work on the current system, run every test against the real system backends:
 
 ```bash
-LUNAR_TEST_ON_SYSTEM=1 lua tests/test_all.lua
+lua tests/test_all.lua --test-on-system
 ```
 
 > [!CAUTION]

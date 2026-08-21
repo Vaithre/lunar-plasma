@@ -7,7 +7,21 @@ local root = source:match("^(.*)/tests/test_all%.lua$") or "."
 
 package.path = root .. "/tests/?.lua;" .. package.path
 
-local system_mode = os.getenv("LUNAR_TEST_ON_SYSTEM") == "1"
+local system_mode = false
+local invalid_flag = false
+for _, argument in ipairs(arg) do
+    if argument == "--test-on-system" then
+        system_mode = true
+    elseif argument:sub(1, 1) == "-" then
+        io.stderr:write("Warning: unknown test runner flag: " .. argument .. "\n")
+        invalid_flag = true
+    end
+end
+
+if invalid_flag then
+    os.exit(1)
+end
+
 local suites
 
 if system_mode then

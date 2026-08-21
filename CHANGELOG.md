@@ -1,10 +1,12 @@
 # Changelog
 
-## [0.2.2] - Unreleased
+## [0.3.0] - Unreleased
 
 ### Changed
 
 - Renamed the notification API from `plasma.notifications` to `plasma.notification` for consistency with the other module names.
+- Improved API function names to make operations more descriptive and standardized naming conventions across modules.
+- Replaced the `LUNAR_TEST_ON_SYSTEM=1` environment variable with the `--test-on-system` test runner flag.
 
 ### Fixed
 
