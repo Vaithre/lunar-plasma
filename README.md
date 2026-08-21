@@ -254,6 +254,16 @@ LUNAR_TEST_ON_SYSTEM=1 lua tests/test_all.lua
 
 Hardware-dependent tests are reported as skipped when the required device is not available. If a component fails, the final output lists that component and every failed subtest with its error.
 
+## AI Use
+
+Contributions may use AI, subject to the following conditions:
+
+- Please read, review, and modify the code wherever necessary. You are responsible for the code regardless of how it was created.
+- Do not attribute the contribution to Claude or similar tools. This is essentially an advertising method. The same applies to the contents of the code itself.
+- Try to write commit messages yourself. LLM-style wording is quite annoying.
+
+Despite this, AI use is not prohibited, far from it. The prototype for this project was accelerated considerably through tools such as Codex. That does not mean I am unfamiliar with the code structure or blindly accept AI output. I constantly change AI generated details and test the program's effects on real hardware. You should do the same!
+
 ## License
 
 Lunar Plasma is licensed under the [GNU Lesser General Public License v3.0](LICENSE.md).
