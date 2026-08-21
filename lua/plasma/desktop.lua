@@ -2,6 +2,7 @@
 -- Change settings related to the Plasma desktop.
 
 local desktop = {}
+local utils = require("plasma.utils")
 
 local function shell_quote(value)
     return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
@@ -215,24 +216,6 @@ function desktop.new(backend)
         return output
     end
 
-    local function resolve_wallpaper_display(display)
-        if type(display) ~= "string" then
-            return display
-        end
-
-        local output, err = read_backend("screen-for-connector", { display })
-        if not output then
-            return nil, err
-        end
-
-        local plasma_screen = tonumber(output:match("^%s*(%-?%d+)%s*$"))
-        if not plasma_screen or plasma_screen % 1 ~= 0 or plasma_screen < 0 then
-            return nil, "desktop backend returned an invalid Plasma screen"
-        end
-
-        return plasma_screen + 1
-    end
-
     -- Return the wallpaper assigned to every display.
     function instance.list_wallpapers()
         local output, err = read_backend("list-wallpapers")
@@ -265,7 +248,7 @@ function desktop.new(backend)
             return nil, err
         end
 
-        validated_display, err = resolve_wallpaper_display(validated_display)
+        validated_display, err = utils.resolve_plasma_screen(read_backend, validated_display)
         if not validated_display then
             return nil, err
         end
@@ -301,7 +284,7 @@ function desktop.new(backend)
             return nil, err
         end
 
-        display, err = resolve_wallpaper_display(display)
+        display, err = utils.resolve_plasma_screen(read_backend, display)
         if options.display ~= nil and not display then
             return nil, err
         end

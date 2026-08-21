@@ -2,6 +2,10 @@
 
 ## [0.3.0] - 2026-08-21
 
+### Added
+
+- Added the internal `utils.lua` sublibrary for shared Plasma API helpers.
+
 ### Changed
 
 - Renamed the notification API from `plasma.notifications` to `plasma.notification` for consistency with the other module names.
