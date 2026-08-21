@@ -42,6 +42,14 @@ local function run()
             end,
         },
         {
+            name = "get_wallpaper_by_connector",
+            run = function()
+                local wallpaper = assert(plasma_desktop.get_wallpaper("HDMI-A-1"))
+                assert(wallpaper.display == 1)
+                assert(wallpaper.path == "/home/user/Pictures/one.png")
+            end,
+        },
+        {
             name = "set_wallpaper",
             run = function()
                 assert(plasma_desktop.set_wallpaper("/home/user/Pictures/one.png"))
