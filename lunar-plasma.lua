@@ -14,28 +14,16 @@ version_file:close()
 
 assert(version and version:match("^%d+%.%d+%.%d+$"), "invalid Lunar Plasma version")
 
--- Load the sound API and give it its backend
+-- Load native APIs
 local sound = require("plasma.sound")
-
--- Load the notifications API and give it its backend
 local notification = require("plasma.notification")
-
--- Load the power API and give it its backend
 local power = require("plasma.powermanagement")
-
--- Load the keyboard API and give it its backend
 local keyboard = require("plasma.keyboard")
-
--- Load the desktop API and give it its backend
 local desktop = require("plasma.desktop")
-
--- Load the Wi-Fi API and give it its backend
 local wifi = require("plasma.wifi")
-
--- Load the Bluetooth API and give it its backend
 local bluetooth = require("plasma.bluetooth")
 
--- Expose the public API
+-- Public API
 return {
     version = version,
     sound = sound.new(root .. "/scripts/sound.sh"),
