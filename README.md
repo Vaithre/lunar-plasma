@@ -18,7 +18,7 @@ Lunar Plasma lets you control your [KDE Plasma](https://kde.org/plasma-desktop/)
 
 ## API Reference
 
-See the complete [Lunar Plasma documentation](DOCUMENTATION.md).
+See the complete [Lunar Plasma wiki](https://github.com/Vaithre/lunar-plasma/wiki).
 
 ## Quick examples
 
@@ -199,7 +199,7 @@ chmod +x install.sh
 When `install.sh` starts, choose one of the following modes:
 
 - **Quick installation** installs the runtime only.
-- **Custom installation** asks separately whether to install the docs, tests, and examples.
+- **Custom installation** asks separately whether to install the tests and examples.
 
 ### Installation directory
 

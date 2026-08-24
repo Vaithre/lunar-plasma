@@ -26,7 +26,6 @@ Until then, I’ll do my best to keep the APIs stable, but they may still change
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Active programs/processes/services detection API |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | API | Streamline API access |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Documentation | Document integration with other languages |
-| <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Documentation | Convert DOCUMENTATION.md into a GitHub wiki |
 | <img src="./resources/status-planned.svg" width="24" height="24" alt="Planned"> | Automation | Implement an automation framework for events and schedules |
 
 ### Completed
@@ -45,3 +44,4 @@ Until then, I’ll do my best to keep the APIs stable, but they may still change
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Testing | Implement a test suite |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the project |
 | <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Document the expanded APIs |
+| <img src="./resources/status-completed.svg" width="24" height="24" alt="Completed"> | Documentation | Convert the project documentation into a GitHub wiki |

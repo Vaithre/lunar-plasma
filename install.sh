@@ -8,12 +8,9 @@ install_dir="$install_root/lunar-plasma"
 expected_dir="$HOME/.local/opt/lunar-plasma"
 staging_dir=""
 backup_dir=""
-install_documentation=false
 install_tests=false
 install_examples=false
 custom_installation=false
-
-documentation_files=(DOCUMENTATION.md)
 
 cleanup() {
     if [[ -n "$staging_dir" && -d "$staging_dir" ]]; then
@@ -53,14 +50,6 @@ verify_sources() {
         return 1
     fi
 
-    if [[ "$install_documentation" == true ]]; then
-        for source in "${documentation_files[@]}"; do
-            if [[ ! -f "$project_root/$source" ]]; then
-                printf 'Missing installation source: %s\n' "$source" >&2
-                return 1
-            fi
-        done
-    fi
 }
 
 verify_installation() {
@@ -91,18 +80,6 @@ verify_installation() {
         [[ ! -e "$install_dir/tests" ]] || return 1
     fi
 
-    local document
-    if [[ "$install_documentation" == true ]]; then
-        for document in "${documentation_files[@]}"; do
-            cmp -s "$project_root/$document" "$install_dir/$document" || return 1
-        done
-    else
-        local document
-        for document in "${documentation_files[@]}"; do
-            [[ ! -e "$install_dir/$document" ]] || return 1
-        done
-    fi
-
     local executable
     for executable in "$install_dir/scripts/"*.sh; do
         [[ -x "$executable" ]] || return 1
@@ -127,7 +104,7 @@ printf 'Choose an installation type:\n'
     printf '  1) Quick installation \033[1m(recommended)\033[0m\n'
     printf '     Installs the runtime only.\n'
 printf '  2) Custom installation\n'
-printf '     Choose whether to install documentation, tests, and examples.\n\n'
+printf '     Choose whether to install tests and examples.\n\n'
 
 while true; do
     printf 'Installation type [1-2]: '
@@ -139,10 +116,6 @@ while true; do
             ;;
         2|custom|Custom|CUSTOM)
             custom_installation=true
-
-            if confirm 'Install DOCUMENTATION.md?'; then
-                install_documentation=true
-            fi
 
             if confirm 'Install tests?'; then
                 install_tests=true
@@ -163,11 +136,6 @@ done
 
 if [[ "$custom_installation" == true ]]; then
     printf '\nSelected installation:\n'
-    if [[ "$install_documentation" == true ]]; then
-        printf '  Documentation: yes\n'
-    else
-        printf '  Documentation: no\n'
-    fi
     if [[ "$install_tests" == true ]]; then
         printf '  Tests: yes\n'
     else
@@ -228,12 +196,6 @@ fi
 
 if [[ "$install_tests" == true ]]; then
     cp -a -- "$project_root/tests" "$staging_dir/package/"
-fi
-
-if [[ "$install_documentation" == true ]]; then
-    for document in "${documentation_files[@]}"; do
-        cp -a -- "$project_root/$document" "$staging_dir/package/"
-    done
 fi
 
 # ZIP archives may not preserve executable permissions.

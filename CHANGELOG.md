@@ -6,6 +6,8 @@
 
 - Moved shared shell quoting, boolean parsing, and tab-separated field splitting helpers to `utils.lua`.
 - Restructured code comments to make the implementation easier to understand.
+- Moved the complete project documentation to the GitHub wiki and removed `DOCUMENTATION.md`.
+- Updated the custom installer to select tests and examples now that documentation is maintained online.
 
 ## [0.3.0] - 2026-08-21
 
