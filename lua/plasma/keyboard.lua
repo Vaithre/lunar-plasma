@@ -2,11 +2,9 @@
 -- Read and change the active keyboard layout.
 
 local keyboard = {}
+local utils = require("plasma.utils")
 
-local function shell_quote(value)
-    return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
-end
-
+-- Parse a keyboard layout returned by the backend.
 local function parse_layout(line)
     local index, id, variant, name = line:match("^(%d+)\t([^\t]*)\t([^\t]*)\t(.*)$")
 
@@ -22,6 +20,7 @@ local function parse_layout(line)
     }
 end
 
+-- Validate a keyboard layout selector and optional variant.
 local function validate_layout(layout, variant)
     if type(layout) == "table" then
         variant = layout.variant
@@ -47,11 +46,12 @@ end
 function keyboard.new(backend)
     local instance = {}
 
+    -- Execute a backend action.
     local function execute_backend(action, arguments)
-        local command = shell_quote(backend) .. " " .. action
+        local command = utils.shell_quote(backend) .. " " .. action
 
         for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. shell_quote(argument)
+            command = command .. " " .. utils.shell_quote(argument)
         end
 
         local ok, _, code = os.execute(command)
@@ -62,8 +62,9 @@ function keyboard.new(backend)
         return true
     end
 
+    -- Read a backend response.
     local function read_backend(action)
-        local process = io.popen(shell_quote(backend) .. " " .. action)
+        local process = io.popen(utils.shell_quote(backend) .. " " .. action)
         if not process then
             return nil, "could not start the keyboard backend"
         end
@@ -78,7 +79,7 @@ function keyboard.new(backend)
         return output
     end
 
-    -- Return every keyboard layout configured in the current session.
+    -- Return keyboard layouts configured in the current session.
     function instance.list_layouts()
         local output, err = read_backend("list-layouts")
         if not output then
@@ -113,7 +114,7 @@ function keyboard.new(backend)
         return parse_layout(output:match("^%s*(.-)%s*$"))
     end
 
-    -- Select a layout by ID, name, one-based index, or layout table.
+    -- Select a keyboard layout.
     function instance.set_layout(layout, variant)
         local selector, validated_variant, err = validate_layout(layout, variant)
         if not selector then
@@ -123,12 +124,12 @@ function keyboard.new(backend)
         return execute_backend("set-layout", { selector, validated_variant })
     end
 
-    -- Switch to the next configured keyboard layout.
+    -- Select the next keyboard layout.
     function instance.select_next_layout()
         return execute_backend("next-layout")
     end
 
-    -- Switch to the previous configured keyboard layout.
+    -- Select the previous keyboard layout.
     function instance.select_previous_layout()
         return execute_backend("previous-layout")
     end

@@ -2,6 +2,7 @@
 -- Control power profiles, system power actions, and display brightness.
 
 local power = {}
+local utils = require("plasma.utils")
 
 local profiles = {
     saving = "power-saver",
@@ -42,35 +43,10 @@ local warning_levels = {
     action = true,
 }
 
-local function shell_quote(value)
-    return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
-end
-
-local function split_fields(line)
-    local fields = {}
-
-    for field in (line .. "\t"):gmatch("(.-)\t") do
-        fields[#fields + 1] = field
-    end
-
-    return fields
-end
-
-local function parse_boolean(value)
-    if value == "true" then
-        return true
-    end
-
-    if value == "false" then
-        return false
-    end
-
-    return nil
-end
-
+-- Parse battery and power-source status returned by the backend.
 local function parse_battery_status(line)
-    local fields = split_fields(line)
-    local present = parse_boolean(fields[1])
+    local fields = utils.split_fields(line)
+    local present = utils.parse_boolean(fields[1])
     local percentage = fields[2] ~= "" and tonumber(fields[2]) or nil
     local time_remaining = fields[5] ~= "" and tonumber(fields[5]) or nil
 
@@ -95,6 +71,7 @@ local function parse_battery_status(line)
     }
 end
 
+-- Validate brightness percentage.
 local function validate_brightness(value)
     value = tonumber(value)
 
@@ -105,6 +82,7 @@ local function validate_brightness(value)
     return value
 end
 
+-- Validate a display name, ID, or monitor number.
 local function validate_display(display)
     if type(display) ~= "string" and type(display) ~= "number" then
         return nil, "display must be a name, ID, or monitor number"
@@ -122,11 +100,12 @@ end
 function power.new(backend)
     local instance = {}
 
+    -- Execute a backend action.
     local function execute_backend(action, arguments)
-        local command = shell_quote(backend) .. " " .. action
+        local command = utils.shell_quote(backend) .. " " .. action
 
         for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. shell_quote(argument)
+            command = command .. " " .. utils.shell_quote(argument)
         end
 
         local ok, _, code = os.execute(command)
@@ -137,11 +116,12 @@ function power.new(backend)
         return true
     end
 
+    -- Read a backend response.
     local function read_backend(action, arguments)
-        local command = shell_quote(backend) .. " " .. action
+        local command = utils.shell_quote(backend) .. " " .. action
 
         for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. shell_quote(argument)
+            command = command .. " " .. utils.shell_quote(argument)
         end
 
         local process = io.popen(command)
@@ -159,7 +139,7 @@ function power.new(backend)
         return output
     end
 
-    -- Set the active power profile when profile management is available.
+    -- Set the active power profile.
     function instance.set_profile(profile)
         local mapped_profile = profiles[profile]
         if not mapped_profile then
@@ -184,7 +164,7 @@ function power.new(backend)
         return profile
     end
 
-    -- Return the complete system battery and power-source state.
+    -- Return battery and power-source status.
     function instance.get_battery_status()
         local output, err = read_backend("get-battery-status")
         if not output then
@@ -194,7 +174,7 @@ function power.new(backend)
         return parse_battery_status(output)
     end
 
-    -- Check whether the system has a battery.
+    -- Check if the system has a battery.
     function instance.is_battery_present()
         local status, err = instance.get_battery_status()
         if not status then
@@ -204,7 +184,7 @@ function power.new(backend)
         return status.present
     end
 
-    -- Return the current system battery percentage.
+    -- Return the battery percentage.
     function instance.get_battery_percentage()
         local status, err = instance.get_battery_status()
         if not status then
@@ -218,7 +198,7 @@ function power.new(backend)
         return status.percentage
     end
 
-    -- Return the current system battery state.
+    -- Return the battery state.
     function instance.get_battery_state()
         local status, err = instance.get_battery_status()
         if not status then
@@ -232,7 +212,7 @@ function power.new(backend)
         return status.state
     end
 
-    -- Check whether the system battery is charging.
+    -- Check if the battery is charging.
     function instance.is_battery_charging()
         local status, err = instance.get_battery_status()
         if not status then
@@ -242,7 +222,7 @@ function power.new(backend)
         return status.present and status.state == "charging"
     end
 
-    -- Return the relevant charge or discharge time estimate in seconds.
+    -- Return the battery time estimate in seconds.
     function instance.get_battery_time_remaining()
         local status, err = instance.get_battery_status()
         if not status then
@@ -260,7 +240,7 @@ function power.new(backend)
         return status.time_remaining
     end
 
-    -- Return the current system battery warning level.
+    -- Return the battery warning level.
     function instance.get_battery_warning_level()
         local status, err = instance.get_battery_status()
         if not status then
@@ -274,7 +254,7 @@ function power.new(backend)
         return status.warning_level
     end
 
-    -- Return the active system power source.
+    -- Return the active power source.
     function instance.get_power_source()
         local status, err = instance.get_battery_status()
         if not status then
@@ -284,7 +264,7 @@ function power.new(backend)
         return status.source
     end
 
-    -- Check whether the system is drawing power from its battery.
+    -- Check if the system is on battery power.
     function instance.is_on_battery()
         local source, err = instance.get_power_source()
         if not source then
@@ -294,7 +274,7 @@ function power.new(backend)
         return source == "battery"
     end
 
-    -- Check whether the system is connected to AC power.
+    -- Check if the system is connected to AC power.
     function instance.is_ac_connected()
         local source, err = instance.get_power_source()
         if not source then
@@ -304,22 +284,22 @@ function power.new(backend)
         return source == "ac"
     end
 
-    -- Suspend the system.
+    -- Suspend system.
     function instance.suspend()
         return execute_backend("suspend")
     end
 
-    -- Shut down the system.
+    -- Shut down system.
     function instance.shutdown()
         return execute_backend("shutdown")
     end
 
-    -- Reboot the system.
+    -- Reboot system.
     function instance.reboot()
         return execute_backend("reboot")
     end
 
-    -- Set the brightness of a selected display from 0 to 100.
+    -- Set display brightness.
     function instance.set_brightness(display, value)
         local validated_display, err = validate_display(display)
         if not validated_display then
@@ -335,7 +315,7 @@ function power.new(backend)
         return execute_backend("set-brightness", { validated_display, brightness })
     end
 
-    -- Get the brightness of a selected display from 0 to 100.
+    -- Get display brightness.
     function instance.get_brightness(display)
         local validated_display, err = validate_display(display)
         if not validated_display then

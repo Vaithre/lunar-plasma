@@ -1,13 +1,13 @@
 -- Desktop API
 -- Change settings related to the Plasma desktop.
+-- All display-related functions should be in their own "display" module. I do
+-- not want to touch the API any more for now, so they will stay merged with
+-- the Wallpaper option temporarily.
 
 local desktop = {}
 local utils = require("plasma.utils")
 
-local function shell_quote(value)
-    return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
-end
-
+-- Parse wallpaper data returned by the backend.
 local function parse_wallpaper(line)
     local display, plugin, uri = line:match("^(%d+)\t([^\t]*)\t(.*)$")
 
@@ -27,28 +27,7 @@ local function parse_wallpaper(line)
     }
 end
 
-local function split_fields(line)
-    local fields = {}
-
-    for field in (line .. "\t"):gmatch("(.-)\t") do
-        fields[#fields + 1] = field
-    end
-
-    return fields
-end
-
-local function parse_boolean(value)
-    if value == "true" then
-        return true
-    end
-
-    if value == "false" then
-        return false
-    end
-
-    return nil
-end
-
+-- Map KScreen rotation flags to public rotation names.
 local rotations = {
     [1] = "normal",
     [2] = "left",
@@ -60,11 +39,12 @@ local rotations = {
     [128] = "flipped270",
 }
 
+-- Parse display data returned by the backend.
 local function parse_display(line)
-    local fields = split_fields(line)
-    local enabled = parse_boolean(fields[5])
-    local connected = parse_boolean(fields[6])
-    local primary = parse_boolean(fields[7])
+    local fields = utils.split_fields(line)
+    local enabled = utils.parse_boolean(fields[5])
+    local connected = utils.parse_boolean(fields[6])
+    local primary = utils.parse_boolean(fields[7])
     local index = tonumber(fields[1])
     local id = tonumber(fields[2])
     local priority = tonumber(fields[8])
@@ -122,10 +102,11 @@ local function parse_display(line)
     }
 end
 
+-- Parse a display mode returned by the backend.
 local function parse_display_mode(line)
-    local fields = split_fields(line)
-    local preferred = parse_boolean(fields[5])
-    local current = parse_boolean(fields[6])
+    local fields = utils.split_fields(line)
+    local preferred = utils.parse_boolean(fields[5])
+    local current = utils.parse_boolean(fields[6])
     local width = tonumber(fields[2])
     local height = tonumber(fields[3])
     local refresh_rate = tonumber(fields[4])
@@ -145,6 +126,7 @@ local function parse_display_mode(line)
     }
 end
 
+-- Validate a wallpaper display number or connector name.
 local function validate_wallpaper_display(display)
     if display == nil then
         return nil
@@ -170,11 +152,12 @@ end
 function desktop.new(backend)
     local instance = {}
 
+    -- Execute a backend action and preserve its error output.
     local function execute_backend(action, arguments)
-        local command = shell_quote(backend) .. " " .. action
+        local command = utils.shell_quote(backend) .. " " .. action
 
         for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. shell_quote(argument)
+            command = command .. " " .. utils.shell_quote(argument)
         end
 
         local process = io.popen(command .. " 2>&1")
@@ -192,11 +175,12 @@ function desktop.new(backend)
         return true
     end
 
+    -- Read a backend response and preserve its error output.
     local function read_backend(action, arguments)
-        local command = shell_quote(backend) .. " " .. action
+        local command = utils.shell_quote(backend) .. " " .. action
 
         for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. shell_quote(argument)
+            command = command .. " " .. utils.shell_quote(argument)
         end
 
         local process = io.popen(command .. " 2>&1")
@@ -216,7 +200,7 @@ function desktop.new(backend)
         return output
     end
 
-    -- Return the wallpaper assigned to every display.
+    -- Return wallpapers for every display.
     function instance.list_wallpapers()
         local output, err = read_backend("list-wallpapers")
         if not output then
@@ -241,7 +225,7 @@ function desktop.new(backend)
         return wallpapers
     end
 
-    -- Return the wallpaper assigned to one display.
+    -- Return a wallpaper by display.
     function instance.get_wallpaper(display)
         local validated_display, err = validate_wallpaper_display(display or 1)
         if not validated_display then
@@ -262,7 +246,7 @@ function desktop.new(backend)
         return parse_wallpaper(output:gsub("[\r\n]+$", ""))
     end
 
-    -- Set an image as wallpaper on one display or every display.
+    -- Set a wallpaper on one display or every display.
     function instance.set_wallpaper(path, options)
         if type(path) ~= "string" or path == "" then
             return nil, "wallpaper path must be a non-empty string"
@@ -301,7 +285,7 @@ function desktop.new(backend)
         })
     end
 
-    -- Return every display reported by Plasma.
+    -- Return displays reported by Plasma.
     function instance.list_displays()
         local output, err = read_backend("list-displays")
         if not output then
@@ -346,7 +330,7 @@ function desktop.new(backend)
         return nil, "display not found: " .. name
     end
 
-    -- Return the primary enabled display.
+    -- Return the primary display.
     function instance.get_primary_display()
         local displays, err = instance.list_displays()
         if not displays then
@@ -362,7 +346,7 @@ function desktop.new(backend)
         return nil, "no primary display is available"
     end
 
-    -- Return every mode supported by a display table.
+    -- Return display modes supported by a display table.
     function instance.list_display_modes(display)
         if type(display) ~= "table" or type(display.name) ~= "string" or display.name == "" then
             return nil, "display must be a display table"

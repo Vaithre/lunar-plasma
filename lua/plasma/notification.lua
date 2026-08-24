@@ -2,6 +2,7 @@
 -- Send desktop notifications through the system notification server.
 
 local notification = {}
+local utils = require("plasma.utils")
 
 local notification_types = {
     info = true,
@@ -10,10 +11,7 @@ local notification_types = {
     success = true,
 }
 
-local function shell_quote(value)
-    return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
-end
-
+-- Validate required notification text.
 local function validate_required_text(value, name)
     if type(value) ~= "string" or value == "" then
         return nil, name .. " must be a non-empty string"
@@ -22,6 +20,7 @@ local function validate_required_text(value, name)
     return value
 end
 
+-- Validate optional notification text.
 local function validate_optional_text(value, name)
     if value == nil then
         return ""
@@ -34,10 +33,11 @@ local function validate_optional_text(value, name)
     return value
 end
 
+-- Create a notification API connected to a backend script.
 function notification.new(backend)
     local instance = {}
 
-    -- Send a desktop notification.
+    -- Send a notification.
     function instance.send(options)
         if type(options) ~= "table" then
             return nil, "options must be a table"
@@ -77,14 +77,14 @@ function notification.new(backend)
         end
 
         local command = table.concat({
-            shell_quote(backend),
+            utils.shell_quote(backend),
             "send",
-            shell_quote(title),
-            shell_quote(text),
-            shell_quote(icon),
-            shell_quote(sound),
+            utils.shell_quote(title),
+            utils.shell_quote(text),
+            utils.shell_quote(icon),
+            utils.shell_quote(sound),
             tostring(timeout),
-            shell_quote(notification_type),
+            utils.shell_quote(notification_type),
         }, " ")
 
         local ok, _, code = os.execute(command)

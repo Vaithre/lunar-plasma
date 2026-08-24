@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1] - Unreleased
+
+### Changed
+
+- Moved shared shell quoting, boolean parsing, and tab-separated field splitting helpers to `utils.lua`.
+- Restructured code comments to make the implementation easier to understand.
+
 ## [0.3.0] - 2026-08-21
 
 ### Added

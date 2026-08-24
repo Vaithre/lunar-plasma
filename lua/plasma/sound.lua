@@ -2,16 +2,14 @@
 -- Control the default output and read its current state.
 
 local sound = {}
-
--- Quote a value so the shell treats it as a single literal argument.
-local function shell_quote(value)
-    return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
-end
+local utils = require("plasma.utils")
 
 -- Create a sound API connected to a backend script.
 function sound.new(backend)
     local instance = {}
 
+    -- Ensure values are integers between 0 and 100. KDE Plasma can go beyond
+    -- those limits, but I do not know if I want to deal with that...
     local function validate_percentage(value, name)
         value = tonumber(value)
 
@@ -22,8 +20,10 @@ function sound.new(backend)
         return value
     end
 
+    -- Run a backend action with an optional numeric argument without capturing
+    -- its output.
     local function execute_backend(action, value)
-        local command = shell_quote(backend) .. " " .. shell_quote(action)
+        local command = utils.shell_quote(backend) .. " " .. utils.shell_quote(action)
 
         if value ~= nil then
             command = command .. string.format(" %d", value)
@@ -37,8 +37,9 @@ function sound.new(backend)
         return true
     end
 
+    -- Run a backend action and return its standard output.
     local function read_backend(action)
-        local process = io.popen(shell_quote(backend) .. " " .. shell_quote(action))
+        local process = io.popen(utils.shell_quote(backend) .. " " .. utils.shell_quote(action))
         if not process then
             return nil, "could not start the sound backend"
         end
@@ -111,7 +112,7 @@ function sound.new(backend)
         return execute_backend("toggle-mute")
     end
 
-    -- Increase the default output volume without exceeding 100.
+    -- Increase the default output volume.
     function instance.increase_volume(amount)
         local validated, err = validate_percentage(amount, "amount")
         if not validated then
@@ -127,7 +128,7 @@ function sound.new(backend)
         return instance.set_volume(math.min(100, current + validated))
     end
 
-    -- Decrease the default output volume without going below zero.
+    -- Decrease the default output volume.
     function instance.decrease_volume(amount)
         local validated, err = validate_percentage(amount, "amount")
         if not validated then

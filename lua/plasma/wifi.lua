@@ -2,27 +2,13 @@
 -- Read and change the state of the Wi-Fi radio and active connection.
 
 local wifi = {}
+local utils = require("plasma.utils")
 
-local function shell_quote(value)
-    return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
-end
-
-local function parse_boolean(value)
-    if value == "true" then
-        return true
-    end
-
-    if value == "false" then
-        return false
-    end
-
-    return nil
-end
-
+-- Parse Wi-Fi state into an easy-to-work-with format.
 local function parse_status(line)
     local enabled_value, connected_value, network = line:match("^([^\t]+)\t([^\t]+)\t(.*)$")
-    local enabled = parse_boolean(enabled_value)
-    local connected = parse_boolean(connected_value)
+    local enabled = utils.parse_boolean(enabled_value)
+    local connected = utils.parse_boolean(connected_value)
 
     if enabled == nil or connected == nil then
         return nil, "wifi backend returned an invalid status"
@@ -43,8 +29,10 @@ end
 function wifi.new(backend)
     local instance = {}
 
+    -- Run a backend action without capturing its output, only checking whether
+    -- the command completed successfully.
     local function execute_backend(action)
-        local command = shell_quote(backend) .. " " .. shell_quote(action)
+        local command = utils.shell_quote(backend) .. " " .. utils.shell_quote(action)
         local ok, _, code = os.execute(command)
 
         if not ok then
@@ -54,8 +42,9 @@ function wifi.new(backend)
         return true
     end
 
+    -- Run a backend action and capture its output.
     local function read_backend(action)
-        local command = shell_quote(backend) .. " " .. shell_quote(action)
+        local command = utils.shell_quote(backend) .. " " .. utils.shell_quote(action)
         local process = io.popen(command)
 
         if not process then
@@ -82,7 +71,7 @@ function wifi.new(backend)
         return parse_status(output)
     end
 
-    -- Check whether the Wi-Fi radio is enabled.
+    -- Check if Wi-Fi is enabled.
     function instance.is_enabled()
         local status, err = instance.get_status()
         if not status then
@@ -92,7 +81,7 @@ function wifi.new(backend)
         return status.enabled
     end
 
-    -- Check whether Wi-Fi has an active connection.
+    -- Check if Wi-Fi has an active connection.
     function instance.is_connected()
         local status, err = instance.get_status()
         if not status then
@@ -116,17 +105,17 @@ function wifi.new(backend)
         return status.network
     end
 
-    -- Enable the Wi-Fi radio.
+    -- Enable Wi-Fi.
     function instance.enable()
         return execute_backend("enable")
     end
 
-    -- Disable the Wi-Fi radio.
+    -- Disable Wi-Fi.
     function instance.disable()
         return execute_backend("disable")
     end
 
-    -- Toggle the Wi-Fi radio state.
+    -- Toggle Wi-Fi state.
     function instance.toggle()
         return execute_backend("toggle")
     end
