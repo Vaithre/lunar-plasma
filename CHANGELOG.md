@@ -7,7 +7,6 @@
 - Added `test_utils.lua` with shared assertions, isolated temporary resources, filtering, seeded ordering, skip handling, and a three-second command timeout.
 - Added deterministic integration tests that execute the production Bash backends against controlled command doubles.
 - Added malformed-response, backend-failure, boundary, escaping, fallback, generated-input, mutation-sensitivity, entry-point, and example smoke tests.
-- Added a single-version continuous-integration job for the deterministic Lua suite.
 - Added a concise wiki guide for deterministic contribution checks and both real-system test modes.
 
 ### Changed
