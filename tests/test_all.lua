@@ -1,6 +1,7 @@
 #!/usr/bin/env lua
 
--- Run every test suite in sequence. Run this file from the project root.
+-- Complete test runner
+-- Run deterministic API, production backend, entry point, example, or opt-in real-system suites.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_all%.lua$") or "."
@@ -8,10 +9,14 @@ local root = source:match("^(.*)/tests/test_all%.lua$") or "."
 package.path = root .. "/tests/?.lua;" .. package.path
 
 local system_mode = false
+local disruptive_system_mode = false
 local invalid_flag = false
 for _, argument in ipairs(arg) do
     if argument == "--test-on-system" then
         system_mode = true
+    elseif argument == "--test-disruptive-system" then
+        system_mode = true
+        disruptive_system_mode = true
     elseif argument:sub(1, 1) == "-" then
         io.stderr:write("Warning: unknown test runner flag: " .. argument .. "\n")
         invalid_flag = true
@@ -25,8 +30,11 @@ end
 local suites
 
 if system_mode then
-    suites = require("test_system").get_suites(root)
+    suites = require("test_system").get_suites(root, disruptive_system_mode)
     print("Running tests against the current system.")
+    if disruptive_system_mode then
+        print("Disruptive radio, brightness, and wallpaper changes are enabled with restoration checks.")
+    end
 else
     suites = {
         { name = "sound", module = require("test_sound") },
@@ -36,9 +44,12 @@ else
         { name = "wifi", module = require("test_wifi") },
         { name = "bluetooth", module = require("test_bluetooth") },
         { name = "display", module = require("test_display") },
+        { name = "backends", module = require("test_backends") },
+        { name = "entrypoint", module = require("test_entrypoint") },
+        { name = "resilience", module = require("test_resilience") },
     }
 
-    print("Running function tests with deterministic fixture backends.")
+    print("Running deterministic API and production backend tests with a 3-second command timeout.")
 end
 
 local passed = 0

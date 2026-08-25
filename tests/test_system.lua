@@ -1,71 +1,18 @@
 #!/usr/bin/env lua
 
--- Test Lunar Plasma against the current system using the real backends.
+-- Real-system integration tests
+-- Verify available desktop services while restoring every reversible state change.
 
 local system = {}
-local skipped = {}
+local utils = require("test_utils")
+local skip = utils.skip
 
-local function skip(reason)
-    return skipped, reason
+-- Create a real-system component suite with the shared runner.
+local function make_suite(name, tests)
+    return { run = function() return utils.run_suite(name, tests) end }
 end
 
-local function format_error(err)
-    return (tostring(err):gsub("[\r\n]+", " "))
-end
-
-local function make_suite(tests)
-    return {
-        run = function()
-            local passed = 0
-            local skipped_count = 0
-            local failed = 0
-            local failures = {}
-
-            for index, test in ipairs(tests) do
-                local ok, result, detail = pcall(test.run)
-
-                if ok and result == skipped then
-                    skipped_count = skipped_count + 1
-                    print(string.format(
-                        "[%d/%d] %s SKIPPED: %s",
-                        index,
-                        #tests,
-                        test.name,
-                        detail
-                    ))
-                elseif ok then
-                    passed = passed + 1
-                    print(string.format("[%d/%d] %s SUCCESS", index, #tests, test.name))
-                else
-                    failed = failed + 1
-                    failures[#failures + 1] = {
-                        index = index,
-                        total = #tests,
-                        name = test.name,
-                        error = format_error(result),
-                    }
-                    print(string.format(
-                        "[%d/%d] %s FAILED: %s",
-                        index,
-                        #tests,
-                        test.name,
-                        format_error(result)
-                    ))
-                end
-            end
-
-            print(string.format(
-                "Summary: %d successful, %d skipped, %d failed",
-                passed,
-                skipped_count,
-                failed
-            ))
-            return failed == 0, failures
-        end,
-    }
-end
-
-function system.get_suites(root)
+function system.get_suites(root, disruptive_mode)
     local plasma = dofile(root .. "/lunar-plasma.lua")
 
     local sound_tests = {
@@ -107,6 +54,10 @@ function system.get_suites(root)
                 end
                 assert(mute_ok, mute_err)
                 assert(operation_ok, operation_err)
+                utils.eventually(function()
+                    return plasma.sound.get_volume() == original_volume and
+                        plasma.sound.is_muted() == original_muted
+                end, "sound state was not restored")
             end,
         },
     }
@@ -132,6 +83,7 @@ function system.get_suites(root)
             run = function()
                 local profile = assert(plasma.power.get_profile())
                 assert(plasma.power.set_profile(profile))
+                utils.eventually(function() return plasma.power.get_profile() == profile end, "power profile did not settle")
             end,
         },
         {
@@ -171,7 +123,15 @@ function system.get_suites(root)
             name = "display brightness",
             run = function()
                 local brightness = assert(plasma.power.get_brightness(1))
-                assert(plasma.power.set_brightness(1, brightness))
+                local target = disruptive_mode and (brightness == 100 and 99 or brightness + 1) or brightness
+                local operation_ok, operation_err = pcall(function()
+                    assert(plasma.power.set_brightness(1, target))
+                    utils.eventually(function() return plasma.power.get_brightness(1) == target end, "brightness did not change")
+                end)
+                local restored, restore_err = plasma.power.set_brightness(1, brightness)
+                assert(restored, restore_err)
+                utils.eventually(function() return plasma.power.get_brightness(1) == brightness end, "brightness was not restored")
+                assert(operation_ok, operation_err)
             end,
         },
         {
@@ -217,6 +177,10 @@ function system.get_suites(root)
 
                 local restored, restore_err = plasma.keyboard.set_layout(original)
                 assert(restored, restore_err)
+                utils.eventually(function()
+                    local current = plasma.keyboard.get_active_layout()
+                    return current and current.id == original.id and current.variant == original.variant
+                end, "keyboard layout was not restored")
                 assert(operation_ok, operation_err)
             end,
         },
@@ -255,7 +219,16 @@ function system.get_suites(root)
         {
             name = "disruptive radio controls",
             run = function()
-                return skip("disable and toggle may interrupt the active network connection")
+                if not disruptive_mode then return skip("enable with --test-disruptive-system to test radio changes") end
+                local original = assert(plasma.wifi.get_status())
+                local operation_ok, operation_err = pcall(function()
+                    assert(plasma.wifi.toggle())
+                    utils.eventually(function() return plasma.wifi.is_enabled() ~= original.enabled end, "Wi-Fi did not toggle")
+                end)
+                local restored, restore_err = original.enabled and plasma.wifi.enable() or plasma.wifi.disable()
+                assert(restored, restore_err)
+                utils.eventually(function() return plasma.wifi.is_enabled() == original.enabled end, "Wi-Fi was not restored")
+                assert(operation_ok, operation_err)
             end,
         },
     }
@@ -319,7 +292,15 @@ function system.get_suites(root)
                     return skip(reason)
                 end
 
-                return skip("disable and toggle may disconnect Bluetooth devices")
+                if not disruptive_mode then return skip("enable with --test-disruptive-system to test radio changes") end
+                local operation_ok, operation_err = pcall(function()
+                    assert(plasma.bluetooth.toggle())
+                    utils.eventually(function() return plasma.bluetooth.is_enabled() ~= status.enabled end, "Bluetooth did not toggle")
+                end)
+                local restored, restore_err = status.enabled and plasma.bluetooth.enable() or plasma.bluetooth.disable()
+                assert(restored, restore_err)
+                utils.eventually(function() return plasma.bluetooth.is_enabled() == status.enabled end, "Bluetooth was not restored")
+                assert(operation_ok, operation_err)
             end,
         },
         {
@@ -394,24 +375,40 @@ function system.get_suites(root)
                     end
                 end
 
+                local operation_ok, operation_err = pcall(function()
+                    if disruptive_mode then
+                        assert(plasma.desktop.set_wallpaper(root .. "/resources/Nexus.png"))
+                    else
+                        for _, wallpaper in ipairs(system_wallpapers) do
+                            assert(plasma.desktop.set_wallpaper(wallpaper.uri, {
+                                display = wallpaper.display,
+                                plugin = wallpaper.plugin,
+                            }))
+                        end
+                    end
+                end)
                 for _, wallpaper in ipairs(system_wallpapers) do
-                    assert(plasma.desktop.set_wallpaper(wallpaper.uri, {
-                        display = wallpaper.display,
-                        plugin = wallpaper.plugin,
-                    }))
+                    assert(plasma.desktop.set_wallpaper(wallpaper.uri, { display = wallpaper.display, plugin = wallpaper.plugin }))
                 end
+                for _, wallpaper in ipairs(system_wallpapers) do
+                    utils.eventually(function()
+                        local current = plasma.desktop.get_wallpaper(wallpaper.display)
+                        return current and current.uri == wallpaper.uri and current.plugin == wallpaper.plugin
+                    end, "wallpaper was not restored")
+                end
+                assert(operation_ok, operation_err)
             end,
         },
     }
 
     return {
-        { name = "sound (system)", module = make_suite(sound_tests) },
-        { name = "notifications (system)", module = make_suite(notification_tests) },
-        { name = "power (system)", module = make_suite(power_tests) },
-        { name = "keyboard (system)", module = make_suite(keyboard_tests) },
-        { name = "wifi (system)", module = make_suite(wifi_tests) },
-        { name = "bluetooth (system)", module = make_suite(bluetooth_tests) },
-        { name = "desktop (system)", module = make_suite(desktop_tests) },
+        { name = "sound (system)", module = make_suite("sound (system)", sound_tests) },
+        { name = "notifications (system)", module = make_suite("notifications (system)", notification_tests) },
+        { name = "power (system)", module = make_suite("power (system)", power_tests) },
+        { name = "keyboard (system)", module = make_suite("keyboard (system)", keyboard_tests) },
+        { name = "wifi (system)", module = make_suite("wifi (system)", wifi_tests) },
+        { name = "bluetooth (system)", module = make_suite("bluetooth (system)", bluetooth_tests) },
+        { name = "desktop (system)", module = make_suite("desktop (system)", desktop_tests) },
     }
 end
 

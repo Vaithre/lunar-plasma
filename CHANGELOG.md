@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.2] - Unreleased
+
+### Added
+
+- Added `test_utils.lua` with shared assertions, isolated temporary resources, filtering, seeded ordering, skip handling, and a three-second command timeout.
+- Added deterministic integration tests that execute the production Bash backends against controlled command doubles.
+- Added malformed-response, backend-failure, boundary, escaping, fallback, generated-input, mutation-sensitivity, entry-point, and example smoke tests.
+- Added a single-version continuous-integration job for the deterministic Lua suite.
+- Added a concise wiki guide for deterministic contribution checks and both real-system test modes.
+
+### Changed
+
+- Reworked every Lua API suite to use unique descriptive cases and actionable expected-versus-actual failures.
+- Strengthened real-system suite result handling so an explicit false result cannot be reported as successful.
+- Added an explicit `--test-disruptive-system` mode with asynchronous state polling and verified restoration for reversible radio, brightness, keyboard, sound, and wallpaper changes.
+- Made the Bluetooth sysfs root configurable for isolated backend testing while preserving `/sys/class/bluetooth` as the default.
+
+### Fixed
+
+- Fixed Plasma keyboard layout parsing so multiple returned layouts are preserved.
+- Fixed power-profile discovery so a failing `busctl` query continues to the supported fallback backends.
+
 ## [0.3.1] - 2026-08-24
 
 ### Changed

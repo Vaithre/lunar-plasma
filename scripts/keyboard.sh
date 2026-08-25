@@ -32,10 +32,8 @@ plasma_layouts() {
         /Layouts \
         org.kde.KeyboardLayouts.getLayoutsList)"
 
-    sed -E \
-        -e 's/\], \[Argument:/\n[Argument:/g' \
-        -e 's/.*\(sss\) "([^"]*)", "([^"]*)", "([^"]*)".*/\1\t\2\t\3/' \
-        <<<"$output" |
+    sed -E 's/\], \[Argument:/\n[Argument:/g' <<<"$output" |
+        sed -E 's/.*\(sss\) "([^"]*)", "([^"]*)", "([^"]*)".*/\1\t\2\t\3/' |
         awk -F '\t' 'NF == 3 { print NR "\t" $1 "\t" $2 "\t" $3 }'
 }
 

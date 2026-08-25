@@ -19,6 +19,7 @@ case "${1:-}" in
     set-brightness)
         [[ -n "${2:-}" ]] || exit 2
         [[ "${3:-}" =~ ^[0-9]+$ ]] || exit 2
+        (( 3 == $# && $3 <= 100 )) || exit 2
         ;;
     get-brightness)
         [[ -n "${2:-}" ]] || exit 2

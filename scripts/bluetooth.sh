@@ -6,6 +6,7 @@ export LC_ALL=C
 
 action="${1:-}"
 bluetooth_timeout="${LUNAR_PLASMA_BLUETOOTH_TIMEOUT:-2}"
+bluetooth_sysfs="${LUNAR_PLASMA_BLUETOOTH_SYSFS:-/sys/class/bluetooth}"
 
 require_bluetoothctl() {
     if ! command -v bluetoothctl >/dev/null 2>&1; then
@@ -21,8 +22,8 @@ run_bluetoothctl() {
 require_adapter() {
     local controllers
 
-    if [[ ! -d /sys/class/bluetooth ]] ||
-        ! compgen -G '/sys/class/bluetooth/hci*' >/dev/null; then
+    if [[ ! -d "$bluetooth_sysfs" ]] ||
+        ! compgen -G "$bluetooth_sysfs/hci*" >/dev/null; then
         printf 'no Bluetooth adapter is available\n' >&2
         return 1
     fi

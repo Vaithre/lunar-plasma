@@ -22,15 +22,16 @@ get_profile() {
     local qdbus
 
     if command -v busctl >/dev/null 2>&1; then
-        profile="$(busctl --system get-property \
+        if profile="$(busctl --system get-property \
             net.hadess.PowerProfiles \
             /net/hadess/PowerProfiles \
             net.hadess.PowerProfiles \
-            ActiveProfile 2>/dev/null | awk -F '"' 'NF >= 2 { print $2 }')"
+            ActiveProfile 2>/dev/null | awk -F '"' 'NF >= 2 { print $2 }')"; then
 
-        if [[ -n "$profile" ]]; then
-            printf '%s\n' "$profile"
-            return
+            if [[ -n "$profile" ]]; then
+                printf '%s\n' "$profile"
+                return
+            fi
         fi
     fi
 

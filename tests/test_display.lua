@@ -1,153 +1,45 @@
 #!/usr/bin/env lua
 
--- Test the display API. Run this file from the project root.
+-- Desktop and display API tests
+-- Verify wallpapers, connector mapping, displays, modes, validation, escaping, and malformed data.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_display%.lua$") or "."
-
-package.path = root .. "/lua/?.lua;" .. root .. "/lua/?/init.lua;" .. package.path
-
+package.path = root .. "/lua/?.lua;" .. root .. "/lua/?/init.lua;" .. root .. "/tests/?.lua;" .. package.path
 local desktop = require("plasma.desktop")
+local utils = require("test_utils")
 local backend = root .. "/tests/fixtures/display-backend.sh"
 
-local function run()
-    local plasma_desktop = desktop.new(backend)
-    local tests = {
-        {
-            name = "list_wallpapers",
-            run = function()
-                local wallpapers = assert(plasma_desktop.list_wallpapers())
-                assert(#wallpapers == 2)
-                assert(wallpapers[1].display == 1)
-                assert(wallpapers[1].plugin == "org.kde.image")
-                assert(wallpapers[1].path == "/home/user/Pictures/one.png")
-            end,
-        },
-        {
-            name = "get_wallpaper",
-            run = function()
-                local wallpaper = assert(plasma_desktop.get_wallpaper(2))
-                assert(wallpaper.display == 2)
-                assert(wallpaper.path == "/home/user/Pictures/two.png")
-            end,
-        },
-        {
-            name = "get_wallpaper",
-            run = function()
-                local wallpaper = assert(plasma_desktop.get_wallpaper(3))
-                assert(wallpaper.display == 3)
-                assert(wallpaper.plugin == "org.kde.image")
-                assert(wallpaper.uri == nil)
-                assert(wallpaper.path == nil)
-            end,
-        },
-        {
-            name = "get_wallpaper_by_connector",
-            run = function()
-                local wallpaper = assert(plasma_desktop.get_wallpaper("HDMI-A-1"))
-                assert(wallpaper.display == 1)
-                assert(wallpaper.path == "/home/user/Pictures/one.png")
-            end,
-        },
-        {
-            name = "set_wallpaper",
-            run = function()
-                assert(plasma_desktop.set_wallpaper("/home/user/Pictures/one.png"))
-                assert(plasma_desktop.set_wallpaper("/home/user/Pictures/two.png", 2))
-                assert(plasma_desktop.set_wallpaper(
-                    "/home/user/Pictures/connector.png",
-                    "HDMI-A-1"
-                ))
-                assert(plasma_desktop.wallpaper == nil)
-            end,
-        },
-        {
-            name = "list_displays",
-            run = function()
-                local displays = assert(plasma_desktop.list_displays())
-                assert(#displays == 2)
-                assert(displays[1].name == "eDP-1")
-                assert(displays[1].connected == true)
-                assert(displays[1].enabled == true)
-                assert(displays[1].primary == true)
-                assert(displays[1].mode.width == 1920)
-                assert(displays[1].mode.refresh_rate == 60)
-                assert(displays[2].name == "HDMI-A-1")
-                assert(displays[2].connected == true)
-                assert(displays[2].enabled == false)
-                assert(displays[2].mode == nil)
-            end,
-        },
-        {
-            name = "get_display",
-            run = function()
-                local display = assert(plasma_desktop.get_display("HDMI-A-1"))
-                assert(display.index == 2)
-                assert(display.uuid == "hdmi-uuid")
-                assert(display.scale == 1.25)
-            end,
-        },
-        {
-            name = "get_display",
-            run = function()
-                local display, err = plasma_desktop.get_display("missing")
-                assert(not display and err)
-            end,
-        },
-        {
-            name = "get_primary_display",
-            run = function()
-                local display = assert(plasma_desktop.get_primary_display())
-                assert(display.name == "eDP-1")
-            end,
-        },
-        {
-            name = "list_display_modes",
-            run = function()
-                local display = assert(plasma_desktop.get_display("eDP-1"))
-                local modes = assert(plasma_desktop.list_display_modes(display))
-                assert(#modes == 2)
-                assert(modes[1].preferred == true)
-                assert(modes[1].current == false)
-                assert(modes[2].current == true)
-            end,
-        },
-        {
-            name = "list_display_modes",
-            run = function()
-                local modes, err = plasma_desktop.list_display_modes("eDP-1")
-                assert(not modes and err)
-            end,
-        },
+-- Create a desktop backend with one controlled response.
+local function response_backend(action, output, code)
+    local directory = utils.make_temp_dir(); local path = directory .. "/backend.sh"
+    utils.write_file(path, string.format("#!/usr/bin/env bash\n[[ \"${1:-}\" == %s ]] || exit 2\nprintf '%%s' %s\nexit %d\n", utils.shell_quote(action), utils.shell_quote(output or ""), code or 0))
+    assert(os.execute("chmod +x " .. utils.shell_quote(path))); return desktop.new(path), directory
+end
+
+-- Return the complete set of desktop and display API cases.
+local function cases()
+    local api = desktop.new(backend)
+    return {
+        { name = "list_wallpapers parses URI path and plugin", run = function() local values = utils.assert_success(api.list_wallpapers()); utils.assert_equal(#values, 2); utils.assert_equal(values[1].display, 1); utils.assert_equal(values[1].plugin, "org.kde.image"); utils.assert_equal(values[1].uri, "file:///home/user/Pictures/one.png"); utils.assert_equal(values[1].path, "/home/user/Pictures/one.png") end },
+        { name = "get_wallpaper accepts number and connector", run = function() utils.assert_equal(utils.assert_success(api.get_wallpaper(2)).display, 2); utils.assert_equal(utils.assert_success(api.get_wallpaper("HDMI-A-1")).display, 1) end },
+        { name = "get_wallpaper handles a missing URI", run = function() local wallpaper = utils.assert_success(api.get_wallpaper(3)); utils.assert_equal(wallpaper.uri, nil); utils.assert_equal(wallpaper.path, nil) end },
+        { name = "wallpaper selectors reject invalid values", run = function() for _, value in ipairs({ 0, -1, 1.5, "", {}, true }) do utils.assert_error("display must", function() return api.get_wallpaper(value) end) end end },
+        { name = "set_wallpaper accepts all selector forms and plugin", run = function() utils.assert_success(api.set_wallpaper("/home/user/Pictures/one.png")); utils.assert_success(api.set_wallpaper("/home/user/Pictures/two.png", 2)); utils.assert_success(api.set_wallpaper("/home/user/Pictures/connector.png", "HDMI-A-1")); utils.assert_success(api.set_wallpaper("/tmp/Lunar's $(false).png", { display = 1, plugin = "custom plugin" })) end },
+        { name = "set_wallpaper rejects invalid paths and options", run = function() utils.assert_error("path must", function() return api.set_wallpaper("") end); utils.assert_error("options must", function() return api.set_wallpaper("x", true) end); utils.assert_error("plugin must", function() return api.set_wallpaper("x", { plugin = "" }) end) end },
+        { name = "list_displays parses connected and disabled displays", run = function() local displays = utils.assert_success(api.list_displays()); utils.assert_equal(#displays, 2); utils.assert_equal(displays[1].primary, true); utils.assert_equal(displays[1].position.x, 0); utils.assert_equal(displays[1].mode.width, 1920); utils.assert_equal(displays[2].enabled, false); utils.assert_equal(displays[2].scale, 1.25); utils.assert_equal(displays[2].mode, nil) end },
+        { name = "display lookup finds named and primary displays", run = function() utils.assert_equal(utils.assert_success(api.get_display("HDMI-A-1")).uuid, "hdmi-uuid"); utils.assert_equal(utils.assert_success(api.get_primary_display()).name, "eDP-1"); utils.assert_error("display not found", function() return api.get_display("missing") end) end },
+        { name = "display mode parser preserves flags and decimals", run = function() local display = utils.assert_success(api.get_display("eDP-1")); local modes = utils.assert_success(api.list_display_modes(display)); utils.assert_equal(#modes, 2); utils.assert_equal(modes[1].preferred, true); utils.assert_equal(modes[2].current, true); utils.assert_equal(modes[2].refresh_rate, 60) end },
+        { name = "list_display_modes requires a display table", run = function() utils.assert_error("display must be a display table", function() return api.list_display_modes("eDP-1") end) end },
+        { name = "empty wallpaper and display lists are rejected", run = function() for _, action in ipairs({ "list-wallpapers", "list-displays" }) do local custom, directory = response_backend(action, ""); utils.assert_error("no Plasma displays", action == "list-wallpapers" and custom.list_wallpapers or custom.list_displays); utils.remove_temp_dir(directory) end end },
+        { name = "wallpaper parser rejects malformed rows", run = function() local custom, directory = response_backend("list-wallpapers", "x\torg.kde.image\tfile:///x\n"); utils.assert_error("invalid wallpaper", custom.list_wallpapers); utils.remove_temp_dir(directory) end },
+        { name = "display parser rejects malformed rows and rotations", run = function() local custom, directory = response_backend("list-displays", "1\t1\teDP-1\tuuid\ttrue\ttrue\ttrue\t1\t0\t0\t1\t1\t1\t999\t\t\t\t\n"); utils.assert_error("invalid display", custom.list_displays); utils.remove_temp_dir(directory) end },
+        { name = "display mode parser rejects malformed rows", run = function() local custom, directory = response_backend("list-display-modes", "1\t1920\t1080\tbad\ttrue\tfalse\n"); utils.assert_error("invalid display mode", function() return custom.list_display_modes({ name = "eDP-1" }) end); utils.remove_temp_dir(directory) end },
+        { name = "desktop backend error details are preserved", run = function() local custom, directory = response_backend("list-displays", "specific failure\n", 6); utils.assert_error("specific failure", custom.list_displays); utils.remove_temp_dir(directory) end },
     }
-
-    local passed = 0
-    local failures = {}
-
-    for index, test in ipairs(tests) do
-        local ok, err = pcall(test.run)
-        if ok then
-            passed = passed + 1
-            print(string.format("[%d/%d] %s SUCCESS", index, #tests, test.name))
-        else
-            failures[#failures + 1] = {
-                index = index,
-                total = #tests,
-                name = test.name,
-                error = tostring(err),
-            }
-            print(string.format("[%d/%d] %s FAILED", index, #tests, test.name))
-        end
-    end
-
-    print(string.format("Summary: %d/%d successful", passed, #tests))
-    return #failures == 0, failures
 end
 
-if ... == nil then
-    os.exit(run() and 0 or 1)
-end
-
-return {
-    run = run,
-}
+-- Run the desktop and display suite.
+local function run() return utils.run_suite("display", cases()) end
+if ... == nil then os.exit(run() and 0 or 1) end
+return { run = run }
