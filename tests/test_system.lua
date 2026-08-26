@@ -235,7 +235,12 @@ function system.get_suites(root, disruptive_mode)
                         return plasma.wifi.is_enabled() ~= original.enabled
                     end, "Wi-Fi did not toggle")
                 end)
-                local restored, restore_err = original.enabled and plasma.wifi.enable() or plasma.wifi.disable()
+                local restored, restore_err
+                if original.enabled then
+                    restored, restore_err = plasma.wifi.enable()
+                else
+                    restored, restore_err = plasma.wifi.disable()
+                end
                 assert(restored, restore_err)
                 utils.eventually(function()
                     return plasma.wifi.is_enabled() == original.enabled
@@ -313,7 +318,12 @@ function system.get_suites(root, disruptive_mode)
                         return plasma.bluetooth.is_enabled() ~= status.enabled
                     end, "Bluetooth did not toggle")
                 end)
-                local restored, restore_err = status.enabled and plasma.bluetooth.enable() or plasma.bluetooth.disable()
+                local restored, restore_err
+                if status.enabled then
+                    restored, restore_err = plasma.bluetooth.enable()
+                else
+                    restored, restore_err = plasma.bluetooth.disable()
+                end
                 assert(restored, restore_err)
                 utils.eventually(function()
                     return plasma.bluetooth.is_enabled() == status.enabled

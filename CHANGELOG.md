@@ -24,6 +24,7 @@
 
 ### Fixed
 
+- Fixed disruptive Wi-Fi and Bluetooth system tests so restoration failures preserve and report their error details.
 - Fixed Plasma keyboard layout parsing so multiple returned layouts are preserved.
 - Fixed power-profile discovery so a failing `busctl` query continues to the supported fallback backends.
 
