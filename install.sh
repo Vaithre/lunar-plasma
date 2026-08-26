@@ -33,7 +33,7 @@ confirm() {
 verify_sources() {
     local source
 
-    for source in lua scripts resources/Nexus.png lunar-plasma.lua VERSION; do
+    for source in lua scripts scripts/backend-runner.sh resources/Nexus.png lunar-plasma.lua VERSION; do
         if [[ ! -e "$project_root/$source" ]]; then
             printf 'Missing installation source: %s\n' "$source" >&2
             return 1
@@ -56,6 +56,7 @@ verify_installation() {
     [[ -d "$install_dir/lua" ]] || return 1
     [[ -d "$install_dir/resources" ]] || return 1
     [[ -d "$install_dir/scripts" ]] || return 1
+    [[ -x "$install_dir/scripts/backend-runner.sh" ]] || return 1
     [[ -f "$install_dir/lunar-plasma.lua" ]] || return 1
     [[ -f "$install_dir/VERSION" ]] || return 1
     [[ -f "$install_dir/resources/Nexus.png" ]] || return 1

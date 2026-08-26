@@ -4,13 +4,19 @@
 
 ### Added
 
-- Added `test_utils.lua` with shared assertions, isolated temporary resources, filtering, seeded ordering, skip handling, and a three-second command timeout.
+- Added a shared Lua backend client and Bash process runner with a three-second default timeout and operation-specific overrides.
+- Added deterministic runner tests for argument preservation, output isolation, failure details, configuration validation, and default, overridden, and enforced timeouts.
+- Added `test_utils.lua` with shared assertions, isolated temporary resources, filtering, seeded ordering, skip handling, etc.
 - Added deterministic integration tests that execute the production Bash backends against controlled command doubles.
 - Added malformed-response, backend-failure, boundary, escaping, fallback, generated-input, mutation-sensitivity, entry-point, and example smoke tests.
-- Added a concise wiki guide for deterministic contribution checks and both real-system test modes.
 
 ### Changed
 
+- Unified every Lua API module on the shared backend execution and error contract.
+- Isolated backend standard output from diagnostic output and normalized process results across Lua 5.4 and LuaJIT through an explicit runner protocol.
+- Updated mutation-sensitivity tests to reproduce the production backend-runner layout in their isolated projects.
+- Updated the installer to require and verify the executable backend runner.
+- Declared GNU coreutils as a runtime dependency in the wiki installation documentation.
 - Reworked every Lua API suite to use unique descriptive cases and actionable expected-versus-actual failures.
 - Strengthened real-system suite result handling so an explicit false result cannot be reported as successful.
 - Added an explicit `--test-disruptive-system` mode with asynchronous state polling and verified restoration for reversible radio, brightness, keyboard, sound, and wallpaper changes.
