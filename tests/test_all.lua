@@ -37,6 +37,7 @@ if system_mode then
     end
 else
     suites = {
+        { name = "backend", module = require("test_backend") },
         { name = "sound", module = require("test_sound") },
         { name = "notifications", module = require("test_notifications") },
         { name = "power", module = require("test_power") },
