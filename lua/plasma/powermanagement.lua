@@ -2,6 +2,7 @@
 -- Control power profiles, system power actions, and display brightness.
 
 local power = {}
+local backend_client = require("plasma.backend")
 local utils = require("plasma.utils")
 
 local profiles = {
@@ -99,45 +100,16 @@ end
 -- Create a power API connected to a backend script.
 function power.new(backend)
     local instance = {}
-
-    -- Execute a backend action.
-    local function execute_backend(action, arguments)
-        local command = utils.shell_quote(backend) .. " " .. action
-
-        for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. utils.shell_quote(argument)
-        end
-
-        local ok, _, code = os.execute(command)
-        if not ok then
-            return nil, "power backend failed with exit code " .. tostring(code)
-        end
-
-        return true
-    end
-
-    -- Read a backend response.
-    local function read_backend(action, arguments)
-        local command = utils.shell_quote(backend) .. " " .. action
-
-        for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. utils.shell_quote(argument)
-        end
-
-        local process = io.popen(command)
-        if not process then
-            return nil, "could not start the power backend"
-        end
-
-        local output = process:read("*a"):match("^%s*(.-)%s*$")
-        local ok, _, code = process:close()
-
-        if not ok then
-            return nil, "power backend failed with exit code " .. tostring(code)
-        end
-
-        return output
-    end
+    local client = backend_client.new(backend, "power", {
+        timeouts = {
+            ["set-profile"] = 5,
+            ["get-profile"] = 5,
+            ["get-battery-status"] = 5,
+            suspend = 15,
+            shutdown = 15,
+            reboot = 15,
+        },
+    })
 
     -- Set the active power profile.
     function instance.set_profile(profile)
@@ -146,15 +118,16 @@ function power.new(backend)
             return nil, "profile must be saving, normal, or performance"
         end
 
-        return execute_backend("set-profile", { mapped_profile })
+        return client.execute("set-profile", { mapped_profile })
     end
 
     -- Return the active power profile.
     function instance.get_profile()
-        local output, err = read_backend("get-profile")
+        local output, err = client.read("get-profile")
         if not output then
             return nil, err
         end
+        output = output:match("^%s*(.-)%s*$")
 
         local profile = public_profiles[output]
         if not profile then
@@ -166,10 +139,11 @@ function power.new(backend)
 
     -- Return battery and power-source status.
     function instance.get_battery_status()
-        local output, err = read_backend("get-battery-status")
+        local output, err = client.read("get-battery-status")
         if not output then
             return nil, err
         end
+        output = output:match("^%s*(.-)%s*$")
 
         return parse_battery_status(output)
     end
@@ -286,17 +260,17 @@ function power.new(backend)
 
     -- Suspend system.
     function instance.suspend()
-        return execute_backend("suspend")
+        return client.execute("suspend")
     end
 
     -- Shut down system.
     function instance.shutdown()
-        return execute_backend("shutdown")
+        return client.execute("shutdown")
     end
 
     -- Reboot system.
     function instance.reboot()
-        return execute_backend("reboot")
+        return client.execute("reboot")
     end
 
     -- Set display brightness.
@@ -312,7 +286,7 @@ function power.new(backend)
             return nil, err
         end
 
-        return execute_backend("set-brightness", { validated_display, brightness })
+        return client.execute("set-brightness", { validated_display, brightness })
     end
 
     -- Get display brightness.
@@ -323,10 +297,11 @@ function power.new(backend)
         end
 
         local output
-        output, err = read_backend("get-brightness", { validated_display })
+        output, err = client.read("get-brightness", { validated_display })
         if not output then
             return nil, err
         end
+        output = output:match("^%s*(.-)%s*$")
 
         local brightness = tonumber(output)
         if not brightness or brightness % 1 ~= 0 or brightness < 0 or brightness > 100 then

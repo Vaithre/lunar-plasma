@@ -2,6 +2,7 @@
 -- Read and change the active keyboard layout.
 
 local keyboard = {}
+local backend_client = require("plasma.backend")
 local utils = require("plasma.utils")
 
 -- Parse a keyboard layout returned by the backend.
@@ -45,43 +46,11 @@ end
 -- Create a keyboard API connected to a backend script.
 function keyboard.new(backend)
     local instance = {}
-
-    -- Execute a backend action.
-    local function execute_backend(action, arguments)
-        local command = utils.shell_quote(backend) .. " " .. action
-
-        for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. utils.shell_quote(argument)
-        end
-
-        local ok, _, code = os.execute(command)
-        if not ok then
-            return nil, "keyboard backend failed with exit code " .. tostring(code)
-        end
-
-        return true
-    end
-
-    -- Read a backend response.
-    local function read_backend(action)
-        local process = io.popen(utils.shell_quote(backend) .. " " .. action)
-        if not process then
-            return nil, "could not start the keyboard backend"
-        end
-
-        local output = process:read("*a")
-        local ok, _, code = process:close()
-
-        if not ok then
-            return nil, "keyboard backend failed with exit code " .. tostring(code)
-        end
-
-        return output
-    end
+    local client = backend_client.new(backend, "keyboard")
 
     -- Return keyboard layouts configured in the current session.
     function instance.list_layouts()
-        local output, err = read_backend("list-layouts")
+        local output, err = client.read("list-layouts")
         if not output then
             return nil, err
         end
@@ -106,7 +75,7 @@ function keyboard.new(backend)
 
     -- Return the active keyboard layout.
     function instance.get_active_layout()
-        local output, err = read_backend("get-layout")
+        local output, err = client.read("get-layout")
         if not output then
             return nil, err
         end
@@ -121,17 +90,17 @@ function keyboard.new(backend)
             return nil, err
         end
 
-        return execute_backend("set-layout", { selector, validated_variant })
+        return client.execute("set-layout", { selector, validated_variant })
     end
 
     -- Select the next keyboard layout.
     function instance.select_next_layout()
-        return execute_backend("next-layout")
+        return client.execute("next-layout")
     end
 
     -- Select the previous keyboard layout.
     function instance.select_previous_layout()
-        return execute_backend("previous-layout")
+        return client.execute("previous-layout")
     end
 
     return instance

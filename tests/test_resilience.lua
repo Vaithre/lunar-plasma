@@ -13,9 +13,13 @@ local sound = require("plasma.sound")
 local function mutant(file, expression, assertion)
     local directory = utils.make_temp_dir()
     assert(os.execute("/usr/bin/mkdir " .. utils.shell_quote(directory .. "/lua")))
+    assert(os.execute("/usr/bin/mkdir " .. utils.shell_quote(directory .. "/scripts")))
     local source_path = utils.shell_quote(root .. "/lua/plasma")
     local target_path = utils.shell_quote(directory .. "/lua/plasma")
     assert(os.execute("/usr/bin/cp -a " .. source_path .. " " .. target_path))
+    local runner_source = utils.shell_quote(root .. "/scripts/backend-runner.sh")
+    local runner_target = utils.shell_quote(directory .. "/scripts/backend-runner.sh")
+    assert(os.execute("/usr/bin/cp " .. runner_source .. " " .. runner_target))
     local mutation = utils.run_command(
         "/usr/bin/sed -i -e " ..
         utils.shell_quote(expression) .. " " ..

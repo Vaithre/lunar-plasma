@@ -2,6 +2,7 @@
 -- Read and change the default Bluetooth adapter and inspect known devices.
 
 local bluetooth = {}
+local backend_client = require("plasma.backend")
 local utils = require("plasma.utils")
 
 -- Parse the default Bluetooth adapter status returned by the backend.
@@ -67,54 +68,25 @@ end
 -- Create a Bluetooth API connected to a backend script.
 function bluetooth.new(backend)
     local instance = {}
-
-    -- Build a shell command for a backend action.
-    local function build_command(action, arguments)
-        local command = utils.shell_quote(backend) .. " " .. utils.shell_quote(action)
-
-        for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. utils.shell_quote(argument)
-        end
-
-        return command
-    end
-
-    -- Execute a backend action.
-    local function execute_backend(action, arguments)
-        local ok, _, code = os.execute(build_command(action, arguments))
-
-        if not ok then
-            return nil, "bluetooth backend failed with exit code " .. tostring(code)
-        end
-
-        return true
-    end
-
-    -- Read a backend response.
-    local function read_backend(action, arguments)
-        local process = io.popen(build_command(action, arguments) .. " 2>&1")
-
-        if not process then
-            return nil, "could not start the bluetooth backend"
-        end
-
-        local output = process:read("*a"):gsub("\r?\n$", "")
-        local ok, _, code = process:close()
-
-        if not ok then
-            local detail = output ~= "" and ": " .. output or ""
-            return nil, "bluetooth backend failed with exit code " .. tostring(code) .. detail
-        end
-
-        return output
-    end
+    local client = backend_client.new(backend, "bluetooth", {
+        timeouts = {
+            ["get-status"] = 5,
+            ["get-device"] = 5,
+            ["list-devices"] = 15,
+            ["list-connected-devices"] = 15,
+            enable = 5,
+            disable = 5,
+            toggle = 5,
+        },
+    })
 
     -- Parse a list of Bluetooth devices returned by the backend.
     local function read_devices(action)
-        local output, err = read_backend(action)
+        local output, err = client.read(action)
         if not output then
             return nil, err
         end
+        output = output:gsub("\r?\n$", "")
 
         local devices = {}
         for line in output:gmatch("[^\r\n]+") do
@@ -132,10 +104,11 @@ function bluetooth.new(backend)
 
     -- Return the default Bluetooth status.
     function instance.get_status()
-        local output, err = read_backend("get-status")
+        local output, err = client.read("get-status")
         if not output then
             return nil, err
         end
+        output = output:gsub("\r?\n$", "")
 
         return parse_status(output)
     end
@@ -152,17 +125,17 @@ function bluetooth.new(backend)
 
     -- Enable Bluetooth.
     function instance.enable()
-        return execute_backend("enable")
+        return client.execute("enable")
     end
 
     -- Disable Bluetooth.
     function instance.disable()
-        return execute_backend("disable")
+        return client.execute("disable")
     end
 
     -- Toggle Bluetooth state.
     function instance.toggle()
-        return execute_backend("toggle")
+        return client.execute("toggle")
     end
 
     -- Return known Bluetooth devices.
@@ -183,10 +156,11 @@ function bluetooth.new(backend)
         end
 
         local output
-        output, err = read_backend("get-device", { address })
+        output, err = client.read("get-device", { address })
         if not output then
             return nil, err
         end
+        output = output:gsub("\r?\n$", "")
 
         return parse_device(output)
     end

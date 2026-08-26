@@ -2,11 +2,12 @@
 -- Control the default output and read its current state.
 
 local sound = {}
-local utils = require("plasma.utils")
+local backend_client = require("plasma.backend")
 
 -- Create a sound API connected to a backend script.
 function sound.new(backend)
     local instance = {}
+    local client = backend_client.new(backend, "sound")
 
     -- Ensure values are integers between 0 and 100. KDE Plasma can go beyond
     -- those limits, but I do not know if I want to deal with that...
@@ -20,40 +21,6 @@ function sound.new(backend)
         return value
     end
 
-    -- Run a backend action with an optional numeric argument without capturing
-    -- its output.
-    local function execute_backend(action, value)
-        local command = utils.shell_quote(backend) .. " " .. utils.shell_quote(action)
-
-        if value ~= nil then
-            command = command .. string.format(" %d", value)
-        end
-
-        local ok, _, code = os.execute(command)
-        if not ok then
-            return nil, "sound backend failed with exit code " .. tostring(code)
-        end
-
-        return true
-    end
-
-    -- Run a backend action and return its standard output.
-    local function read_backend(action)
-        local process = io.popen(utils.shell_quote(backend) .. " " .. utils.shell_quote(action))
-        if not process then
-            return nil, "could not start the sound backend"
-        end
-
-        local output = process:read("*a"):match("^%s*(.-)%s*$")
-        local ok, _, code = process:close()
-
-        if not ok then
-            return nil, "sound backend failed with exit code " .. tostring(code)
-        end
-
-        return output
-    end
-
     -- Set the default output volume from 0 to 100.
     function instance.set_volume(value)
         local validated, err = validate_percentage(value, "volume")
@@ -61,15 +28,16 @@ function sound.new(backend)
             return nil, err
         end
 
-        return execute_backend("set", validated)
+        return client.execute("set", { validated })
     end
 
     -- Get the default output volume.
     function instance.get_volume()
-        local output, err = read_backend("get")
+        local output, err = client.read("get")
         if not output then
             return nil, err
         end
+        output = output:match("^%s*(.-)%s*$")
 
         local value = tonumber(output)
         if not value then
@@ -81,20 +49,21 @@ function sound.new(backend)
 
     -- Mute the default output.
     function instance.mute()
-        return execute_backend("mute")
+        return client.execute("mute")
     end
 
     -- Unmute the default output.
     function instance.unmute()
-        return execute_backend("unmute")
+        return client.execute("unmute")
     end
 
     -- Check whether the default output is muted.
     function instance.is_muted()
-        local output, err = read_backend("is-muted")
+        local output, err = client.read("is-muted")
         if not output then
             return nil, err
         end
+        output = output:match("^%s*(.-)%s*$")
 
         if output == "true" then
             return true
@@ -109,7 +78,7 @@ function sound.new(backend)
 
     -- Toggle the mute state of the default output.
     function instance.toggle_mute()
-        return execute_backend("toggle-mute")
+        return client.execute("toggle-mute")
     end
 
     -- Increase the default output volume.

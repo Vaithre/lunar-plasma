@@ -2,6 +2,7 @@
 -- Read and change the state of the Wi-Fi radio and active connection.
 
 local wifi = {}
+local backend_client = require("plasma.backend")
 local utils = require("plasma.utils")
 
 -- Parse Wi-Fi state into an easy-to-work-with format.
@@ -28,45 +29,15 @@ end
 -- Create a Wi-Fi API connected to a backend script.
 function wifi.new(backend)
     local instance = {}
-
-    -- Run a backend action without capturing its output, only checking whether
-    -- the command completed successfully.
-    local function execute_backend(action)
-        local command = utils.shell_quote(backend) .. " " .. utils.shell_quote(action)
-        local ok, _, code = os.execute(command)
-
-        if not ok then
-            return nil, "wifi backend failed with exit code " .. tostring(code)
-        end
-
-        return true
-    end
-
-    -- Run a backend action and capture its output.
-    local function read_backend(action)
-        local command = utils.shell_quote(backend) .. " " .. utils.shell_quote(action)
-        local process = io.popen(command)
-
-        if not process then
-            return nil, "could not start the wifi backend"
-        end
-
-        local output = process:read("*a"):gsub("\r?\n$", "")
-        local ok, _, code = process:close()
-
-        if not ok then
-            return nil, "wifi backend failed with exit code " .. tostring(code)
-        end
-
-        return output
-    end
+    local client = backend_client.new(backend, "wifi")
 
     -- Return the current Wi-Fi radio and connection state.
     function instance.get_status()
-        local output, err = read_backend("get-status")
+        local output, err = client.read("get-status")
         if not output then
             return nil, err
         end
+        output = output:gsub("\r?\n$", "")
 
         return parse_status(output)
     end
@@ -107,17 +78,17 @@ function wifi.new(backend)
 
     -- Enable Wi-Fi.
     function instance.enable()
-        return execute_backend("enable")
+        return client.execute("enable")
     end
 
     -- Disable Wi-Fi.
     function instance.disable()
-        return execute_backend("disable")
+        return client.execute("disable")
     end
 
     -- Toggle Wi-Fi state.
     function instance.toggle()
-        return execute_backend("toggle")
+        return client.execute("toggle")
     end
 
     return instance

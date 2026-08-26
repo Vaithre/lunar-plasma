@@ -2,7 +2,7 @@
 -- Send desktop notifications through the system notification server.
 
 local notification = {}
-local utils = require("plasma.utils")
+local backend_client = require("plasma.backend")
 
 local notification_types = {
     info = true,
@@ -36,6 +36,7 @@ end
 -- Create a notification API connected to a backend script.
 function notification.new(backend)
     local instance = {}
+    local client = backend_client.new(backend, "notifications")
 
     -- Send a notification.
     function instance.send(options)
@@ -76,23 +77,14 @@ function notification.new(backend)
             return nil, "type must be info, warning, error, or success"
         end
 
-        local command = table.concat({
-            utils.shell_quote(backend),
-            "send",
-            utils.shell_quote(title),
-            utils.shell_quote(text),
-            utils.shell_quote(icon),
-            utils.shell_quote(sound),
-            tostring(timeout),
-            utils.shell_quote(notification_type),
-        }, " ")
-
-        local ok, _, code = os.execute(command)
-        if not ok then
-            return nil, "notifications backend failed with exit code " .. tostring(code)
-        end
-
-        return true
+        return client.execute("send", {
+            title,
+            text,
+            icon,
+            sound,
+            timeout,
+            notification_type,
+        })
     end
 
     return instance

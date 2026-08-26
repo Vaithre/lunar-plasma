@@ -5,6 +5,7 @@
 -- the Wallpaper option temporarily.
 
 local desktop = {}
+local backend_client = require("plasma.backend")
 local utils = require("plasma.utils")
 
 -- Parse wallpaper data returned by the backend.
@@ -151,58 +152,16 @@ end
 -- Create a desktop API connected to a backend script.
 function desktop.new(backend)
     local instance = {}
-
-    -- Execute a backend action and preserve its error output.
-    local function execute_backend(action, arguments)
-        local command = utils.shell_quote(backend) .. " " .. action
-
-        for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. utils.shell_quote(argument)
-        end
-
-        local process = io.popen(command .. " 2>&1")
-        if not process then
-            return nil, "could not start the desktop backend"
-        end
-
-        local output = process:read("*a"):gsub("\r?\n$", "")
-        local ok, _, code = process:close()
-        if not ok then
-            local detail = output ~= "" and ": " .. output or ""
-            return nil, "desktop backend failed with exit code " .. tostring(code) .. detail
-        end
-
-        return true
-    end
-
-    -- Read a backend response and preserve its error output.
-    local function read_backend(action, arguments)
-        local command = utils.shell_quote(backend) .. " " .. action
-
-        for _, argument in ipairs(arguments or {}) do
-            command = command .. " " .. utils.shell_quote(argument)
-        end
-
-        local process = io.popen(command .. " 2>&1")
-        if not process then
-            return nil, "could not start the desktop backend"
-        end
-
-        local output = process:read("*a")
-        local ok, _, code = process:close()
-
-        if not ok then
-            local detail = output:match("^%s*(.-)%s*$")
-            detail = detail ~= "" and ": " .. detail or ""
-            return nil, "desktop backend failed with exit code " .. tostring(code) .. detail
-        end
-
-        return output
-    end
+    local client = backend_client.new(backend, "desktop", {
+        timeouts = {
+            ["list-wallpapers"] = 10,
+            ["set-wallpaper"] = 10,
+        },
+    })
 
     -- Return wallpapers for every display.
     function instance.list_wallpapers()
-        local output, err = read_backend("list-wallpapers")
+        local output, err = client.read("list-wallpapers")
         if not output then
             return nil, err
         end
@@ -232,13 +191,13 @@ function desktop.new(backend)
             return nil, err
         end
 
-        validated_display, err = utils.resolve_plasma_screen(read_backend, validated_display)
+        validated_display, err = utils.resolve_plasma_screen(client.read, validated_display)
         if not validated_display then
             return nil, err
         end
 
         local output
-        output, err = read_backend("get-wallpaper", { validated_display })
+        output, err = client.read("get-wallpaper", { validated_display })
         if not output then
             return nil, err
         end
@@ -268,7 +227,7 @@ function desktop.new(backend)
             return nil, err
         end
 
-        display, err = utils.resolve_plasma_screen(read_backend, display)
+        display, err = utils.resolve_plasma_screen(client.read, display)
         if options.display ~= nil and not display then
             return nil, err
         end
@@ -278,7 +237,7 @@ function desktop.new(backend)
             return nil, "wallpaper plugin must be a non-empty string"
         end
 
-        return execute_backend("set-wallpaper", {
+        return client.execute("set-wallpaper", {
             path,
             display and tostring(display) or "all",
             plugin,
@@ -287,7 +246,7 @@ function desktop.new(backend)
 
     -- Return displays reported by Plasma.
     function instance.list_displays()
-        local output, err = read_backend("list-displays")
+        local output, err = client.read("list-displays")
         if not output then
             return nil, err
         end
@@ -352,7 +311,7 @@ function desktop.new(backend)
             return nil, "display must be a display table"
         end
 
-        local output, err = read_backend("list-display-modes", { display.name })
+        local output, err = client.read("list-display-modes", { display.name })
         if not output then
             return nil, err
         end
