@@ -7,6 +7,9 @@ local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_entrypoint%.lua$") or "."
 package.path = root .. "/tests/?.lua;" .. package.path
 local utils = require("test_utils")
+local version_file = assert(io.open(root .. "/VERSION", "r"))
+local expected_version = assert(version_file:read("*l"))
+assert(version_file:close())
 
 -- Return the sorted public method names exposed by one module.
 local function method_names(module)
@@ -27,7 +30,7 @@ local function cases()
             name = "entry point exposes version and stable module surface",
             run = function()
                 local plasma = dofile(root .. "/lunar-plasma.lua")
-                utils.assert_equal(plasma.version, "0.3.1", "version")
+                utils.assert_equal(plasma.version, expected_version, "version")
                 local expected = {
                     sound = table.concat({
                         "decrease_volume",
@@ -127,7 +130,7 @@ local function cases()
             run = function()
                 local code = "local p=dofile(" ..
                     string.format("%q", root .. "/lunar-plasma.lua") ..
-                    "); assert(p.version=='0.3.1')"
+                    "); assert(p.version==" .. string.format("%q", expected_version) .. ")"
                 local command = "cd /tmp && /usr/bin/lua -e " .. utils.shell_quote(code)
                 local result = utils.run_command(command)
                 assert(result.ok, result.stderr)
