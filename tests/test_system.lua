@@ -83,7 +83,9 @@ function system.get_suites(root, disruptive_mode)
             run = function()
                 local profile = assert(plasma.power.get_profile())
                 assert(plasma.power.set_profile(profile))
-                utils.eventually(function() return plasma.power.get_profile() == profile end, "power profile did not settle")
+                utils.eventually(function()
+                    return plasma.power.get_profile() == profile
+                end, "power profile did not settle")
             end,
         },
         {
@@ -126,11 +128,15 @@ function system.get_suites(root, disruptive_mode)
                 local target = disruptive_mode and (brightness == 100 and 99 or brightness + 1) or brightness
                 local operation_ok, operation_err = pcall(function()
                     assert(plasma.power.set_brightness(1, target))
-                    utils.eventually(function() return plasma.power.get_brightness(1) == target end, "brightness did not change")
+                    utils.eventually(function()
+                        return plasma.power.get_brightness(1) == target
+                    end, "brightness did not change")
                 end)
                 local restored, restore_err = plasma.power.set_brightness(1, brightness)
                 assert(restored, restore_err)
-                utils.eventually(function() return plasma.power.get_brightness(1) == brightness end, "brightness was not restored")
+                utils.eventually(function()
+                    return plasma.power.get_brightness(1) == brightness
+                end, "brightness was not restored")
                 assert(operation_ok, operation_err)
             end,
         },
@@ -219,15 +225,21 @@ function system.get_suites(root, disruptive_mode)
         {
             name = "disruptive radio controls",
             run = function()
-                if not disruptive_mode then return skip("enable with --test-disruptive-system to test radio changes") end
+                if not disruptive_mode then
+                    return skip("enable with --test-disruptive-system to test radio changes")
+                end
                 local original = assert(plasma.wifi.get_status())
                 local operation_ok, operation_err = pcall(function()
                     assert(plasma.wifi.toggle())
-                    utils.eventually(function() return plasma.wifi.is_enabled() ~= original.enabled end, "Wi-Fi did not toggle")
+                    utils.eventually(function()
+                        return plasma.wifi.is_enabled() ~= original.enabled
+                    end, "Wi-Fi did not toggle")
                 end)
                 local restored, restore_err = original.enabled and plasma.wifi.enable() or plasma.wifi.disable()
                 assert(restored, restore_err)
-                utils.eventually(function() return plasma.wifi.is_enabled() == original.enabled end, "Wi-Fi was not restored")
+                utils.eventually(function()
+                    return plasma.wifi.is_enabled() == original.enabled
+                end, "Wi-Fi was not restored")
                 assert(operation_ok, operation_err)
             end,
         },
@@ -292,14 +304,20 @@ function system.get_suites(root, disruptive_mode)
                     return skip(reason)
                 end
 
-                if not disruptive_mode then return skip("enable with --test-disruptive-system to test radio changes") end
+                if not disruptive_mode then
+                    return skip("enable with --test-disruptive-system to test radio changes")
+                end
                 local operation_ok, operation_err = pcall(function()
                     assert(plasma.bluetooth.toggle())
-                    utils.eventually(function() return plasma.bluetooth.is_enabled() ~= status.enabled end, "Bluetooth did not toggle")
+                    utils.eventually(function()
+                        return plasma.bluetooth.is_enabled() ~= status.enabled
+                    end, "Bluetooth did not toggle")
                 end)
                 local restored, restore_err = status.enabled and plasma.bluetooth.enable() or plasma.bluetooth.disable()
                 assert(restored, restore_err)
-                utils.eventually(function() return plasma.bluetooth.is_enabled() == status.enabled end, "Bluetooth was not restored")
+                utils.eventually(function()
+                    return plasma.bluetooth.is_enabled() == status.enabled
+                end, "Bluetooth was not restored")
                 assert(operation_ok, operation_err)
             end,
         },
@@ -388,7 +406,10 @@ function system.get_suites(root, disruptive_mode)
                     end
                 end)
                 for _, wallpaper in ipairs(system_wallpapers) do
-                    assert(plasma.desktop.set_wallpaper(wallpaper.uri, { display = wallpaper.display, plugin = wallpaper.plugin }))
+                    assert(plasma.desktop.set_wallpaper(wallpaper.uri, {
+                        display = wallpaper.display,
+                        plugin = wallpaper.plugin,
+                    }))
                 end
                 for _, wallpaper in ipairs(system_wallpapers) do
                     utils.eventually(function()

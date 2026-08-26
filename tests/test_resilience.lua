@@ -13,10 +13,18 @@ local sound = require("plasma.sound")
 local function mutant(file, expression, assertion)
     local directory = utils.make_temp_dir()
     assert(os.execute("/usr/bin/mkdir " .. utils.shell_quote(directory .. "/lua")))
-    assert(os.execute("/usr/bin/cp -a " .. utils.shell_quote(root .. "/lua/plasma") .. " " .. utils.shell_quote(directory .. "/lua/plasma")))
-    local mutation = utils.run_command("/usr/bin/sed -i -e " .. utils.shell_quote(expression) .. " " .. utils.shell_quote(directory .. "/lua/plasma/" .. file))
+    local source_path = utils.shell_quote(root .. "/lua/plasma")
+    local target_path = utils.shell_quote(directory .. "/lua/plasma")
+    assert(os.execute("/usr/bin/cp -a " .. source_path .. " " .. target_path))
+    local mutation = utils.run_command(
+        "/usr/bin/sed -i -e " ..
+        utils.shell_quote(expression) .. " " ..
+        utils.shell_quote(directory .. "/lua/plasma/" .. file)
+    )
     assert(mutation.ok, mutation.stderr)
-    local code = "package.path=" .. string.format("%q", directory .. "/lua/?.lua;" .. directory .. "/lua/?/init.lua;") .. "..package.path;" .. assertion
+    local module_path = directory .. "/lua/?.lua;" .. directory .. "/lua/?/init.lua;"
+    local code = "package.path=" .. string.format("%q", module_path) ..
+        "..package.path;" .. assertion
     local result = utils.run_command("/usr/bin/lua -e " .. utils.shell_quote(code))
     utils.remove_temp_dir(directory)
     return result
@@ -25,49 +33,132 @@ end
 -- Return generated and mutation-resilience cases.
 local function cases()
     return {
-        { name = "shell_quote round-trips hostile generated strings", run = function()
-            math.randomseed(3202)
-            local alphabet = { "a", "Z", " ", "'", '"', "$", "`", ";", "|", "\\", "\n", "\t", "☾" }
-            for _ = 1, 25 do
-                local parts = {}
-                for _ = 1, math.random(0, 24) do parts[#parts + 1] = alphabet[math.random(#alphabet)] end
-                local value = table.concat(parts)
-                local result = utils.run_command("/usr/bin/printf %s " .. utils.shell_quote(value))
-                assert(result.ok, result.stderr); utils.assert_equal(result.stdout, value, "quoted value")
-            end
-        end },
-        { name = "generated volume values obey the public domain", run = function()
-            local api = sound.new(root .. "/tests/fixtures/sound-backend.sh")
-            math.randomseed(3203)
-            for _ = 1, 40 do
-                local value = math.random(-200, 300)
-                local result, err = api.set_volume(value)
-                if value >= 0 and value <= 100 then assert(result, err) else assert(result == nil and type(err) == "string") end
-            end
-        end },
-        { name = "command runner captures both streams and exit status", run = function()
-            local result = utils.run_command("/usr/bin/bash -c " .. utils.shell_quote("printf output; printf problem >&2; exit 7"))
-            assert(not result.ok); utils.assert_equal(result.code, 7); utils.assert_equal(result.stdout, "output"); utils.assert_equal(result.stderr, "problem")
-        end },
-        { name = "command runner enforces the three-second timeout", run = function()
-            local result = utils.run_command("/usr/bin/sleep 30"); assert(result.timed_out); utils.assert_equal(result.code, 124)
-        end },
-        { name = "boundary tests kill an exclusive upper-bound mutation", run = function()
-            local result = mutant("sound.lua", "s/value > 100/value >= 100/", "local s=require('plasma.sound').new(" .. string.format("%q", root .. "/tests/fixtures/sound-backend.sh") .. ");assert(s.set_volume(100))")
-            assert(not result.ok, "volume boundary mutant survived")
-        end },
-        { name = "profile tests kill an incorrect mapping mutation", run = function()
-            local result = mutant("powermanagement.lua", "s/balanced = \"normal\"/balanced = \"saving\"/", "local p=require('plasma.powermanagement').new(" .. string.format("%q", root .. "/tests/fixtures/power-backend.sh") .. ");assert(p.get_profile()=='normal')")
-            assert(not result.ok, "power profile mapping mutant survived")
-        end },
-        { name = "state tests kill an inverted Wi-Fi mutation", run = function()
-            local result = mutant("wifi.lua", "0,/return status.connected/s//return not status.connected/", "local w=require('plasma.wifi').new(" .. string.format("%q", root .. "/tests/fixtures/wifi-backend.sh") .. ");assert(w.is_connected()==true)")
-            assert(not result.ok, "Wi-Fi state mutant survived")
-        end },
+        {
+            name = "shell_quote round-trips hostile generated strings",
+            run = function()
+                math.randomseed(3202)
+                local alphabet = {
+                    "a",
+                    "Z",
+                    " ",
+                    "'",
+                    '"',
+                    "$",
+                    "`",
+                    ";",
+                    "|",
+                    "\\",
+                    "\n",
+                    "\t",
+                    "☾",
+                }
+                for _ = 1, 25 do
+                    local parts = {}
+                    for _ = 1, math.random(0, 24) do
+                        parts[#parts + 1] = alphabet[math.random(#alphabet)]
+                    end
+                    local value = table.concat(parts)
+                    local result = utils.run_command(
+                        "/usr/bin/printf %s " .. utils.shell_quote(value)
+                    )
+                    assert(result.ok, result.stderr)
+                    utils.assert_equal(result.stdout, value, "quoted value")
+                end
+            end,
+        },
+        {
+            name = "generated volume values obey the public domain",
+            run = function()
+                local api = sound.new(root .. "/tests/fixtures/sound-backend.sh")
+                math.randomseed(3203)
+                for _ = 1, 40 do
+                    local value = math.random(-200, 300)
+                    local result, err = api.set_volume(value)
+                    if value >= 0 and value <= 100 then
+                        assert(result, err)
+                    else
+                        assert(result == nil and type(err) == "string")
+                    end
+                end
+            end,
+        },
+        {
+            name = "command runner captures both streams and exit status",
+            run = function()
+                local command = "/usr/bin/bash -c " ..
+                    utils.shell_quote("printf output; printf problem >&2; exit 7")
+                local result = utils.run_command(command)
+                assert(not result.ok)
+                utils.assert_equal(result.code, 7)
+                utils.assert_equal(result.stdout, "output")
+                utils.assert_equal(result.stderr, "problem")
+            end,
+        },
+        {
+            name = "command runner enforces the three-second timeout",
+            run = function()
+                local result = utils.run_command("/usr/bin/sleep 30")
+                assert(result.timed_out)
+                utils.assert_equal(result.code, 124)
+            end,
+        },
+        {
+            name = "boundary tests kill an exclusive upper-bound mutation",
+            run = function()
+                local backend = string.format(
+                    "%q",
+                    root .. "/tests/fixtures/sound-backend.sh"
+                )
+                local assertion = "local s=require('plasma.sound').new(" .. backend ..
+                    ");assert(s.set_volume(100))"
+                local result = mutant(
+                    "sound.lua",
+                    "s/value > 100/value >= 100/",
+                    assertion
+                )
+                assert(not result.ok, "volume boundary mutant survived")
+            end,
+        },
+        {
+            name = "profile tests kill an incorrect mapping mutation",
+            run = function()
+                local backend = string.format(
+                    "%q",
+                    root .. "/tests/fixtures/power-backend.sh"
+                )
+                local assertion = "local p=require('plasma.powermanagement').new(" ..
+                    backend .. ");assert(p.get_profile()=='normal')"
+                local result = mutant(
+                    "powermanagement.lua",
+                    "s/balanced = \"normal\"/balanced = \"saving\"/",
+                    assertion
+                )
+                assert(not result.ok, "power profile mapping mutant survived")
+            end,
+        },
+        {
+            name = "state tests kill an inverted Wi-Fi mutation",
+            run = function()
+                local backend = string.format(
+                    "%q",
+                    root .. "/tests/fixtures/wifi-backend.sh"
+                )
+                local assertion = "local w=require('plasma.wifi').new(" .. backend ..
+                    ");assert(w.is_connected()==true)"
+                local result = mutant(
+                    "wifi.lua",
+                    "0,/return status.connected/s//return not status.connected/",
+                    assertion
+                )
+                assert(not result.ok, "Wi-Fi state mutant survived")
+            end,
+        },
     }
 end
 
 -- Run the resilience suite.
-local function run() return utils.run_suite("resilience", cases()) end
+local function run()
+    return utils.run_suite("resilience", cases())
+end
 if ... == nil then os.exit(run() and 0 or 1) end
 return { run = run }
