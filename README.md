@@ -258,7 +258,7 @@ Contributions may use AI, subject to the following conditions:
 - Do not attribute the contribution to Claude or similar tools. This is essentially an advertising method. The same applies to the contents of the code itself.
 - Try to write commit messages yourself. LLM-style wording is quite annoying.
 
-Despite this, AI use is not prohibited, far from it. The prototype for this project was accelerated considerably through AI. That does not mean I am unfamiliar with the code structure or blindly accept the output. I constantly change AI generated details and test the program's effects on real hardware. You should do the same!
+Despite this, AI use is not prohibited. The prototype for this project was accelerated considerably through AI. In particular, Codex has almost total control over the test suite (sorry, I hate writing tests). That does not mean I am unfamiliar with the code structure or blindly accept the output. I constantly change AI generated details and test the program's effects on real hardware. You should do the same!
 
 ## License
 
