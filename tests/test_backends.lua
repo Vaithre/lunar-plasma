@@ -283,10 +283,10 @@ local function cases()
             end,
         },
         {
-            name = "desktop backend parses displays with mawk-compatible output",
+            name = "display backend parses displays with mawk-compatible output",
             run = function()
                 local result = assert_backend(backend(
-                    "desktop",
+                    "display",
                     { "list-displays" },
                     { "kscreen-doctor" }
                 ))
@@ -295,15 +295,19 @@ local function cases()
             end,
         },
         {
-            name = "desktop backend lists modes and maps connectors",
+            name = "display backend lists modes",
             run = function()
                 local modes = assert_backend(backend(
-                    "desktop",
+                    "display",
                     { "list-display-modes", "eDP-1" },
                     { "kscreen-doctor" }
                 ))
                 utils.assert_contains(modes.stdout, "59.94\tfalse\ttrue")
-
+            end,
+        },
+        {
+            name = "desktop backend maps wallpaper connectors",
+            run = function()
                 local screen = assert_backend(backend(
                     "desktop",
                     { "screen-for-connector", "HDMI-A-1" },
@@ -407,6 +411,7 @@ local function cases()
                     "keyboard",
                     "power",
                     "desktop",
+                    "display",
                 }
                 for _, name in ipairs(names) do
                     local result = backend(name, { "unknown" }, {})

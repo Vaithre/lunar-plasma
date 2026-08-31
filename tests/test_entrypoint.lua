@@ -70,13 +70,15 @@ local function cases()
                         "set_layout",
                     }, ","),
                     desktop = table.concat({
-                        "get_display",
-                        "get_primary_display",
                         "get_wallpaper",
-                        "list_display_modes",
-                        "list_displays",
                         "list_wallpapers",
                         "set_wallpaper",
+                    }, ","),
+                    display = table.concat({
+                        "get_display",
+                        "get_primary_display",
+                        "list_display_modes",
+                        "list_displays",
                     }, ","),
                     wifi = table.concat({
                         "disable",
@@ -116,6 +118,7 @@ local function cases()
                     "power",
                     "keyboard",
                     "desktop",
+                    "display",
                     "wifi",
                     "bluetooth",
                 }

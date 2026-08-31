@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0] - 2026-08-31
+
+### Changed
+
+- Moved `list_displays()`, `get_display()`, `get_primary_display()`, and `list_display_modes()` from `plasma.desktop` to the new `plasma.display` module with its own KScreen backend. Wallpaper management remains in `plasma.desktop`.
+- 
 ## [0.3.2] - 2026-08-26
 
 ### Added

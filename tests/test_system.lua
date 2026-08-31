@@ -353,17 +353,15 @@ function system.get_suites(root, disruptive_mode)
         },
     }
 
-    local system_wallpapers
-
-    local desktop_tests = {
+    local display_tests = {
         {
             name = "displays",
             run = function()
-                local displays = assert(plasma.desktop.list_displays())
+                local displays = assert(plasma.display.list_displays())
                 assert(#displays > 0)
-                local display = assert(plasma.desktop.get_display(displays[1].name))
+                local display = assert(plasma.display.get_display(displays[1].name))
                 assert(display.name == displays[1].name)
-                assert(plasma.desktop.get_primary_display())
+                assert(plasma.display.get_primary_display())
 
                 local mode_display
                 for _, current in ipairs(displays) do
@@ -377,9 +375,14 @@ function system.get_suites(root, disruptive_mode)
                     return skip("no enabled display is available for mode inspection")
                 end
 
-                assert(plasma.desktop.list_display_modes(mode_display))
+                assert(plasma.display.list_display_modes(mode_display))
             end,
         },
+    }
+
+    local system_wallpapers
+
+    local desktop_tests = {
         {
             name = "read wallpapers",
             run = function()
@@ -439,6 +442,7 @@ function system.get_suites(root, disruptive_mode)
         { name = "keyboard (system)", module = make_suite("keyboard (system)", keyboard_tests) },
         { name = "wifi (system)", module = make_suite("wifi (system)", wifi_tests) },
         { name = "bluetooth (system)", module = make_suite("bluetooth (system)", bluetooth_tests) },
+        { name = "display (system)", module = make_suite("display (system)", display_tests) },
         { name = "desktop (system)", module = make_suite("desktop (system)", desktop_tests) },
     }
 end

@@ -12,7 +12,7 @@ local plasma = dofile(example_dir .. "/../lunar-plasma.lua")
 
 -- Example starts here !
 
-local displays = plasma.desktop.list_displays()
+local displays = plasma.display.list_displays()
 
 if not displays then
     io.stderr:write("Warning: could not list connected displays\n")

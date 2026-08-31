@@ -20,6 +20,7 @@ local notification = require("plasma.notification")
 local power = require("plasma.powermanagement")
 local keyboard = require("plasma.keyboard")
 local desktop = require("plasma.desktop")
+local display = require("plasma.display")
 local wifi = require("plasma.wifi")
 local bluetooth = require("plasma.bluetooth")
 
@@ -31,6 +32,7 @@ return {
     power = power.new(root .. "/scripts/power.sh"),
     keyboard = keyboard.new(root .. "/scripts/keyboard.sh"),
     desktop = desktop.new(root .. "/scripts/desktop.sh"),
+    display = display.new(root .. "/scripts/display.sh"),
     wifi = wifi.new(root .. "/scripts/wifi.sh"),
     bluetooth = bluetooth.new(root .. "/scripts/bluetooth.sh"),
 }

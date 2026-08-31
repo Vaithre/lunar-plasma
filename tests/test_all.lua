@@ -44,6 +44,7 @@ else
         { name = "keyboard", module = require("test_keyboard") },
         { name = "wifi", module = require("test_wifi") },
         { name = "bluetooth", module = require("test_bluetooth") },
+        { name = "desktop", module = require("test_desktop") },
         { name = "display", module = require("test_display") },
         { name = "backends", module = require("test_backends") },
         { name = "entrypoint", module = require("test_entrypoint") },
