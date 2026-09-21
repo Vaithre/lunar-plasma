@@ -110,10 +110,17 @@ battery_status_busctl() {
     local warning_code
     local warning_level
 
-    present="$(busctl_property "$device_path" "$device_interface" IsPresent)"
-    on_battery="$(busctl_property "$upower_path" "$upower_interface" OnBattery)"
-    state_code="$(busctl_property "$device_path" "$device_interface" State)"
-    warning_code="$(busctl_property "$device_path" "$device_interface" WarningLevel)"
+    present="$(busctl_property "$device_path" "$device_interface" IsPresent)" || return 1
+    on_battery="$(busctl_property "$upower_path" "$upower_interface" OnBattery)" || return 1
+    state_code="$(busctl_property "$device_path" "$device_interface" State)" || return 1
+    warning_code="$(busctl_property "$device_path" "$device_interface" WarningLevel)" || return 1
+
+    if [[ "$present" != "true" && "$present" != "false" ]] ||
+        [[ "$on_battery" != "true" && "$on_battery" != "false" ]]; then
+        printf 'UPower returned an invalid battery boolean value\n' >&2
+        return 1
+    fi
+
     state="$(upower_state "$state_code")"
     warning_level="$(upower_warning_level "$warning_code")"
 
@@ -124,12 +131,12 @@ battery_status_busctl() {
     fi
 
     if [[ "$present" == "true" ]]; then
-        percentage="$(busctl_property "$device_path" "$device_interface" Percentage)"
+        percentage="$(busctl_property "$device_path" "$device_interface" Percentage)" || return 1
 
         if [[ "$state" == "charging" || "$state" == "pending-charge" ]]; then
-            time_remaining="$(busctl_property "$device_path" "$device_interface" TimeToFull)"
+            time_remaining="$(busctl_property "$device_path" "$device_interface" TimeToFull)" || return 1
         elif [[ "$state" == "discharging" || "$state" == "pending-discharge" ]]; then
-            time_remaining="$(busctl_property "$device_path" "$device_interface" TimeToEmpty)"
+            time_remaining="$(busctl_property "$device_path" "$device_interface" TimeToEmpty)" || return 1
         fi
 
         [[ "$time_remaining" != "0" ]] || time_remaining=""
@@ -142,14 +149,17 @@ battery_status_busctl() {
 get_battery_status() {
     local status
 
-    if command -v busctl >/dev/null 2>&1 &&
-        status="$(battery_status_busctl 2>/dev/null)"; then
-        printf '%s\n' "$status"
-        return
+    if ! command -v busctl >/dev/null 2>&1; then
+        printf 'UPower is required to read the system battery state\n' >&2
+        return 127
     fi
 
-    printf 'UPower is required to read the system battery state\n' >&2
-    return 127
+    if ! status="$(battery_status_busctl)"; then
+        printf 'could not read the system battery state from UPower\n' >&2
+        return 1
+    fi
+
+    printf '%s\n' "$status"
 }
 
 set_profile() {
@@ -262,16 +272,21 @@ resolve_display() {
     local display
     local label
     local index
-    local position
-    local marker
-    local output_name
-    local output_uuid
+    local output
+    local matched_display=""
     local -a displays
 
-    mapfile -t displays < <("$qdbus" \
+    output="$("$qdbus" \
         org.kde.ScreenBrightness \
         /org/kde/ScreenBrightness \
-        org.kde.ScreenBrightness.DisplaysDBusNames)
+        org.kde.ScreenBrightness.DisplaysDBusNames)" || return 1
+
+    if [[ -z "$output" ]]; then
+        printf 'no brightness displays are available\n' >&2
+        return 1
+    fi
+
+    mapfile -t displays <<<"$output"
 
     if [[ "$selector_compact" =~ ^(monitor|screen)-?([0-9]+)$ ]]; then
         index="${BASH_REMATCH[2]}"
@@ -290,34 +305,26 @@ resolve_display() {
             printf '%s\n' "$display"
             return
         fi
+    done
 
+    for display in "${displays[@]}"; do
         label="$("$qdbus" \
             org.kde.ScreenBrightness \
             "/org/kde/ScreenBrightness/$display" \
-            org.kde.ScreenBrightness.Display.Label)"
+            org.kde.ScreenBrightness.Display.Label)" || return 1
 
         if [[ "$selector_lower" == "${label,,}" ]]; then
-            printf '%s\n' "$display"
-            return
+            if [[ -n "$matched_display" ]]; then
+                printf 'ambiguous display label: %s\n' "$selector" >&2
+                return 1
+            fi
+            matched_display="$display"
         fi
     done
 
-    if command -v kscreen-doctor >/dev/null 2>&1; then
-        position=0
-
-        while read -r marker _ output_name output_uuid _; do
-            [[ "$marker" == "Output:" ]] || continue
-            ((position += 1))
-
-            if [[ "$selector_lower" == "${output_name,,}" ||
-                "$selector_lower" == "${output_uuid,,}" ]]; then
-                if (( position <= ${#displays[@]} )); then
-                    printf '%s\n' "${displays[position - 1]}"
-                    return
-                fi
-            fi
-        done < <(NO_COLOR=1 kscreen-doctor -o 2>/dev/null |
-            sed -E $'s/\x1B\[[0-9;]*[mK]//g')
+    if [[ -n "$matched_display" ]]; then
+        printf '%s\n' "$matched_display"
+        return
     fi
 
     printf 'display not found: %s\n' "$selector" >&2

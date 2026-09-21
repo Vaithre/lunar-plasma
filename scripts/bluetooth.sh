@@ -148,11 +148,14 @@ get_device() {
 
 list_devices() {
     local address
+    local addresses
+
+    addresses="$(known_device_addresses)" || return 1
 
     while IFS= read -r address; do
         [[ -n "$address" ]] || continue
         get_device "$address"
-    done < <(known_device_addresses)
+    done <<<"$addresses"
 }
 
 list_connected_devices() {

@@ -41,7 +41,14 @@ case "$command_name" in
         case "${1:-}" in
             list) printf 'Controller AA:BB:CC:DD:EE:FF Lunar Adapter [default]\n' ;;
             show) printf 'Controller AA:BB:CC:DD:EE:FF Lunar Adapter\n\tName: Lunar Adapter\n\tPowered: yes\n\tDiscoverable: no\n\tDiscovering: no\n' ;;
-            devices) printf 'Device 11:22:33:44:55:66 Lunar Headphones\nDevice 77:88:99:AA:BB:CC Lunar Controller\n' ;;
+            devices)
+                if [[ "$scenario" == "bluetooth-devices-fails" ]]; then
+                    printf 'Bluetooth device query failed\n' >&2
+                    exit 1
+                fi
+                [[ "$scenario" != "bluetooth-devices-empty" ]] || exit 0
+                printf 'Device 11:22:33:44:55:66 Lunar Headphones\nDevice 77:88:99:AA:BB:CC Lunar Controller\n'
+                ;;
             info)
                 if [[ "${2:-}" == "11:22:33:44:55:66" ]]; then printf 'Device 11:22:33:44:55:66\n\tName: Lunar Headphones\n\tPaired: yes\n\tTrusted: yes\n\tConnected: yes\n\tBlocked: no\n'
                 else printf 'Device 77:88:99:AA:BB:CC\n\tName: Lunar Controller\n\tPaired: yes\n\tTrusted: no\n\tConnected: no\n\tBlocked: no\n'; fi
@@ -60,9 +67,26 @@ case "$command_name" in
             *getLayout*) printf '0\n' ;;
             *setLayout*) printf 'true\n' ;;
             *switchToNextLayout*|*switchToPreviousLayout*) ;;
-            *DisplaysDBusNames*) printf 'display0\ndisplay1\n' ;;
+            *DisplaysDBusNames*)
+                case "$scenario" in
+                    brightness-reordered) printf 'display1\ndisplay0\n' ;;
+                    brightness-subset) printf 'display1\n' ;;
+                    brightness-empty) ;;
+                    brightness-list-fails) printf 'brightness display query failed\n' >&2; exit 1 ;;
+                    *) printf 'display0\ndisplay1\n' ;;
+                esac
+                ;;
             *display0*Display.Label*) printf 'Internal Display\n' ;;
-            *display1*Display.Label*) printf 'External Display\n' ;;
+            *display1*Display.Label*)
+                if [[ "$scenario" == "brightness-duplicate-label" ]]; then
+                    printf 'Internal Display\n'
+                elif [[ "$scenario" == "brightness-label-fails" ]]; then
+                    printf 'brightness label query failed\n' >&2
+                    exit 1
+                else
+                    printf 'External Display\n'
+                fi
+                ;;
             *MaxBrightness*) printf '1000\n' ;;
             *Display.Brightness*) printf '400\n' ;;
             *SetBrightness*) ;;
@@ -78,14 +102,26 @@ case "$command_name" in
         esac
         ;;
     busctl)
+        property="${!#}"
+        if [[ "$property" == "${LUNAR_MOCK_FAILED_PROPERTY:-}" ]]; then
+            printf 'UPower query failed: %s\n' "$property" >&2
+            exit 1
+        fi
+        if [[ "$property" == "${LUNAR_MOCK_INVALID_PROPERTY:-}" ]]; then
+            printf 'b unknown\n'
+            exit 0
+        fi
         if [[ "$scenario" == "busctl-fails" || "$scenario" == "dbus-fails" ]]; then printf 'busctl failure\n' >&2; exit 1; fi
         if [[ "$*" == *"ActiveProfile"* ]]; then printf 's "balanced"\n'
         elif [[ "$*" == *"Profiles"* ]]; then printf 'a(ss) 3 "power-saver" "" "balanced" "" "performance" ""\n'
         elif [[ "$*" == *"IsPresent"* ]]; then printf 'b true\n'
-        elif [[ "$*" == *"OnBattery"* ]]; then printf 'b true\n'
+        elif [[ "$*" == *"OnBattery"* ]]; then
+            [[ "$scenario" == "battery-ac" ]] && printf 'b false\n' || printf 'b true\n'
         elif [[ "$*" == *"Percentage"* ]]; then printf 'd 73.4\n'
-        elif [[ "$*" == *"State"* ]]; then printf 'u 2\n'
+        elif [[ "$*" == *"State"* ]]; then
+            [[ "$scenario" == "battery-charging" ]] && printf 'u 1\n' || printf 'u 2\n'
         elif [[ "$*" == *"WarningLevel"* ]]; then printf 'u 3\n'
+        elif [[ "$*" == *"TimeToFull"* ]]; then printf 'x 3600\n'
         elif [[ "$*" == *"TimeToEmpty"* ]]; then printf 'x 7200\n'
         else :; fi
         ;;

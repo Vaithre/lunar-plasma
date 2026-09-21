@@ -231,6 +231,56 @@ local function cases()
             end,
         },
         {
+            name = "power backend propagates each failed battery property",
+            run = function()
+                for _, property in ipairs({
+                    "IsPresent", "OnBattery", "State", "WarningLevel",
+                    "Percentage", "TimeToEmpty", "TimeToFull",
+                }) do
+                    local result = backend(
+                        "power", { "get-battery-status" }, { "busctl" },
+                        {
+                            LUNAR_MOCK_FAILED_PROPERTY = property,
+                            LUNAR_MOCK_SCENARIO = property == "TimeToFull" and
+                                "battery-charging" or "default",
+                        }
+                    )
+                    assert(not result.ok, property .. " failure was ignored")
+                    utils.assert_equal(result.stdout, "")
+                    utils.assert_contains(result.stderr, "UPower query failed: " .. property)
+                end
+            end,
+        },
+        {
+            name = "power backend rejects invalid battery booleans",
+            run = function()
+                for _, property in ipairs({ "IsPresent", "OnBattery" }) do
+                    local result = backend(
+                        "power", { "get-battery-status" }, { "busctl" },
+                        { LUNAR_MOCK_INVALID_PROPERTY = property }
+                    )
+                    assert(not result.ok)
+                    utils.assert_equal(result.stdout, "")
+                    utils.assert_contains(result.stderr, "invalid battery boolean")
+                end
+            end,
+        },
+        {
+            name = "power backend accepts explicit AC and charging states",
+            run = function()
+                local ac = assert_backend(backend(
+                    "power", { "get-battery-status" }, { "busctl" },
+                    { LUNAR_MOCK_SCENARIO = "battery-ac" }
+                ))
+                utils.assert_contains(ac.stdout, "\tac\t")
+                local charging = assert_backend(backend(
+                    "power", { "get-battery-status" }, { "busctl" },
+                    { LUNAR_MOCK_SCENARIO = "battery-charging" }
+                ))
+                utils.assert_contains(charging.stdout, "\tcharging\tbattery\t3600\t")
+            end,
+        },
+        {
             name = "power backend falls back from busctl to powerprofilesctl",
             run = function()
                 local result = assert_backend(backend(
@@ -273,13 +323,86 @@ local function cases()
 
                 local set = assert_backend(backend(
                     "power",
-                    { "set-brightness", "HDMI-A-1", "75" },
+                    { "set-brightness", "display1", "75" },
                     { "qdbus-qt6", "kscreen-doctor" }
                 ))
                 utils.assert_contains(
                     set.log,
                     "org.kde.ScreenBrightness.Display.SetBrightness\t750\t0"
                 )
+            end,
+        },
+        {
+            name = "brightness selectors preserve identity across display order and subsets",
+            run = function()
+                for _, scenario in ipairs({ "brightness-reordered", "brightness-subset" }) do
+                    for _, selector in ipairs({
+                        "display1", "/org/kde/ScreenBrightness/display1", "External Display",
+                        "1", "monitor 1", "screen 1",
+                    }) do
+                        local result = assert_backend(backend(
+                            "power", { "set-brightness", selector, "75" },
+                            { "qdbus-qt6", "kscreen-doctor" },
+                            { LUNAR_MOCK_SCENARIO = scenario }
+                        ))
+                        utils.assert_contains(result.log,
+                            "/org/kde/ScreenBrightness/display1\t" ..
+                            "org.kde.ScreenBrightness.Display.SetBrightness\t750\t0")
+                        assert(not result.log:find("kscreen-doctor", 1, true))
+                    end
+                end
+            end,
+        },
+        {
+            name = "brightness never maps connectors or UUIDs by display position",
+            run = function()
+                for _, scenario in ipairs({ "default", "brightness-reordered", "brightness-subset" }) do
+                    for _, selector in ipairs({ "eDP-1", "HDMI-A-1", "panel-uuid", "hdmi-uuid" }) do
+                        for _, action in ipairs({ "get-brightness", "set-brightness" }) do
+                            local result = backend(
+                                "power", { action, selector, "75" },
+                                { "qdbus-qt6", "kscreen-doctor" },
+                                { LUNAR_MOCK_SCENARIO = scenario }
+                            )
+                            assert(not result.ok, "unmapped selector was accepted: " .. selector)
+                            utils.assert_contains(result.stderr, "display not found")
+                            assert(not result.log:find("Display.SetBrightness", 1, true))
+                            assert(not result.log:find("Display.Brightness", 1, true))
+                        end
+                    end
+                end
+            end,
+        },
+        {
+            name = "brightness rejects ambiguous labels without changing a display",
+            run = function()
+                local result = backend(
+                    "power", { "set-brightness", "Internal Display", "75" },
+                    { "qdbus-qt6" },
+                    { LUNAR_MOCK_SCENARIO = "brightness-duplicate-label" }
+                )
+                assert(not result.ok)
+                utils.assert_contains(result.stderr, "ambiguous display label")
+                assert(not result.log:find("Display.SetBrightness", 1, true))
+            end,
+        },
+        {
+            name = "brightness propagates discovery failures and empty lists",
+            run = function()
+                for scenario, message in pairs({
+                    ["brightness-list-fails"] = "brightness display query failed",
+                    ["brightness-label-fails"] = "brightness label query failed",
+                    ["brightness-empty"] = "no brightness displays",
+                }) do
+                    local result = backend(
+                        "power", { "set-brightness", "External Display", "75" },
+                        { "qdbus-qt6" },
+                        { LUNAR_MOCK_SCENARIO = scenario }
+                    )
+                    assert(not result.ok)
+                    utils.assert_contains(result.stderr, message)
+                    assert(not result.log:find("Display.SetBrightness", 1, true))
+                end
             end,
         },
         {
@@ -398,6 +521,35 @@ local function cases()
                     environment
                 ))
                 utils.assert_contains(toggle.log, "bluetoothctl\t--timeout\t2\tpower\toff")
+                utils.remove_temp_dir(sysfs)
+            end,
+        },
+        {
+            name = "Bluetooth device lists distinguish query failure from no devices",
+            run = function()
+                local sysfs = utils.make_temp_dir()
+                assert(os.execute("/usr/bin/mkdir " .. utils.shell_quote(sysfs .. "/hci0")))
+                for _, action in ipairs({ "list-devices", "list-connected-devices" }) do
+                    local failed = backend(
+                        "bluetooth", { action }, { "bluetoothctl" },
+                        {
+                            LUNAR_PLASMA_BLUETOOTH_SYSFS = sysfs,
+                            LUNAR_MOCK_SCENARIO = "bluetooth-devices-fails",
+                        }
+                    )
+                    assert(not failed.ok)
+                    utils.assert_equal(failed.stdout, "")
+                    utils.assert_contains(failed.stderr, "Bluetooth device query failed")
+
+                    local empty = assert_backend(backend(
+                        "bluetooth", { action }, { "bluetoothctl" },
+                        {
+                            LUNAR_PLASMA_BLUETOOTH_SYSFS = sysfs,
+                            LUNAR_MOCK_SCENARIO = "bluetooth-devices-empty",
+                        }
+                    ))
+                    utils.assert_equal(empty.stdout, "")
+                end
                 utils.remove_temp_dir(sysfs)
             end,
         },
