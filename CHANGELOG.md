@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Added deterministic regression tests for failed battery queries, invalid battery booleans, empty and failed Bluetooth device lists, and brightness selection with reordered or incomplete display lists, ambiguous labels, and discovery failures.
+
+### Changed
+
+- Removed positional mapping from KScreen connector names and UUIDs to brightness devices. Brightness selectors now use ScreenBrightness IDs, object paths, unique labels, or one-based monitor numbers.
+- Updated the README brightness example and power-management wiki documentation to reflect the supported selectors and ScreenBrightness display order.
+
+### Fixed
+
+- Fixed failed UPower queries being reported as valid battery state, including an incorrect AC power source. Battery queries now propagate failures, preserve diagnostic details, and validate battery-presence and power-source booleans.
+- Fixed failed Bluetooth device queries being reported as successful empty lists for both known and connected devices.
+- Fixed brightness operations potentially targeting the wrong monitor when KScreen and ScreenBrightness lists differ. Display lookup now rejects ambiguous labels and propagates discovery failures and empty display lists as errors.
+
 ## [0.4.0] - 2026-08-31
 
 ### Changed
