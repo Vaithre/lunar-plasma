@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.4.2] - 2026-10-26
 
 ### Added
 
@@ -12,8 +12,9 @@
 - Improved comments in the entry point and test suite.
 - Shortened the default test runner's introductory message.
 - Simplified the installer to copy only the runtime, without an installation mode selection. It was kinda pointless.
-- Updated the README wallpaper example, feature list, and project goals, and removed the NixOS and known limitations sections.
+- Updated the README wallpaper example, feature list, project goals, and removed the NixOS section, since I don't really know how that distribution works.
 - Removed the periods at the end of all the code comments. From what I saw, it's not common to end comments with periods. Better to just follow the convention.
+- Expanded the roadmap.
 
 ## [0.4.1] - 2026-09-21
 
