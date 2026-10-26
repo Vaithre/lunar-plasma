@@ -12,13 +12,13 @@
 Lunar Plasma lets you control your [KDE Plasma](https://kde.org/plasma-desktop/) desktop through a [Lua](https://www.lua.org/about.html) interface. Its goal is to make it easy to write scripts that inspect and modify your desktop on demand. Inspired by the scriptable, tinkerer-friendly spirit of projects such as [AwesomeWM](https://awesomewm.org/) and [Hyprland](https://hypr.land/). Beyond desktop customization, Lunar Plasma also lets you interact with other system properties, such as adjusting the volume or changing screen brightness, all from the same simple Lua interface. It also gives you functions to read system state, like battery level, connected monitors, Wi-Fi status, etc, so you can detect events and react to them in your scripts.
 
 > [!IMPORTANT]
-> **Early development software.** Lunar Plasma hasn't been battle-tested yet. Expect breaking changes between versions.
+> **Early development software.** Lunar Plasma hasn't been battle-tested yet. Expect breaking changes between versions!
 
 ![Wallpaper changer example](resources/wallpaper-changer-example.gif)
 
 ## API Reference
 
-See the complete [Lunar Plasma wiki](https://github.com/Vaithre/lunar-plasma/wiki).
+See the complete **[Lunar Plasma wiki](https://github.com/Vaithre/lunar-plasma/wiki)**.
 
 ## Quick examples
 
@@ -70,45 +70,38 @@ if plasma.power.is_battery_charging() then
 end
 ```
 
-#### Set an image as wallpaper on a specific display
+#### Set a random wallpaper from a directory on a specific display
+
 ```lua
 local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 
-local wallpaper = "/path/to/wallpaper.png"
-local display = "DVI-D-1"
+local wallpapers = {}
+for path in io.popen('find "$HOME/Pictures/Wallpapers" -maxdepth 1 -type f'):lines() do
+    wallpapers[#wallpapers + 1] = path
+end
 
-plasma.desktop.set_wallpaper(wallpaper, display)
+math.randomseed(os.time())
+plasma.desktop.set_wallpaper(wallpapers[math.random(#wallpapers)], "DVI-D-1")
 ```
 
-You can run similar examples from the project root or from inside the `examples` directory without installing Lunar Plasma first.
+You can run similar examples from the project root or from inside the `examples` directory.
 
 ## Some Features
 
-- Control the volume and mute state of the default audio output.
-- Send desktop notifications with custom text, icons, sounds, urgency, and timeout.
-- Read battery and power-source state, select power profiles, and request suspend, shutdown, or reboot actions.
-- Read and adjust display brightness.
 - Inspect connected displays, their current configuration, and available modes.
 - List, inspect, and switch configured keyboard layouts.
-- Read and change wallpapers across all displays or on a specific display.
-- Inspect and control Wi-Fi state and read the active network.
-- Inspect and control Bluetooth state and list known or connected devices.
-- Use a single Lua entry point backed by D-Bus and system tools.
+- Inspect and control Wi-Fi and Bluetooth.
+- Read battery time remaining and warning level.
 
 ## Current Goals
 
-You can check our current goals in the [ROADMAP](ROADMAP.md).
+You can check our current goals in the **[ROADMAP](ROADMAP.md)**.
 
-The main current goals are:
-
-- Implement an interpreter for running one-shot commands.
-- Document integration with other languages such as C, C++, Python, and Rust.
-- Implement user modules.
-- Expand the available API.
+The overall direction of the project is to cover all the possible Plasma desktop features that might interest the average user, while keeping the project as optimized as possible. Right now, for example, bash is used as an intermediary. Eventually, it would be preferable to have a lightweight executable that holds the entire backend. For now, the prototype does the job for carrying out the project.
 
 ## Dependencies
 
-A standard KDE Plasma desktop should already include most of the tools Lunar Plasma uses. Lua and Bash run the library. Tools such as `pactl`, `notify-send`, `qdbus`, `kscreen-doctor`, `setxkbmap`, `nmcli`, `bluetoothctl`, and `busctl` provide specific features or fallbacks. NetworkManager supplies Wi-Fi state, BlueZ supplies Bluetooth state, and UPower supplies battery information. Lunar Plasma detects the available `qdbus` command automatically.
+A standard KDE Plasma desktop should already include most of the tools Lunar Plasma uses. Lua and Bash run the library. Tools such as `pactl`, `notify-send`, `qdbus`, `kscreen-doctor`, `setxkbmap`, `nmcli`, `bluetoothctl`, and `busctl` provide specific features or fallbacks. NetworkManager supplies Wi-Fi state, BlueZ supplies Bluetooth state, and UPower supplies battery information.
 
 > [!important]
 > It's normal for the package manager to talk about "replacing packages." In this case you can test the program with the regular test suite [`lua tests/test_all.lua`] and everything will probably work fine without the need to install anything! To test the available features against your actual system, use [`lua tests/test_all.lua --test-on-system`]. **System tests temporarily modify settings such as volume, keyboard layout, brightness, and wallpaper, so use this mode with caution.** You can also install and use only what you need. For example, **if you don't have bluetooth on your computer, you don't need to install bluez for this library to work for your use case**.
@@ -131,26 +124,6 @@ sudo dnf install lua bash pulseaudio-utils libnotify qt6-qttools libkscreen xorg
 
 ```bash
 sudo apt install lua5.4 bash pulseaudio-utils libnotify-bin qdbus-qt6 libkscreen-bin x11-xkb-utils power-profiles-daemon network-manager bluez upower
-```
-
-### NixOS
-
-Add the tools to your NixOS configuration. Bash and the D-Bus services normally come with the system and Plasma environment.
-
-```nix
-environment.systemPackages = with pkgs; [
-  lua54
-  pulseaudio
-  libnotify
-  kdePackages.qttools
-  kdePackages.libkscreen
-  xorg.setxkbmap
-  networkmanager
-  bluez
-  upower
-];
-
-services.power-profiles-daemon.enable = true;
 ```
 
 
@@ -212,13 +185,6 @@ chmod +x uninstall.sh
 | Fedora 44 | Successfully tested |
 | Arch Linux | Successfully tested |
 | Kubuntu | Successfully tested |
-
-## Known limitations
-
-- The public API may change before the first stable release.
-- Wallpaper and brightness support depend on the D-Bus interfaces and plugins available in the current Plasma session.
-- Display inspection and keyboard fallbacks depend on optional system tools.
-- Wi-Fi, Bluetooth, and battery information depend on NetworkManager, BlueZ, and UPower respectively.
 
 ## Contributing
 
