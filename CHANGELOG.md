@@ -11,6 +11,7 @@
 - Renamed `LICENSE.md` to `LICENSE` and updated the README link.
 - Improved comments in the entry point and test suite.
 - Shortened the default test runner's introductory message.
+- Simplified the installer to copy only the runtime, without an installation mode selection. It was kinda pointless.
 
 ## [0.4.1] - 2026-09-21
 
