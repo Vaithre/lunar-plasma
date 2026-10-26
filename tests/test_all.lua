@@ -51,7 +51,7 @@ else
         { name = "resilience", module = require("test_resilience") },
     }
 
-    print("Running deterministic API and production backend tests with a 3-second command timeout.")
+    print("Running tests...")
 end
 
 local passed = 0
