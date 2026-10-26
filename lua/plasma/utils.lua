@@ -1,17 +1,17 @@
--- Shared helpers for Plasma-backed APIs.
+-- Shared helpers for Plasma-backed APIs
 -- There are still functions that could be moved here BUT they have a certain
 -- complexity that would need extra parameters and might lose the value gained
--- by moving them to this sublibrary.
+-- by moving them to this sublibrary
 
 local utils = {}
 
 -- Turn a value into a quoted string for Bash, avoiding injection or malformed
--- input.
+-- input
 function utils.shell_quote(value)
     return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
 end
 
--- Convert text returned by some backend operations into a valid boolean.
+-- Convert text returned by some backend operations into a valid boolean
 function utils.parse_boolean(value)
     if value == "true" then
         return true
@@ -25,7 +25,7 @@ function utils.parse_boolean(value)
 end
 
 -- Split text into a table of tab-separated fields, useful for parsing backend
--- output.
+-- output
 function utils.split_fields(line)
     local fields = {}
 
@@ -39,7 +39,7 @@ end
 -- Convert a KDE Plasma screen identifier into a number. For example, if
 -- DVI-D-1 is screen number "1", return that number. I'm still not sure how
 -- useful this is when one already has the exact tag, but more options are not
--- bad either.
+-- bad either
 function utils.resolve_plasma_screen(read_backend, display)
     if type(display) ~= "string" then
         return display

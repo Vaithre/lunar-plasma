@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Read and change Bluetooth state through BlueZ.
+# Read and change Bluetooth state through BlueZ
 set -euo pipefail
 
 export LC_ALL=C

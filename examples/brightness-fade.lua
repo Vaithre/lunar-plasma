@@ -1,8 +1,8 @@
 #!/usr/bin/env lua
 
--- Fade the display brightness from 50% to 100% then restore the original value.
+-- Fade the display brightness from 50% to 100% then restore the original value
 
--- This verbose lookup lets the example run locally from either project directory.
+-- This verbose lookup lets the example run locally from either project directory
 -- Once installed, loading Lunar Plasma only requires:
 -- local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 

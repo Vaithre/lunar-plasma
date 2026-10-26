@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Control power management through standard and Plasma D-Bus interfaces.
+# Control power management through standard and Plasma D-Bus interfaces
 set -euo pipefail
 
 action="${1:-}"

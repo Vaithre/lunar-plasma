@@ -9,7 +9,7 @@ local desktop = require("plasma.desktop")
 local utils = require("test_utils")
 local backend = root .. "/tests/fixtures/desktop-backend.sh"
 
--- Create a desktop backend with one controlled response.
+-- Create a desktop backend with one controlled response
 local function response_backend(action, output, code)
     local directory = utils.make_temp_dir()
     local path = directory .. "/backend.sh"
@@ -23,7 +23,7 @@ local function response_backend(action, output, code)
     return desktop.new(path), directory
 end
 
--- Return the complete set of desktop API cases.
+-- Return the complete set of desktop API cases
 local function cases()
     local api = desktop.new(backend)
     return {
@@ -121,7 +121,7 @@ local function cases()
     }
 end
 
--- Run the desktop suite.
+-- Run the desktop suite
 local function run()
     return utils.run_suite("desktop", cases())
 end

@@ -1,11 +1,11 @@
 -- Keyboard API
--- Read and change the active keyboard layout.
+-- Read and change the active keyboard layout
 
 local keyboard = {}
 local backend_client = require("plasma.backend")
 local utils = require("plasma.utils")
 
--- Parse a keyboard layout returned by the backend.
+-- Parse a keyboard layout returned by the backend
 local function parse_layout(line)
     local index, id, variant, name = line:match("^(%d+)\t([^\t]*)\t([^\t]*)\t(.*)$")
 
@@ -21,7 +21,7 @@ local function parse_layout(line)
     }
 end
 
--- Validate a keyboard layout selector and optional variant.
+-- Validate a keyboard layout selector and optional variant
 local function validate_layout(layout, variant)
     if type(layout) == "table" then
         variant = layout.variant
@@ -43,12 +43,12 @@ local function validate_layout(layout, variant)
     return tostring(layout), variant or ""
 end
 
--- Create a keyboard API connected to a backend script.
+-- Create a keyboard API connected to a backend script
 function keyboard.new(backend)
     local instance = {}
     local client = backend_client.new(backend, "keyboard")
 
-    -- Return keyboard layouts configured in the current session.
+    -- Return keyboard layouts configured in the current session
     function instance.list_layouts()
         local output, err = client.read("list-layouts")
         if not output then
@@ -73,7 +73,7 @@ function keyboard.new(backend)
         return layouts
     end
 
-    -- Return the active keyboard layout.
+    -- Return the active keyboard layout
     function instance.get_active_layout()
         local output, err = client.read("get-layout")
         if not output then
@@ -83,7 +83,7 @@ function keyboard.new(backend)
         return parse_layout(output:match("^%s*(.-)%s*$"))
     end
 
-    -- Select a keyboard layout.
+    -- Select a keyboard layout
     function instance.set_layout(layout, variant)
         local selector, validated_variant, err = validate_layout(layout, variant)
         if not selector then
@@ -93,12 +93,12 @@ function keyboard.new(backend)
         return client.execute("set-layout", { selector, validated_variant })
     end
 
-    -- Select the next keyboard layout.
+    -- Select the next keyboard layout
     function instance.select_next_layout()
         return client.execute("next-layout")
     end
 
-    -- Select the previous keyboard layout.
+    -- Select the previous keyboard layout
     function instance.select_previous_layout()
         return client.execute("previous-layout")
     end

@@ -1,11 +1,11 @@
 -- Desktop API
--- Change settings related to the Plasma desktop.
+-- Change settings related to the Plasma desktop
 
 local desktop = {}
 local backend_client = require("plasma.backend")
 local utils = require("plasma.utils")
 
--- Parse wallpaper data returned by the backend.
+-- Parse wallpaper data returned by the backend
 local function parse_wallpaper(line)
     local display, plugin, uri = line:match("^(%d+)\t([^\t]*)\t(.*)$")
 
@@ -25,7 +25,7 @@ local function parse_wallpaper(line)
     }
 end
 
--- Validate a wallpaper display number or connector name.
+-- Validate a wallpaper display number or connector name
 local function validate_wallpaper_display(display)
     if display == nil then
         return nil
@@ -47,7 +47,7 @@ local function validate_wallpaper_display(display)
     return display
 end
 
--- Create a desktop API connected to a backend script.
+-- Create a desktop API connected to a backend script
 function desktop.new(backend)
     local instance = {}
     local client = backend_client.new(backend, "desktop", {
@@ -57,7 +57,7 @@ function desktop.new(backend)
         },
     })
 
-    -- Return wallpapers for every display.
+    -- Return wallpapers for every display
     function instance.list_wallpapers()
         local output, err = client.read("list-wallpapers")
         if not output then
@@ -82,7 +82,7 @@ function desktop.new(backend)
         return wallpapers
     end
 
-    -- Return a wallpaper by display.
+    -- Return a wallpaper by display
     function instance.get_wallpaper(display)
         local validated_display, err = validate_wallpaper_display(display or 1)
         if not validated_display then
@@ -103,7 +103,7 @@ function desktop.new(backend)
         return parse_wallpaper(output:gsub("[\r\n]+$", ""))
     end
 
-    -- Set a wallpaper on one display or every display.
+    -- Set a wallpaper on one display or every display
     function instance.set_wallpaper(path, options)
         if type(path) ~= "string" or path == "" then
             return nil, "wallpaper path must be a non-empty string"

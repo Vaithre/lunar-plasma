@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Send desktop notifications through the freedesktop.org notification service.
+# Send desktop notifications through the freedesktop.org notification service
 set -euo pipefail
 
 action="${1:-}"

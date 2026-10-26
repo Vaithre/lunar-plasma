@@ -1,5 +1,5 @@
 -- Power management API
--- Control power profiles, system power actions, and display brightness.
+-- Control power profiles, system power actions, and display brightness
 
 local power = {}
 local backend_client = require("plasma.backend")
@@ -44,7 +44,7 @@ local warning_levels = {
     action = true,
 }
 
--- Parse battery and power-source status returned by the backend.
+-- Parse battery and power-source status returned by the backend
 local function parse_battery_status(line)
     local fields = utils.split_fields(line)
     local present = utils.parse_boolean(fields[1])
@@ -72,7 +72,7 @@ local function parse_battery_status(line)
     }
 end
 
--- Validate brightness percentage.
+-- Validate brightness percentage
 local function validate_brightness(value)
     value = tonumber(value)
 
@@ -83,7 +83,7 @@ local function validate_brightness(value)
     return value
 end
 
--- Validate a display name, ID, or monitor number.
+-- Validate a display name, ID, or monitor number
 local function validate_display(display)
     if type(display) ~= "string" and type(display) ~= "number" then
         return nil, "display must be a name, ID, or monitor number"
@@ -97,7 +97,7 @@ local function validate_display(display)
     return display
 end
 
--- Create a power API connected to a backend script.
+-- Create a power API connected to a backend script
 function power.new(backend)
     local instance = {}
     local client = backend_client.new(backend, "power", {
@@ -111,7 +111,7 @@ function power.new(backend)
         },
     })
 
-    -- Set the active power profile.
+    -- Set the active power profile
     function instance.set_profile(profile)
         local mapped_profile = profiles[profile]
         if not mapped_profile then
@@ -121,7 +121,7 @@ function power.new(backend)
         return client.execute("set-profile", { mapped_profile })
     end
 
-    -- Return the active power profile.
+    -- Return the active power profile
     function instance.get_profile()
         local output, err = client.read("get-profile")
         if not output then
@@ -137,7 +137,7 @@ function power.new(backend)
         return profile
     end
 
-    -- Return battery and power-source status.
+    -- Return battery and power-source status
     function instance.get_battery_status()
         local output, err = client.read("get-battery-status")
         if not output then
@@ -148,7 +148,7 @@ function power.new(backend)
         return parse_battery_status(output)
     end
 
-    -- Check if the system has a battery.
+    -- Check if the system has a battery
     function instance.is_battery_present()
         local status, err = instance.get_battery_status()
         if not status then
@@ -158,7 +158,7 @@ function power.new(backend)
         return status.present
     end
 
-    -- Return the battery percentage.
+    -- Return the battery percentage
     function instance.get_battery_percentage()
         local status, err = instance.get_battery_status()
         if not status then
@@ -172,7 +172,7 @@ function power.new(backend)
         return status.percentage
     end
 
-    -- Return the battery state.
+    -- Return the battery state
     function instance.get_battery_state()
         local status, err = instance.get_battery_status()
         if not status then
@@ -186,7 +186,7 @@ function power.new(backend)
         return status.state
     end
 
-    -- Check if the battery is charging.
+    -- Check if the battery is charging
     function instance.is_battery_charging()
         local status, err = instance.get_battery_status()
         if not status then
@@ -196,7 +196,7 @@ function power.new(backend)
         return status.present and status.state == "charging"
     end
 
-    -- Return the battery time estimate in seconds.
+    -- Return the battery time estimate in seconds
     function instance.get_battery_time_remaining()
         local status, err = instance.get_battery_status()
         if not status then
@@ -214,7 +214,7 @@ function power.new(backend)
         return status.time_remaining
     end
 
-    -- Return the battery warning level.
+    -- Return the battery warning level
     function instance.get_battery_warning_level()
         local status, err = instance.get_battery_status()
         if not status then
@@ -228,7 +228,7 @@ function power.new(backend)
         return status.warning_level
     end
 
-    -- Return the active power source.
+    -- Return the active power source
     function instance.get_power_source()
         local status, err = instance.get_battery_status()
         if not status then
@@ -238,7 +238,7 @@ function power.new(backend)
         return status.source
     end
 
-    -- Check if the system is on battery power.
+    -- Check if the system is on battery power
     function instance.is_on_battery()
         local source, err = instance.get_power_source()
         if not source then
@@ -248,7 +248,7 @@ function power.new(backend)
         return source == "battery"
     end
 
-    -- Check if the system is connected to AC power.
+    -- Check if the system is connected to AC power
     function instance.is_ac_connected()
         local source, err = instance.get_power_source()
         if not source then
@@ -258,22 +258,22 @@ function power.new(backend)
         return source == "ac"
     end
 
-    -- Suspend system.
+    -- Suspend system
     function instance.suspend()
         return client.execute("suspend")
     end
 
-    -- Shut down system.
+    -- Shut down system
     function instance.shutdown()
         return client.execute("shutdown")
     end
 
-    -- Reboot system.
+    -- Reboot system
     function instance.reboot()
         return client.execute("reboot")
     end
 
-    -- Set display brightness.
+    -- Set display brightness
     function instance.set_brightness(display, value)
         local validated_display, err = validate_display(display)
         if not validated_display then
@@ -289,7 +289,7 @@ function power.new(backend)
         return client.execute("set-brightness", { validated_display, brightness })
     end
 
-    -- Get display brightness.
+    -- Get display brightness
     function instance.get_brightness(display)
         local validated_display, err = validate_display(display)
         if not validated_display then

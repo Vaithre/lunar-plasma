@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Read and change Plasma wallpapers through desktop services.
+# Read and change Plasma wallpapers through desktop services
 set -euo pipefail
 
 action="${1:-}"

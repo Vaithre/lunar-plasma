@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Read and change Wi-Fi state through NetworkManager.
+# Read and change Wi-Fi state through NetworkManager
 set -euo pipefail
 
 export LC_ALL=C

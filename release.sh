@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build a clean Lunar Plasma release archive.
+# Build a clean Lunar Plasma release archive
 set -euo pipefail
 
 project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"

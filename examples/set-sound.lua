@@ -1,8 +1,8 @@
 #!/usr/bin/env lua
 
--- Set the sound volume to 25%.
+-- Set the sound volume to 25%
 
--- This verbose lookup lets the example run locally from either project directory.
+-- This verbose lookup lets the example run locally from either project directory
 -- Once installed, loading Lunar Plasma only requires:
 -- local plasma = dofile(os.getenv("HOME").."/.local/opt/lunar-plasma/lunar-plasma.lua")
 

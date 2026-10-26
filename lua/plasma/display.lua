@@ -1,11 +1,11 @@
 -- Display API
--- Inspect Plasma displays and their available modes.
+-- Inspect Plasma displays and their available modes
 
 local display = {}
 local backend_client = require("plasma.backend")
 local utils = require("plasma.utils")
 
--- Map KScreen rotation flags to public rotation names.
+-- Map KScreen rotation flags to public rotation names
 local rotations = {
     [1] = "normal",
     [2] = "left",
@@ -17,7 +17,7 @@ local rotations = {
     [128] = "flipped270",
 }
 
--- Parse display data returned by the backend.
+-- Parse display data returned by the backend
 local function parse_display(line)
     local fields = utils.split_fields(line)
     local enabled = utils.parse_boolean(fields[5])
@@ -80,7 +80,7 @@ local function parse_display(line)
     }
 end
 
--- Parse a display mode returned by the backend.
+-- Parse a display mode returned by the backend
 local function parse_display_mode(line)
     local fields = utils.split_fields(line)
     local preferred = utils.parse_boolean(fields[5])
@@ -104,12 +104,12 @@ local function parse_display_mode(line)
     }
 end
 
--- Create a display API connected to a backend script.
+-- Create a display API connected to a backend script
 function display.new(backend)
     local instance = {}
     local client = backend_client.new(backend, "display")
 
-    -- Return displays reported by Plasma.
+    -- Return displays reported by Plasma
     function instance.list_displays()
         local output, err = client.read("list-displays")
         if not output then
@@ -134,7 +134,7 @@ function display.new(backend)
         return displays
     end
 
-    -- Return a display by connector name.
+    -- Return a display by connector name
     function instance.get_display(name)
         if type(name) ~= "string" or name == "" then
             return nil, "display name must be a non-empty string"
@@ -154,7 +154,7 @@ function display.new(backend)
         return nil, "display not found: " .. name
     end
 
-    -- Return the primary display.
+    -- Return the primary display
     function instance.get_primary_display()
         local displays, err = instance.list_displays()
         if not displays then
@@ -170,7 +170,7 @@ function display.new(backend)
         return nil, "no primary display is available"
     end
 
-    -- Return display modes supported by a display table.
+    -- Return display modes supported by a display table
     function instance.list_display_modes(display)
         if type(display) ~= "table" or type(display.name) ~= "string" or display.name == "" then
             return nil, "display must be a display table"

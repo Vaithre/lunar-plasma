@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Read and change keyboard layouts through Plasma D-Bus or XKB.
+# Read and change keyboard layouts through Plasma D-Bus or XKB
 set -euo pipefail
 
 action="${1:-}"

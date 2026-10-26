@@ -10,7 +10,7 @@ local version_file = assert(io.open(root .. "/VERSION", "r"))
 local expected_version = assert(version_file:read("*l"))
 assert(version_file:close())
 
--- Return the sorted public method names exposed by one module.
+-- Return the sorted public method names exposed by one module
 local function method_names(module)
     local names = {}
     for name, value in pairs(module) do

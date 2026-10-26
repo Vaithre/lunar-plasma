@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Read Plasma displays and their available modes through KScreen.
+# Read Plasma displays and their available modes through KScreen
 set -euo pipefail
 
 action="${1:-}"

@@ -1,5 +1,5 @@
 -- Notification API
--- Send desktop notifications through the system notification server.
+-- Send desktop notifications through the system notification server
 
 local notification = {}
 local backend_client = require("plasma.backend")
@@ -11,7 +11,7 @@ local notification_types = {
     success = true,
 }
 
--- Validate required notification text.
+-- Validate required notification text
 local function validate_required_text(value, name)
     if type(value) ~= "string" or value == "" then
         return nil, name .. " must be a non-empty string"
@@ -20,7 +20,7 @@ local function validate_required_text(value, name)
     return value
 end
 
--- Validate optional notification text.
+-- Validate optional notification text
 local function validate_optional_text(value, name)
     if value == nil then
         return ""
@@ -33,12 +33,12 @@ local function validate_optional_text(value, name)
     return value
 end
 
--- Create a notification API connected to a backend script.
+-- Create a notification API connected to a backend script
 function notification.new(backend)
     local instance = {}
     local client = backend_client.new(backend, "notifications")
 
-    -- Send a notification.
+    -- Send a notification
     function instance.send(options)
         if type(options) ~= "table" then
             return nil, "options must be a table"

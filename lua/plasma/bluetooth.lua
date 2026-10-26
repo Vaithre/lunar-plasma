@@ -1,11 +1,11 @@
 -- Bluetooth API
--- Read and change the default Bluetooth adapter and inspect known devices.
+-- Read and change the default Bluetooth adapter and inspect known devices
 
 local bluetooth = {}
 local backend_client = require("plasma.backend")
 local utils = require("plasma.utils")
 
--- Parse the default Bluetooth adapter status returned by the backend.
+-- Parse the default Bluetooth adapter status returned by the backend
 local function parse_status(line)
     local enabled_value, discoverable_value, discovering_value, address, name =
         line:match("^([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t(.*)$")
@@ -27,7 +27,7 @@ local function parse_status(line)
     }
 end
 
--- Parse a Bluetooth device returned by the backend.
+-- Parse a Bluetooth device returned by the backend
 local function parse_device(line)
     local address, paired_value, trusted_value, connected_value, blocked_value, name =
         line:match("^([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t(.*)$")
@@ -51,7 +51,7 @@ local function parse_device(line)
     }
 end
 
--- Validate a Bluetooth address or device table.
+-- Validate a Bluetooth address or device table
 local function validate_device(device)
     if type(device) == "table" then
         device = device.address
@@ -65,7 +65,7 @@ local function validate_device(device)
     return device:upper()
 end
 
--- Create a Bluetooth API connected to a backend script.
+-- Create a Bluetooth API connected to a backend script
 function bluetooth.new(backend)
     local instance = {}
     local client = backend_client.new(backend, "bluetooth", {
@@ -80,7 +80,7 @@ function bluetooth.new(backend)
         },
     })
 
-    -- Parse a list of Bluetooth devices returned by the backend.
+    -- Parse a list of Bluetooth devices returned by the backend
     local function read_devices(action)
         local output, err = client.read(action)
         if not output then
@@ -102,7 +102,7 @@ function bluetooth.new(backend)
         return devices
     end
 
-    -- Return the default Bluetooth status.
+    -- Return the default Bluetooth status
     function instance.get_status()
         local output, err = client.read("get-status")
         if not output then
@@ -113,7 +113,7 @@ function bluetooth.new(backend)
         return parse_status(output)
     end
 
-    -- Check if Bluetooth is enabled.
+    -- Check if Bluetooth is enabled
     function instance.is_enabled()
         local status, err = instance.get_status()
         if not status then
@@ -123,32 +123,32 @@ function bluetooth.new(backend)
         return status.enabled
     end
 
-    -- Enable Bluetooth.
+    -- Enable Bluetooth
     function instance.enable()
         return client.execute("enable")
     end
 
-    -- Disable Bluetooth.
+    -- Disable Bluetooth
     function instance.disable()
         return client.execute("disable")
     end
 
-    -- Toggle Bluetooth state.
+    -- Toggle Bluetooth state
     function instance.toggle()
         return client.execute("toggle")
     end
 
-    -- Return known Bluetooth devices.
+    -- Return known Bluetooth devices
     function instance.list_known_devices()
         return read_devices("list-devices")
     end
 
-    -- Return connected Bluetooth devices.
+    -- Return connected Bluetooth devices
     function instance.list_connected_devices()
         return read_devices("list-connected-devices")
     end
 
-    -- Return a Bluetooth device by address or device table.
+    -- Return a Bluetooth device by address or device table
     function instance.get_device(device)
         local address, err = validate_device(device)
         if not address then
@@ -165,7 +165,7 @@ function bluetooth.new(backend)
         return parse_device(output)
     end
 
-    -- Check if a Bluetooth device is connected.
+    -- Check if a Bluetooth device is connected
     function instance.is_connected(device)
         local current, err = instance.get_device(device)
         if not current then

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Uninstall Lunar Plasma for the current user.
+# Uninstall Lunar Plasma for the current user
 set -euo pipefail
 
 install_dir="$HOME/.local/opt/lunar-plasma"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install Lunar Plasma for the current user.
+# Install Lunar Plasma for the current user
 set -euo pipefail
 
 project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -111,7 +111,7 @@ cp -a -- "$project_root/resources/Nexus.png" "$staging_dir/package/resources/"
 cp -a -- "$project_root/lunar-plasma.lua" "$staging_dir/package/"
 cp -a -- "$project_root/VERSION" "$staging_dir/package/"
 
-# ZIP archives may not preserve executable permissions.
+# ZIP archives may not preserve executable permissions
 chmod +x -- "$staging_dir/package/scripts/"*.sh
 
 if [[ -d "$install_dir" ]]; then

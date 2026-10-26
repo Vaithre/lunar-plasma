@@ -1,10 +1,10 @@
 -- Sound API
--- Control the default output and read its current state.
+-- Control the default output and read its current state
 
 local sound = {}
 local backend_client = require("plasma.backend")
 
--- Create a sound API connected to a backend script.
+-- Create a sound API connected to a backend script
 function sound.new(backend)
     local instance = {}
     local client = backend_client.new(backend, "sound")
@@ -21,7 +21,7 @@ function sound.new(backend)
         return value
     end
 
-    -- Set the default output volume from 0 to 100.
+    -- Set the default output volume from 0 to 100
     function instance.set_volume(value)
         local validated, err = validate_percentage(value, "volume")
         if not validated then
@@ -31,7 +31,7 @@ function sound.new(backend)
         return client.execute("set", { validated })
     end
 
-    -- Get the default output volume.
+    -- Get the default output volume
     function instance.get_volume()
         local output, err = client.read("get")
         if not output then
@@ -47,17 +47,17 @@ function sound.new(backend)
         return value
     end
 
-    -- Mute the default output.
+    -- Mute the default output
     function instance.mute()
         return client.execute("mute")
     end
 
-    -- Unmute the default output.
+    -- Unmute the default output
     function instance.unmute()
         return client.execute("unmute")
     end
 
-    -- Check whether the default output is muted.
+    -- Check whether the default output is muted
     function instance.is_muted()
         local output, err = client.read("is-muted")
         if not output then
@@ -76,12 +76,12 @@ function sound.new(backend)
         return nil, "sound backend returned an invalid mute state"
     end
 
-    -- Toggle the mute state of the default output.
+    -- Toggle the mute state of the default output
     function instance.toggle_mute()
         return client.execute("toggle-mute")
     end
 
-    -- Increase the default output volume.
+    -- Increase the default output volume
     function instance.increase_volume(amount)
         local validated, err = validate_percentage(amount, "amount")
         if not validated then
@@ -97,7 +97,7 @@ function sound.new(backend)
         return instance.set_volume(math.min(100, current + validated))
     end
 
-    -- Decrease the default output volume.
+    -- Decrease the default output volume
     function instance.decrease_volume(amount)
         local validated, err = validate_percentage(amount, "amount")
         if not validated then

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Control the default output through PulseAudio's command interface.
+# Control the default output through PulseAudio's command interface
 set -euo pipefail
 
 export LC_ALL=C

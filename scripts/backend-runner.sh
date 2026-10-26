@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Execute one backend operation with isolated output and a bounded duration.
+# Execute one backend operation with isolated output and a bounded duration
 set -euo pipefail
 
 timeout_seconds="${1:-}"

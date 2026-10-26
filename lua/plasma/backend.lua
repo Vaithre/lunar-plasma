@@ -1,5 +1,5 @@
--- Shared backend process runner.
--- Execute Bash backends with consistent quoting, errors, and operation timeouts.
+-- Shared backend process runner
+-- Execute Bash backends with consistent quoting, errors, and operation timeouts
 
 local backend = {}
 local utils = require("plasma.utils")
@@ -9,7 +9,7 @@ local source = debug.getinfo(1, "S").source:sub(2)
 local project_root = source:match("^(.*)/lua/plasma/backend%.lua$") or "."
 local default_runner = project_root .. "/scripts/backend-runner.sh"
 
--- Validate one timeout in seconds.
+-- Validate one timeout in seconds
 local function validate_timeout(value, name)
     value = tonumber(value)
 
@@ -20,7 +20,7 @@ local function validate_timeout(value, name)
     return value
 end
 
--- Build the wrapper command for one backend operation.
+-- Build the wrapper command for one backend operation
 local function build_command(runner, timeout, path, action, arguments)
     local command = table.concat({
         utils.shell_quote(runner),
@@ -36,7 +36,7 @@ local function build_command(runner, timeout, path, action, arguments)
     return command
 end
 
--- Create a process client for one backend script.
+-- Create a process client for one backend script
 function backend.new(path, name, options)
     if type(path) ~= "string" or path == "" then
         error("backend path must be a non-empty string", 2)
@@ -78,12 +78,12 @@ function backend.new(path, name, options)
 
     local instance = {}
 
-    -- Resolve the configured timeout for one operation.
+    -- Resolve the configured timeout for one operation
     local function timeout_for(action)
         return operation_timeouts[action] or standard_timeout
     end
 
-    -- Execute one operation and capture its relevant output.
+    -- Execute one operation and capture its relevant output
     local function run(action, arguments)
         if type(action) ~= "string" or action == "" then
             return nil, "backend action must be a non-empty string"
@@ -135,7 +135,7 @@ function backend.new(path, name, options)
         return output
     end
 
-    -- Execute an operation without returning its output.
+    -- Execute an operation without returning its output
     function instance.execute(action, arguments)
         local output, err = run(action, arguments)
         if not output then
@@ -145,7 +145,7 @@ function backend.new(path, name, options)
         return true
     end
 
-    -- Execute an operation and return its standard output.
+    -- Execute an operation and return its standard output
     function instance.read(action, arguments)
         return run(action, arguments)
     end
