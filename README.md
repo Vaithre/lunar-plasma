@@ -194,16 +194,9 @@ chmod +x install.sh
 ./install.sh
 ```
 
-### Installation modes
-
-When `install.sh` starts, choose one of the following modes:
-
-- **Quick installation** installs the runtime only.
-- **Custom installation** asks separately whether to install the tests and examples.
-
 ### Installation directory
 
-Lunar Plasma will be installed in `~/.local/opt/lunar-plasma`
+The installer copies the runtime to `~/.local/opt/lunar-plasma`.
 
 To remove the installation:
 
