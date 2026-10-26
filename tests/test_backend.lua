@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Shared backend runner tests
--- Verify argument preservation, stream isolation, failures, and operation timeouts.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_backend%.lua$") or "."
@@ -11,7 +10,7 @@ package.path = root .. "/lua/?.lua;" .. root .. "/lua/?/init.lua;" ..
 local backend = require("plasma.backend")
 local utils = require("test_utils")
 
--- Create one isolated executable script.
+-- Create one isolated executable script
 local function executable_script(content)
     local directory = utils.make_temp_dir()
     local path = directory .. "/script.sh"
@@ -20,7 +19,7 @@ local function executable_script(content)
     return path, directory
 end
 
--- Return the shared backend runner cases.
+-- Return the shared backend runner cases
 local function cases()
     return {
         {
@@ -124,7 +123,7 @@ local function cases()
     }
 end
 
--- Run the shared backend runner suite.
+-- Run the shared backend runner suite
 local function run()
     return utils.run_suite("backend", cases())
 end

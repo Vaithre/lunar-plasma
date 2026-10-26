@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Sound API tests
--- Verify sound validation, state parsing, boundary behavior, and backend failures.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_sound%.lua$") or "."
@@ -11,7 +10,7 @@ local sound = require("plasma.sound")
 local utils = require("test_utils")
 local backend = root .. "/tests/fixtures/sound-backend.sh"
 
--- Create a backend that returns one controlled response.
+-- Create a backend that returns one controlled response
 local function response_backend(action, output, exit_code)
     local directory = utils.make_temp_dir()
     local path = directory .. "/backend.sh"
@@ -23,7 +22,7 @@ local function response_backend(action, output, exit_code)
     return sound.new(path), directory
 end
 
--- Return the complete set of sound API cases.
+-- Return the complete set of sound API cases
 local function cases()
     local api = sound.new(backend)
     return {
@@ -114,7 +113,7 @@ local function cases()
     }
 end
 
--- Run the sound suite.
+-- Run the sound suite
 local function run()
     return utils.run_suite("sound", cases())
 end

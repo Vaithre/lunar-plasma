@@ -1,14 +1,13 @@
 #!/usr/bin/env lua
 
--- Production backend integration tests
--- Execute shipped Bash backends with isolated command doubles and verify their observable contracts.
+-- Backend integration tests
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_backends%.lua$") or "."
 package.path = root .. "/tests/?.lua;" .. package.path
 local utils = require("test_utils")
 
--- Create an isolated PATH containing command doubles and required core utilities.
+-- Set up an isolated PATH with our command doubles and the needed core utilities
 local function mock_environment(commands)
     local directory = utils.make_temp_dir()
     local binary = directory .. "/bin"
@@ -43,7 +42,7 @@ local function mock_environment(commands)
     return directory, { PATH = binary, LUNAR_MOCK_LOG = log }, log
 end
 
--- Execute one shipped backend action inside a mock environment.
+-- Execute one shipped backend action inside a mock environment
 local function backend(name, arguments, commands, extra_environment)
     local directory, environment, log = mock_environment(commands)
     for key, value in pairs(extra_environment or {}) do
@@ -59,13 +58,13 @@ local function backend(name, arguments, commands, extra_environment)
     return result
 end
 
--- Assert a successful backend response.
+-- Assert a successful backend response
 local function assert_backend(result)
     assert(result.ok, string.format("backend failed (%s): %s", tostring(result.code), result.stderr))
     return result
 end
 
--- Return production backend integration cases.
+-- Return production backend integration cases
 local function cases()
     return {
         {
@@ -574,7 +573,7 @@ local function cases()
     }
 end
 
--- Run the production backend integration suite.
+-- Run the production backend integration suite
 local function run()
     return utils.run_suite("backends", cases())
 end

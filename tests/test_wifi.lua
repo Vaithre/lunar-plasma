@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Wi-Fi API tests
--- Verify connected, disconnected, inconsistent, malformed, and failed backend states.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_wifi%.lua$") or "."
@@ -11,7 +10,7 @@ local utils = require("test_utils")
 local backend = root .. "/tests/fixtures/wifi-backend.sh"
 local disconnected_backend = root .. "/tests/fixtures/wifi-disconnected-backend.sh"
 
--- Create a Wi-Fi backend with one controlled status response.
+-- Create a Wi-Fi backend with one controlled status response
 local function response_backend(output, code)
     local directory = utils.make_temp_dir()
     local path = directory .. "/backend.sh"
@@ -24,7 +23,7 @@ local function response_backend(output, code)
     return wifi.new(path), directory
 end
 
--- Return the complete set of Wi-Fi API cases.
+-- Return the complete set of Wi-Fi API cases
 local function cases()
     local connected = wifi.new(backend)
     local disconnected = wifi.new(disconnected_backend)
@@ -112,7 +111,7 @@ local function cases()
     }
 end
 
--- Run the Wi-Fi suite.
+-- Run the Wi-Fi suite
 local function run()
     return utils.run_suite("wifi", cases())
 end

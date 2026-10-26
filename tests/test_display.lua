@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Display API tests
--- Verify displays, modes, validation, and malformed data.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_display%.lua$") or "."
@@ -10,7 +9,7 @@ local display = require("plasma.display")
 local utils = require("test_utils")
 local backend = root .. "/tests/fixtures/display-backend.sh"
 
--- Create a display backend with one controlled response.
+-- Create a display backend with one controlled response
 local function response_backend(action, output, code)
     local directory = utils.make_temp_dir()
     local path = directory .. "/backend.sh"
@@ -24,7 +23,7 @@ local function response_backend(action, output, code)
     return display.new(path), directory
 end
 
--- Return the complete set of display API cases.
+-- Return the complete set of display API cases
 local function cases()
     local api = display.new(backend)
     return {
@@ -115,7 +114,7 @@ local function cases()
     }
 end
 
--- Run the display suite.
+-- Run the display suite
 local function run()
     return utils.run_suite("display", cases())
 end

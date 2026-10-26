@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Desktop API tests
--- Verify wallpapers, connector mapping, validation, escaping, and malformed data.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_desktop%.lua$") or "."

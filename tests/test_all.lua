@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 
--- Complete test runner
--- Run deterministic API, production backend, entry point, example, or opt-in real-system suites.
+-- Test suite
+-- Entry point for running all the tests in the suite
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_all%.lua$") or "."

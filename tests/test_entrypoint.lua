@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Entry point and example tests
--- Verify the public API, version metadata, working-directory independence, and safe example failures.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_entrypoint%.lua$") or "."
@@ -23,7 +22,7 @@ local function method_names(module)
     return table.concat(names, ",")
 end
 
--- Return entry point and example cases.
+-- Return entry point and example cases
 local function cases()
     return {
         {
@@ -195,7 +194,7 @@ local function cases()
     }
 end
 
--- Run the entry point and example suite.
+-- Run the entry point and example suite
 local function run()
     return utils.run_suite("entrypoint", cases())
 end

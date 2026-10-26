@@ -1,13 +1,12 @@
 #!/usr/bin/env lua
 
 -- Real-system integration tests
--- Verify available desktop services while restoring every reversible state change.
 
 local system = {}
 local utils = require("test_utils")
 local skip = utils.skip
 
--- Create a real-system component suite with the shared runner.
+-- Create a real-system component suite with the shared runner
 local function make_suite(name, tests)
     return { run = function() return utils.run_suite(name, tests) end }
 end

@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Notification API tests
--- Verify defaults, supported types, escaping, validation, and backend failures.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_notifications%.lua$") or "."
@@ -11,7 +10,7 @@ local notification = require("plasma.notification")
 local utils = require("test_utils")
 local backend = root .. "/tests/fixtures/notifications-backend.sh"
 
--- Return the complete set of notification API cases.
+-- Return the complete set of notification API cases
 local function cases()
     local api = notification.new(backend)
     return {
@@ -108,7 +107,7 @@ local function cases()
     }
 end
 
--- Run the notification suite.
+-- Run the notification suite
 local function run()
     return utils.run_suite("notifications", cases())
 end

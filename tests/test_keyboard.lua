@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Keyboard API tests
--- Verify layout parsing, selectors, variants, cycling, validation, and malformed responses.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_keyboard%.lua$") or "."
@@ -10,7 +9,7 @@ local keyboard = require("plasma.keyboard")
 local utils = require("test_utils")
 local backend = root .. "/tests/fixtures/keyboard-backend.sh"
 
--- Create a keyboard backend with one controlled read response.
+-- Create a keyboard backend with one controlled read response
 local function response_backend(action, output)
     local directory = utils.make_temp_dir()
     local path = directory .. "/backend.sh"
@@ -23,7 +22,7 @@ local function response_backend(action, output)
     return keyboard.new(path), directory
 end
 
--- Return the complete set of keyboard API cases.
+-- Return the complete set of keyboard API cases
 local function cases()
     local api = keyboard.new(backend)
     return {
@@ -97,7 +96,7 @@ local function cases()
     }
 end
 
--- Run the keyboard suite.
+-- Run the keyboard suite
 local function run()
     return utils.run_suite("keyboard", cases())
 end

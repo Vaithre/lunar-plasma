@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Power API tests
--- Verify profiles, battery states, power sources, brightness, validation, and malformed responses.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_power%.lua$") or "."
@@ -12,7 +11,7 @@ local utils = require("test_utils")
 local backend = root .. "/tests/fixtures/power-backend.sh"
 local no_battery_backend = root .. "/tests/fixtures/power-no-battery-backend.sh"
 
--- Create a backend that returns controlled profile, battery, or brightness data.
+-- Create a backend that returns controlled profile, battery, or brightness data
 local function response_backend(action, output, code)
     local directory = utils.make_temp_dir()
     local path = directory .. "/backend.sh"
@@ -26,7 +25,7 @@ local function response_backend(action, output, code)
     return power.new(path), directory
 end
 
--- Return the complete set of power API cases.
+-- Return the complete set of power API cases
 local function cases()
     local api = power.new(backend)
     local desktop = power.new(no_battery_backend)
@@ -178,7 +177,7 @@ local function cases()
     }
 end
 
--- Run the power suite.
+-- Run the power suite
 local function run()
     return utils.run_suite("power", cases())
 end

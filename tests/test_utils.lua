@@ -1,5 +1,4 @@
 -- Test utilities
--- Provide assertions, isolated temporary files, command execution, skips, and a shared suite runner.
 
 local test_utils = {}
 
@@ -9,18 +8,18 @@ local skipped = {}
 local temporary_directories = {}
 local seed_reported = false
 
--- Quote one value for safe use in a shell command.
+-- Quote one value for safe use in a shell command
 function test_utils.shell_quote(value)
     return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
 end
 
--- Assert that a value is truthy and preserve a returned API error.
+-- Assert that a value is truthy and preserve a returned API error
 function test_utils.assert_success(value, err)
     assert(value, err or "expected a successful result")
     return value
 end
 
--- Assert that two scalar values are equal and report both values.
+-- Assert that two scalar values are equal and report both values
 function test_utils.assert_equal(actual, expected, label)
     if actual ~= expected then
         error(string.format(
@@ -33,13 +32,13 @@ function test_utils.assert_equal(actual, expected, label)
     return actual
 end
 
--- Assert that a value has the expected Lua type.
+-- Assert that a value has the expected Lua type
 function test_utils.assert_type(value, expected, label)
     test_utils.assert_equal(type(value), expected, (label or "value") .. " type")
     return value
 end
 
--- Assert that text contains a literal fragment.
+-- Assert that text contains a literal fragment
 function test_utils.assert_contains(value, expected, label)
     if type(value) ~= "string" or not value:find(expected, 1, true) then
         error(string.format(
@@ -52,7 +51,7 @@ function test_utils.assert_contains(value, expected, label)
     return value
 end
 
--- Assert that a function returns nil and a useful error.
+-- Assert that a function returns nil and a useful error
 function test_utils.assert_error(expected, callback)
     local value, err = callback()
     assert(value == nil, "expected an error, got " .. tostring(value))
@@ -64,12 +63,12 @@ function test_utils.assert_error(expected, callback)
     return err
 end
 
--- Mark a test as intentionally skipped.
+-- Mark a test as intentionally skipped
 function test_utils.skip(reason)
     return skipped, reason
 end
 
--- Create an isolated temporary directory.
+-- Create an isolated temporary directory
 function test_utils.make_temp_dir()
     local process = assert(io.popen("/usr/bin/mktemp -d 2>&1"))
     local path = process:read("*a"):gsub("[\r\n]+$", "")
@@ -79,7 +78,7 @@ function test_utils.make_temp_dir()
     return path
 end
 
--- Remove a temporary directory created by the test suite.
+-- Remove a temporary directory created by the test suite
 function test_utils.remove_temp_dir(path)
     assert(type(path) == "string" and path:match("^/tmp/[^/]+$"), "unsafe temporary path")
     local ok = os.execute("/usr/bin/rm -rf -- " .. test_utils.shell_quote(path))
@@ -87,14 +86,14 @@ function test_utils.remove_temp_dir(path)
     temporary_directories[path] = nil
 end
 
--- Write fixture data to a file.
+-- Write fixture data to a file
 function test_utils.write_file(path, content)
     local file = assert(io.open(path, "wb"))
     assert(file:write(content))
     assert(file:close())
 end
 
--- Read all data from a file.
+-- Read all data from a file
 function test_utils.read_file(path)
     local file = assert(io.open(path, "rb"))
     local content = assert(file:read("*a"))
@@ -102,7 +101,7 @@ function test_utils.read_file(path)
     return content
 end
 
--- Execute a command with captured streams and the suite timeout.
+-- Execute a command with captured streams and the suite timeout
 function test_utils.run_command(command, environment)
     local directory = test_utils.make_temp_dir()
     local stdout_path = directory .. "/stdout"
@@ -137,7 +136,7 @@ function test_utils.run_command(command, environment)
     }
 end
 
--- Poll an asynchronous state for at most three seconds.
+-- Poll an asynchronous state for at most three seconds
 function test_utils.eventually(callback, message)
     local last_error
     for _ = 1, test_utils.timeout * 10 do
@@ -149,7 +148,7 @@ function test_utils.eventually(callback, message)
     error((message or "condition was not reached") .. ": " .. tostring(last_error), 2)
 end
 
--- Return tests filtered and optionally shuffled by environment settings.
+-- Return tests filtered and optionally shuffled by environment settings
 local function selected_tests(tests)
     local selected = {}
     local names = {}
@@ -180,7 +179,7 @@ local function selected_tests(tests)
     return selected
 end
 
--- Run one suite and return structured failures to the complete runner.
+-- Run one suite and return structured failures to the complete runner
 function test_utils.run_suite(name, tests)
     tests = selected_tests(tests)
     local passed = 0

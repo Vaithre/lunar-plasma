@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Bluetooth API tests
--- Verify adapter and device parsing, address normalization, empty lists, validation, and failures.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_bluetooth%.lua$") or "."
@@ -10,7 +9,7 @@ local bluetooth = require("plasma.bluetooth")
 local utils = require("test_utils")
 local backend = root .. "/tests/fixtures/bluetooth-backend.sh"
 
--- Create a Bluetooth backend with one controlled response.
+-- Create a Bluetooth backend with one controlled response
 local function response_backend(action, output, code)
     local directory = utils.make_temp_dir()
     local path = directory .. "/backend.sh"
@@ -24,7 +23,7 @@ local function response_backend(action, output, code)
     return bluetooth.new(path), directory
 end
 
--- Return the complete set of Bluetooth API cases.
+-- Return the complete set of Bluetooth API cases
 local function cases()
     local api = bluetooth.new(backend)
     return {
@@ -139,7 +138,7 @@ local function cases()
     }
 end
 
--- Run the Bluetooth suite.
+-- Run the Bluetooth suite
 local function run()
     return utils.run_suite("bluetooth", cases())
 end

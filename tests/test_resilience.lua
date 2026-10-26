@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 -- Test-suite resilience tests
--- Verify quoting properties, timeout and stream capture, generated validation cases, and mutation sensitivity.
 
 local source = debug.getinfo(1, "S").source:sub(2)
 local root = source:match("^(.*)/tests/test_resilience%.lua$") or "."
@@ -9,7 +8,7 @@ package.path = root .. "/lua/?.lua;" .. root .. "/lua/?/init.lua;" .. root .. "/
 local utils = require("test_utils")
 local sound = require("plasma.sound")
 
--- Create an isolated mutated copy of the Lua modules.
+-- Create an isolated mutated copy of the Lua modules
 local function mutant(file, expression, assertion)
     local directory = utils.make_temp_dir()
     assert(os.execute("/usr/bin/mkdir " .. utils.shell_quote(directory .. "/lua")))
@@ -34,7 +33,7 @@ local function mutant(file, expression, assertion)
     return result
 end
 
--- Return generated and mutation-resilience cases.
+-- Return generated and mutation-resilience cases
 local function cases()
     return {
         {
@@ -160,7 +159,7 @@ local function cases()
     }
 end
 
--- Run the resilience suite.
+-- Run the resilience suite
 local function run()
     return utils.run_suite("resilience", cases())
 end
