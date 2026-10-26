@@ -262,4 +262,4 @@ Despite this, AI use is not prohibited. The prototype for this project was accel
 
 ## License
 
-Lunar Plasma is licensed under the [GNU Lesser General Public License v3.0](LICENSE.md).
+Lunar Plasma is licensed under the [GNU Lesser General Public License v3.0](LICENSE).
