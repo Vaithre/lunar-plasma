@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Added `release.sh` to the project and release archives. I don’t know why I even hid it in the first place.
+
+### Changed
+
+- Renamed `LICENSE.md` to `LICENSE` and updated the README link.
+- Improved comments in the entry point and test suite.
+- Shortened the default test runner's introductory message.
+
 ## [0.4.1] - 2026-09-21
 
 ### Added
